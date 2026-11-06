@@ -758,6 +758,22 @@ a { color:inherit; text-decoration:none; }
 .section-sidebar-head p{font-size:11px;color:var(--muted);margin-top:3px}
 .section-sidebar-head>i{color:var(--primary);font-size:17px}
 .ctd-section-list{display:flex;flex-direction:column;gap:4px;max-height:650px;overflow:auto}
+.ctd-section-list{gap:5px}
+.ctd-checklist-row{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:6px;align-items:center}
+.ctd-checklist-row.level-1 .ctd-section-item{padding-left:18px}
+.ctd-checklist-row.level-2 .ctd-section-item{padding-left:28px}
+.ctd-checklist-row.level-3 .ctd-section-item{padding-left:38px}
+.ctd-checklist-row.level-4 .ctd-section-item{padding-left:48px}
+.ctd-section-item{min-width:0}
+.ctd-section-code{min-width:58px;font-size:10px}
+.ctd-section-name{font-size:11px}
+.ctd-section-count{font-size:9px}
+.ctd-check-status{width:100%;height:34px;border:1px solid var(--border);border-radius:7px;background:#fff;color:#586a60;font-size:10px;padding:0 4px;outline:none}
+.ctd-check-status:focus{border-color:#91c9a7;box-shadow:0 0 0 2px #16845b12}
+.ctd-checklist-legend{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 10px;color:var(--muted);font-size:10px}
+.ctd-checklist-legend strong{color:var(--ink)}
+@media(max-width:560px){.ctd-checklist-row{grid-template-columns:minmax(0,1fr) 78px}.ctd-section-count{display:none}}
+
 .ctd-section-item{width:100%;display:flex;align-items:center;gap:10px;text-align:left;border:1px solid transparent;background:transparent;padding:10px;border-radius:8px;color:#596d61;transition:.18s}
 .ctd-section-item:hover{background:#f5faf7}
 .ctd-section-item.active{background:var(--primary-light);border-color:#d8eddf;color:var(--primary-dark)}
@@ -1650,7 +1666,7 @@ td { font-size: 13px; padding: 15px 14px; line-height: 1.5; }
                     <div><h3>CTD Sections</h3><p id="sectionCount">Select a subsection</p></div>
                     <i class="fa-solid fa-list-check"></i>
                 </div>
-                <div id="ctdSectionList" class="ctd-section-list"></div>
+                <div class="ctd-checklist-legend"><span><strong>Yes</strong> Verified</span><span><strong>No</strong> Missing / deficient</span><span><strong>N/A</strong> Justified non-applicability</span><span><strong>Pending</strong> Not assessed</span></div><div id="ctdSectionList" class="ctd-section-list"></div>
             </aside>
             <div class="section-workspace-main">
                 <div class="section-workspace-head">
@@ -1911,76 +1927,23 @@ let detailDocumentId = null;
 let toastTimer = null;
 let activeSectionCode = "";
 
-/* CTD MODULE INFORMATION */
+/* CTD MODULE INFORMATION — ICH M4(R4) organisation. Module 1 is regional; Modules 2–5 are harmonised. */
 const modules = {
-    "1": {
-        title: "Module 1 — Administrative Information",
-        description: "Regional administrative documents, application forms and product information.",
-        icon: "fa-file-signature",
-        sections: [
-            ["1.0", "Cover Letter"],
-            ["1.1", "Comprehensive Table of Contents"],
-            ["1.2", "Application Forms"],
-            ["1.3", "Product Information"],
-            ["1.4", "Regional Information"],
-            ["1.5", "Information Specific to Region"]
-        ]
-    },
-    "2": {
-        title: "Module 2 — CTD Summaries",
-        description: "Quality overall summary, nonclinical and clinical summaries.",
-        icon: "fa-file-lines",
-        sections: [
-            ["2.1", "CTD Table of Contents"],
-            ["2.2", "Introduction"],
-            ["2.3", "Quality Overall Summary"],
-            ["2.4", "Nonclinical Overview"],
-            ["2.5", "Clinical Overview"],
-            ["2.6", "Nonclinical Written and Tabulated Summaries"],
-            ["2.7", "Clinical Summary"]
-        ]
-    },
-    "3": {
-        title: "Module 3 — Quality",
-        description: "Chemistry, manufacturing and controls documentation for drug substance and drug product.",
-        icon: "fa-flask",
-        sections: [
-            ["3.1", "Module 3 Table of Contents"],
-            ["3.2.S", "Drug Substance"],
-            ["3.2.P", "Drug Product"],
-            ["3.2.A", "Appendices"],
-            ["3.2.R", "Regional Information"],
-            ["3.3", "Literature References"]
-        ]
-    },
-    "4": {
-        title: "Module 4 — Nonclinical Study Reports",
-        description: "Nonclinical pharmacology, pharmacokinetics and toxicology study reports.",
-        icon: "fa-microscope",
-        sections: [
-            ["4.1", "Module 4 Table of Contents"],
-            ["4.2.1", "Pharmacology"],
-            ["4.2.2", "Pharmacokinetics"],
-            ["4.2.3", "Toxicology"],
-            ["4.3", "Literature References"]
-        ]
-    },
-    "5": {
-        title: "Module 5 — Clinical Study Reports",
-        description: "Clinical study reports, efficacy, safety and supporting clinical information.",
-        icon: "fa-user-doctor",
-        sections: [
-            ["5.1", "Module 5 Table of Contents"],
-            ["5.2", "Clinical Study Tabulations"],
-            ["5.3.1", "Biopharmaceutic Studies"],
-            ["5.3.2", "Studies Using Human Biomaterials"],
-            ["5.3.3", "Human Pharmacokinetics"],
-            ["5.3.4", "Human Pharmacodynamics"],
-            ["5.3.5", "Efficacy and Safety Studies"],
-            ["5.3.6", "Post-Marketing Experience"],
-            ["5.4", "Literature References"]
-        ]
-    }
+"1":{title:"Module 1 — Regional Administrative Information",description:"Region-specific administrative and prescribing information. Select the target authority and confirm local requirements.",icon:"fa-file-signature",sections:[
+["1.0","Regional administrative information and submission particulars",0],["1.1","Regional application form and submission cover letter",1],["1.1.1","Application form and applicant declarations",2],["1.1.2","Cover letter and submission overview",2],["1.1.3","Comprehensive table of contents for Modules 1–5",2],["1.2","Administrative and legal information",1],["1.2.1","Applicant, sponsor and contact details",2],["1.2.2","Manufacturer and manufacturing site details",2],["1.2.3","Local agent or authorised representative",2],["1.2.4","Authorisations, letters of access and right of reference",2],["1.2.5","Fee payment documents",2],["1.2.6","Power of attorney and authorisation documents",2],["1.2.7","GMP certificates and licences",2],["1.2.8","Certificate of Pharmaceutical Product / Free Sale Certificate, where applicable",2],["1.2.9","Other regional legal documents and declarations",2],["1.3","Product information and prescribing information",1],["1.3.1","Summary of Product Characteristics / prescribing information",2],["1.3.2","Package leaflet / patient information leaflet",2],["1.3.3","Labelling texts and artwork",2],["1.3.4","Container and carton labelling",2],["1.3.5","Mock-ups, specimens and translations",2],["1.4","Expert information and declarations",1],["1.4.1","Quality expert details and declaration",2],["1.4.2","Nonclinical expert details and declaration",2],["1.4.3","Clinical expert details and declaration",2],["1.5","Application-type-specific regional requirements",1],["1.5.1","New active substance / new drug application requirements",2],["1.5.2","Generic, hybrid or abridged application requirements",2],["1.5.3","Fixed combination application requirements",2],["1.5.4","Biological / biosimilar requirements, where applicable",2],["1.5.5","Orphan, expedited or conditional pathway documents",2],["1.5.6","Paediatric requirements and plans, where applicable",2],["1.5.7","Environmental risk assessment, where regionally required",2],["1.6","Pharmacovigilance and risk management",1],["1.6.1","Pharmacovigilance system summary / system master file reference",2],["1.6.2","Risk Management Plan and regional annexes",2],["1.6.3","Qualified person / local safety contact details",2],["1.7","Clinical trial, bioequivalence and regulatory status",1],["1.7.1","Clinical trial and bioequivalence permissions / approvals",2],["1.7.2","Regulatory history and prior authority correspondence",2],["1.7.3","Marketing authorisations in other countries",2],["1.7.4","Inspection status and compliance information",2],["1.8","Other regional information and correspondence",1],["1.8.1","Responses to pre-submission / scientific advice",2],["1.8.2","Meeting minutes and regulatory correspondence",2],["1.8.3","Other region-specific forms, certificates and commitments",2]
+]},
+"2":{title:"Module 2 — CTD Summaries",description:"Integrated quality, nonclinical and clinical overviews and summaries, aligned to ICH M4Q, M4S and M4E.",icon:"fa-file-lines",sections:[
+["2.1","CTD table of contents for Modules 2–5",0],["2.2","CTD introduction",0],["2.3","Quality Overall Summary",0],["2.3.S","Drug substance summary",1],["2.3.P","Drug product summary",1],["2.3.A","Appendices summary",1],["2.3.R","Regional information summary, where applicable",1],["2.4","Nonclinical overview",0],["2.5","Clinical overview",0],["2.6","Nonclinical written and tabulated summaries",0],["2.6.1","Introduction",1],["2.6.2","Pharmacology written summary",1],["2.6.2.1","Primary pharmacodynamics",2],["2.6.2.2","Secondary pharmacodynamics",2],["2.6.2.3","Safety pharmacology",2],["2.6.2.4","Pharmacodynamic drug interactions",2],["2.6.3","Pharmacology tabulated summary",1],["2.6.4","Pharmacokinetics written summary",1],["2.6.4.1","Analytical methods and validation",2],["2.6.4.2","Absorption",2],["2.6.4.3","Distribution",2],["2.6.4.4","Metabolism",2],["2.6.4.5","Excretion",2],["2.6.4.6","Pharmacokinetic drug interactions",2],["2.6.4.7","Other pharmacokinetic studies",2],["2.6.5","Pharmacokinetics tabulated summary",1],["2.6.6","Toxicology written summary",1],["2.6.6.1","Single-dose toxicity",2],["2.6.6.2","Repeat-dose toxicity",2],["2.6.6.3","Genotoxicity",2],["2.6.6.4","Carcinogenicity",2],["2.6.6.5","Reproductive and developmental toxicity",2],["2.6.6.6","Local tolerance",2],["2.6.6.7","Other toxicity studies",2],["2.6.7","Toxicology tabulated summary",1],["2.7","Clinical summary",0],["2.7.1","Summary of biopharmaceutic studies and associated analytical methods",1],["2.7.1.1","Background and overview",2],["2.7.1.2","Summary of results of individual studies",2],["2.7.1.3","Comparison and analysis of results across studies",2],["2.7.1.4","Appendix: tables and figures",2],["2.7.2","Summary of clinical pharmacology studies",1],["2.7.2.1","Background and overview",2],["2.7.2.2","Summary of results of individual studies",2],["2.7.2.3","Comparison and analysis of results across studies",2],["2.7.2.4","Special studies",2],["2.7.2.5","Appendix: tables and figures",2],["2.7.3","Summary of clinical efficacy",1],["2.7.3.1","Background and overview of clinical efficacy",2],["2.7.3.2","Summary of results of individual studies",2],["2.7.3.3","Comparison and analysis of results across studies",2],["2.7.3.4","Analysis relevant to dosing recommendations",2],["2.7.3.5","Persistence of efficacy and / or tolerance effects",2],["2.7.3.6","Appendix: tables and figures",2],["2.7.4","Summary of clinical safety",1],["2.7.4.1","Exposure to the drug",2],["2.7.4.2","Adverse events",2],["2.7.4.3","Clinical laboratory evaluations",2],["2.7.4.4","Vital signs, physical findings and other observations",2],["2.7.4.5","Safety in special groups and situations",2],["2.7.4.6","Post-marketing data",2],["2.7.4.7","Appendix: tables and figures",2],["2.7.5","Literature references",1],["2.7.6","Synopses of individual studies",1]
+]},
+"3":{title:"Module 3 — Quality",description:"Drug substance, drug product, manufacturing, controls, specifications, stability and supporting quality data (ICH M4Q).",icon:"fa-flask",sections:[
+["3.1","Module 3 table of contents",0],["3.2","Body of data",0],["3.2.S","Drug substance",1],["3.2.S.1","General information",2],["3.2.S.1.1","Nomenclature",3],["3.2.S.1.2","Structure",3],["3.2.S.1.3","General properties",3],["3.2.S.2","Manufacture",2],["3.2.S.2.1","Manufacturer(s)",3],["3.2.S.2.2","Description of manufacturing process and process controls",3],["3.2.S.2.3","Control of materials",3],["3.2.S.2.4","Controls of critical steps and intermediates",3],["3.2.S.2.5","Process validation and / or evaluation",3],["3.2.S.2.6","Manufacturing process development",3],["3.2.S.3","Characterisation",2],["3.2.S.3.1","Elucidation of structure and other characteristics",3],["3.2.S.3.2","Impurities",3],["3.2.S.4","Control of drug substance",2],["3.2.S.4.1","Specification",3],["3.2.S.4.2","Analytical procedures",3],["3.2.S.4.3","Validation of analytical procedures",3],["3.2.S.4.4","Batch analyses",3],["3.2.S.4.5","Justification of specification",3],["3.2.S.5","Reference standards or materials",2],["3.2.S.6","Container closure system",2],["3.2.S.7","Stability",2],["3.2.S.7.1","Stability summary and conclusions",3],["3.2.S.7.2","Post-approval stability protocol and commitment",3],["3.2.S.7.3","Stability data",3],["3.2.P","Drug product",1],["3.2.P.1","Description and composition of the drug product",2],["3.2.P.2","Pharmaceutical development",2],["3.2.P.2.1","Components of the drug product",3],["3.2.P.2.1.1","Drug substance",4],["3.2.P.2.1.2","Excipients",4],["3.2.P.2.2","Drug product",3],["3.2.P.2.2.1","Formulation development",4],["3.2.P.2.2.2","Overages",4],["3.2.P.2.2.3","Physicochemical and biological properties",4],["3.2.P.2.3","Manufacturing process development",3],["3.2.P.2.4","Container closure system",3],["3.2.P.2.5","Microbiological attributes",3],["3.2.P.2.6","Compatibility",3],["3.2.P.3","Manufacture",2],["3.2.P.3.1","Manufacturer(s)",3],["3.2.P.3.2","Batch formula",3],["3.2.P.3.3","Description of manufacturing process and process controls",3],["3.2.P.3.4","Controls of critical steps and intermediates",3],["3.2.P.3.5","Process validation and / or evaluation",3],["3.2.P.4","Control of excipients",2],["3.2.P.4.1","Specifications",3],["3.2.P.4.2","Analytical procedures",3],["3.2.P.4.3","Validation of analytical procedures",3],["3.2.P.4.4","Justification of specifications",3],["3.2.P.4.5","Excipients of human or animal origin",3],["3.2.P.4.6","Novel excipients",3],["3.2.P.5","Control of drug product",2],["3.2.P.5.1","Specifications",3],["3.2.P.5.2","Analytical procedures",3],["3.2.P.5.3","Validation of analytical procedures",3],["3.2.P.5.4","Batch analyses",3],["3.2.P.5.5","Characterisation of impurities",3],["3.2.P.5.6","Justification of specifications",3],["3.2.P.6","Reference standards or materials",2],["3.2.P.7","Container closure system",2],["3.2.P.8","Stability",2],["3.2.P.8.1","Stability summary and conclusions",3],["3.2.P.8.2","Post-approval stability protocol and commitment",3],["3.2.P.8.3","Stability data",3],["3.2.A","Appendices",1],["3.2.A.1","Facilities and equipment",2],["3.2.A.2","Adventitious agents safety evaluation",2],["3.2.A.3","Excipients",2],["3.2.R","Regional information (as applicable)",1],["3.3","Literature references",0]
+]},
+"4":{title:"Module 4 — Nonclinical Study Reports",description:"Nonclinical pharmacology, pharmacokinetics and toxicology reports and literature references (ICH M4S).",icon:"fa-microscope",sections:[
+["4.1","Module 4 table of contents",0],["4.2","Study reports",0],["4.2.1","Pharmacology",1],["4.2.1.1","Primary pharmacodynamics",2],["4.2.1.2","Secondary pharmacodynamics",2],["4.2.1.3","Safety pharmacology",2],["4.2.1.4","Pharmacodynamic drug interactions",2],["4.2.2","Pharmacokinetics",1],["4.2.2.1","Analytical methods and validation reports",2],["4.2.2.2","Absorption",2],["4.2.2.3","Distribution",2],["4.2.2.4","Metabolism",2],["4.2.2.5","Excretion",2],["4.2.2.6","Pharmacokinetic drug interactions",2],["4.2.2.7","Other pharmacokinetic studies",2],["4.2.3","Toxicology",1],["4.2.3.1","Single-dose toxicity",2],["4.2.3.2","Repeat-dose toxicity",2],["4.2.3.3","Genotoxicity",2],["4.2.3.3.1","In vitro",3],["4.2.3.3.2","In vivo (including supporting toxicokinetics)",3],["4.2.3.4","Carcinogenicity",2],["4.2.3.4.1","Long-term studies",3],["4.2.3.4.2","Short- or medium-term studies",3],["4.2.3.4.3","Other studies",3],["4.2.3.5","Reproductive and developmental toxicity",2],["4.2.3.5.1","Fertility and early embryonic development",3],["4.2.3.5.2","Embryo-fetal development",3],["4.2.3.5.3","Pre- and postnatal development, including maternal function",3],["4.2.3.5.4","Juvenile animal studies",3],["4.2.3.6","Local tolerance",2],["4.2.3.7","Other toxicity studies",2],["4.3","Literature references",0]
+]},
+"5":{title:"Module 5 — Clinical Study Reports",description:"Clinical study listings, biopharmaceutic, pharmacokinetic, pharmacodynamic, efficacy, safety and post-marketing reports (ICH M4E).",icon:"fa-user-doctor",sections:[
+["5.1","Module 5 table of contents",0],["5.2","Tabular listing of all clinical studies",0],["5.3","Clinical study reports",0],["5.3.1","Reports of biopharmaceutic studies",1],["5.3.1.1","Bioavailability study reports",2],["5.3.1.2","Comparative bioavailability and bioequivalence study reports",2],["5.3.1.3","In vitro–in vivo correlation study reports",2],["5.3.1.4","Bioanalytical and analytical method reports",2],["5.3.2","Studies pertinent to pharmacokinetics using human biomaterials",1],["5.3.2.1","Plasma protein binding",2],["5.3.2.2","Hepatic metabolism and drug interaction studies",2],["5.3.2.3","Other studies using human biomaterials",2],["5.3.3","Human pharmacokinetic studies",1],["5.3.3.1","Healthy subject PK and initial tolerability",2],["5.3.3.2","Patient PK and initial tolerability",2],["5.3.3.3","Intrinsic factor PK studies",2],["5.3.3.4","Extrinsic factor PK studies",2],["5.3.3.5","Population PK studies",2],["5.3.4","Human pharmacodynamic studies",1],["5.3.4.1","Healthy subject PD and PK / PD studies",2],["5.3.4.2","Patient PD and PK / PD studies",2],["5.3.5","Efficacy and safety studies",1],["5.3.5.1","Controlled clinical study reports pertinent to claimed indication",2],["5.3.5.2","Uncontrolled clinical study reports",2],["5.3.5.3","Analyses of data from more than one study",2],["5.3.5.4","Other clinical study reports",2],["5.3.6","Reports of post-marketing experience",1],["5.3.7","Case report forms and individual patient listings",1],["5.4","Literature references",0]
+]},
 };
 
 /* SAMPLE DOCUMENTS: ILLUSTRATIVE ONLY */
@@ -2208,37 +2171,43 @@ function selectSection(code) {
     document.querySelectorAll(".ctd-section-item").forEach(button => button.classList.toggle("active", button.dataset.section === code));
 }
 function getSectionGuidance(code, name) {
-    const guidance = {
-        "1.0":"Provide a signed cover letter identifying the application, product and submission purpose.",
-        "1.1":"Maintain an accurate table of contents that maps the submitted dossier files and their locations.",
-        "1.2":"Attach the applicable application forms and supporting administrative information for the selected authority.",
-        "1.3":"Check product information, prescribing information, labelling and package leaflet requirements for the target market.",
-        "2.3":"Prepare the Quality Overall Summary using the relevant Module 3 information and ensure consistency.",
-        "2.4":"Summarise the nonclinical strategy and key findings with references to Module 4 reports.",
-        "2.5":"Summarise the clinical development programme, efficacy and safety conclusions with references to Module 5.",
-        "3.2.S":"Organise drug-substance information including manufacture, characterisation, controls, standards and stability.",
-        "3.2.P":"Organise drug-product composition, pharmaceutical development, manufacture, controls, specifications and stability.",
-        "4.2.1":"Group pharmacology study reports and supporting documentation under the appropriate study headings.",
-        "4.2.2":"Group pharmacokinetic study reports and supporting documentation under the appropriate study headings.",
-        "4.2.3":"Group toxicology study reports and supporting documentation under the appropriate study headings.",
-        "5.3.5":"Organise clinical efficacy and safety study reports, including study-level supporting documents."
-    };
-    return guidance[code] || "Check the applicable CTD/ICH and target-market requirements for " + name + ". Upload the relevant source document and record any justified non-applicability. This guidance is a preparation aid, not an official completeness determination.";
+    return "Prepare and quality-check the document(s) applicable to " + code + " — " + name + ". Mark Yes only when present and verified, No when required but missing or deficient, and N/A only with a documented justification. Applicability depends on product, application type and target authority; this checklist is a preparation aid, not an official completeness determination.";
+}
+
+function checklistStorageKey() { return "regutrack_ctd_checklist_v2_" + activeProductId; }
+function loadChecklistState() {
+    try { return JSON.parse(localStorage.getItem(checklistStorageKey()) || "{}"); }
+    catch (_) { return {}; }
+}
+function checklistItemStatus(code) {
+    const state = loadChecklistState();
+    return state[activeModule + ":" + code] || "Pending";
+}
+function setChecklistItemStatus(code, status) {
+    const state = loadChecklistState(), key = activeModule + ":" + code;
+    if (status === "Pending") delete state[key]; else state[key] = status;
+    try { localStorage.setItem(checklistStorageKey(), JSON.stringify(state)); }
+    catch (_) { showToast("Could not save checklist status in this browser."); return; }
+    renderSectionWorkspace(); updateModuleProgress(); updateStats();
 }
 function renderSectionWorkspace() {
     const list = $("ctdSectionList");
     const sectionDocs = currentProductDocuments().filter(doc => String(doc.module) === activeModule && doc.section === activeSectionCode);
-    list.innerHTML = modules[activeModule].sections.map(([code,name]) => {
+    const sections = modules[activeModule].sections, state = loadChecklistState();
+    const options = status => ["Pending","Yes","No","N/A"].map(value => '<option value="' + value + '"' + (status===value?' selected':'') + '>' + value + '</option>').join("");
+    list.innerHTML = sections.map(([code,name,level]) => {
         const count = currentProductDocuments().filter(doc => String(doc.module) === activeModule && doc.section === code).length;
-        return '<button type="button" class="ctd-section-item '+(code===activeSectionCode?'active':'')+'" data-section="'+escapeHTML(code)+'"><span class="ctd-section-code">'+escapeHTML(code)+'</span><span class="ctd-section-name">'+escapeHTML(name)+'</span><span class="ctd-section-count">'+count+'</span></button>';
+        return '<div class="ctd-checklist-row level-' + (level||0) + '"><button type="button" class="ctd-section-item ' + (code===activeSectionCode?'active':'') + '" data-section="' + escapeHTML(code) + '"><span class="ctd-section-code">' + escapeHTML(code) + '</span><span class="ctd-section-name">' + escapeHTML(name) + '</span><span class="ctd-section-count">' + count + ' files</span></button><select class="ctd-check-status" data-check-code="' + escapeHTML(code) + '" aria-label="Checklist status for ' + escapeHTML(code) + '">' + options(checklistItemStatus(code)) + '</select></div>';
     }).join("");
-    $("sectionCount").textContent = modules[activeModule].sections.length + " subsections";
+    const done = sections.filter(([code]) => ["Yes","N/A"].includes(state[activeModule + ":" + code])).length;
+    const missing = sections.filter(([code]) => state[activeModule + ":" + code] === "No").length;
+    $("sectionCount").textContent = sections.length + " entries · " + done + " complete · " + missing + " marked No";
     $("sectionDocumentCount").textContent = sectionDocs.length;
     $("sectionApprovedCount").textContent = sectionDocs.filter(doc => doc.status === "Approved").length;
-    const state = sectionDocs.some(doc=>doc.status==="Approved") ? "Approved" : sectionDocs.length ? "Uploaded" : "Missing";
-    $("sectionPreparationStatus").textContent = state;
-    $("sectionPreparationStatus").classList.toggle("complete",state==="Approved");
-    $("sectionDocumentList").innerHTML = sectionDocs.length ? sectionDocs.map(doc => '<div class="section-file-row"><div class="file-icon '+fileIcon(doc.fileType)+'"><i class="fa-solid '+fileIconClass(doc.fileType)+'"></i></div><div class="section-file-info"><strong>'+escapeHTML(doc.title)+'</strong><span>'+escapeHTML(doc.fileName||"No file attached")+' · v'+escapeHTML(doc.version||"1.0")+' · '+escapeHTML(doc.status)+'</span></div><div class="section-file-actions"><button class="action-btn" data-section-action="view" data-id="'+escapeHTML(doc.id)+'" title="View details"><i class="fa-regular fa-eye"></i></button><button class="action-btn" data-section-action="preview" data-id="'+escapeHTML(doc.id)+'" title="Preview PDF"><i class="fa-solid fa-file-pdf"></i></button></div></div>').join("") : '<div class="section-empty"><i class="fa-regular fa-folder-open"></i><strong>No documents in this subsection yet</strong><p>Upload the relevant file to start preparing this section.</p></div>';
+    const status = checklistItemStatus(activeSectionCode);
+    $("sectionPreparationStatus").textContent = status === "Pending" ? (sectionDocs.length ? "Documents uploaded" : "Pending") : status;
+    $("sectionPreparationStatus").classList.toggle("complete", status === "Yes" || status === "N/A");
+    $("sectionDocumentList").innerHTML = sectionDocs.length ? sectionDocs.map(doc => '<div class="section-file-row"><div class="file-icon ' + fileIcon(doc.fileType) + '"><i class="fa-solid ' + fileIconClass(doc.fileType) + '"></i></div><div class="section-file-info"><strong>' + escapeHTML(doc.title) + '</strong><span>' + escapeHTML(doc.fileName||"No file attached") + ' · v' + escapeHTML(doc.version||"1.0") + ' · ' + escapeHTML(doc.status) + '</span></div><div class="section-file-actions"><button class="action-btn" data-section-action="view" data-id="' + escapeHTML(doc.id) + '" title="View details"><i class="fa-regular fa-eye"></i></button><button class="action-btn" data-section-action="preview" data-id="' + escapeHTML(doc.id) + '" title="Preview PDF"><i class="fa-solid fa-file-pdf"></i></button></div></div>').join("") : '<div class="section-empty"><i class="fa-regular fa-folder-open"></i><strong>No documents in this subsection yet</strong><p>Upload the relevant file to start preparing this section.</p></div>';
 }
 function previewDocument(id) {
     const doc = documents.find(item=>item.id===id);
@@ -2706,6 +2675,7 @@ $("confirmDelete").addEventListener("click", () => {
     showToast("Document removed from the demo dossier.");
 });
 
+$("ctdSectionList").addEventListener("change", event => { const select = event.target.closest("[data-check-code]"); if (select) setChecklistItemStatus(select.dataset.checkCode, select.value); });
 $("ctdSectionList").addEventListener("click", event => {
     const button = event.target.closest("[data-section]");
     if (button) { currentPage = 1; selectSection(button.dataset.section); renderDocuments(); }
