@@ -1,0 +1,2646 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f6f9f7">
+<title>CTD Dossier Management | ReguTrack</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root {
+    --primary:#16845b;
+    --primary-dark:#106b49;
+    --primary-light:#eaf6f0;
+    --green-soft:#f3faf6;
+    --ink:#172c25;
+    --muted:#7c8b84;
+    --border:#e8eee9;
+    --background:#f6f9f7;
+    --danger:#dc5555;
+    --warning:#d99a32;
+    --blue:#4c83c4;
+    --purple:#886dbb;
+    --sidebar-width:255px;
+    --shadow:0 8px 28px rgba(28,62,45,.055);
+}
+
+* { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+    font-family:"DM Sans",sans-serif;
+    background:var(--background);
+    color:var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+    font-size:14px;
+    line-height:1.7;
+}
+
+button,input,select,textarea { font:inherit; }
+button { cursor:pointer; }
+a { color:inherit; text-decoration:none; }
+.app { min-height:100vh; }
+
+/* SIDEBAR */
+.sidebar {
+    width:var(--sidebar-width);
+    height:100vh;
+    position:fixed;
+    inset:0 auto 0 0;
+    z-index:100;
+    background:#fff;
+    border-right:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    transition:transform .3s ease;
+}
+
+.brand {
+    height:83px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:0 25px;
+    border-bottom:1px solid var(--border);
+}
+
+.brand-mark {
+    width:39px;
+    height:39px;
+    border-radius:12px;
+    background:linear-gradient(145deg,#1b9a68,#087348);
+    color:white;
+    display:grid;
+    place-items:center;
+    font-size:18px;
+    box-shadow:0 5px 12px #16845b30;
+}
+
+.brand-name {
+    font-family:Manrope,sans-serif;
+    font-size:21px;
+    font-weight:800;
+    letter-spacing:-.8px;
+}
+
+.brand-name span { color:var(--primary); }
+
+.brand-subtitle {
+    font-size:10px;
+    color:#94a39a;
+    letter-spacing:1.6px;
+    margin-top:1px;
+    font-weight:700;
+}
+
+.sidebar-scroll {
+    flex:1;
+    overflow-y:auto;
+    padding:22px 14px;
+}
+
+.nav-label {
+    padding:0 12px;
+    margin:20px 0 12px;
+    font-size:11px;
+    font-weight:800;
+    color:#a0ada5;
+    letter-spacing:1.4px;
+}
+
+.nav-link {
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:13px;
+    border-radius:9px;
+    color:#687b71;
+    font-size:13px;
+    font-weight:600;
+    margin:4px 0;
+    transition:.2s;
+    position:relative;
+}
+
+.nav-link i {
+    width:18px;
+    text-align:center;
+    font-size:15px;
+}
+
+.nav-link:hover {
+    background:#f3f8f5;
+    color:var(--primary);
+    transform:translateX(3px);
+}
+
+.nav-link.active {
+    background:var(--primary-light);
+    color:var(--primary-dark);
+    font-weight:700;
+}
+
+.nav-link.active:before {
+    content:"";
+    width:3px;
+    height:25px;
+    background:var(--primary);
+    position:absolute;
+    left:-14px;
+    border-radius:0 5px 5px 0;
+}
+
+.nav-count {
+    margin-left:auto;
+    font-size:10px;
+    background:#fff0e8;
+    color:#d27a38;
+    border-radius:20px;
+    padding:3px 7px;
+}
+
+.sidebar-bottom {
+    padding:14px;
+    border-top:1px solid var(--border);
+}
+
+.help-card {
+    background:linear-gradient(135deg,#edf8f2,#f7fbf8);
+    border:1px solid #e0f0e6;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:13px;
+}
+
+.help-card i { color:var(--primary); font-size:18px; }
+.help-card h4 { font-size:13px; margin:9px 0 4px; }
+.help-card p { font-size:11px; line-height:1.7; color:var(--muted); }
+
+.help-card button {
+    margin-top:11px;
+    border:0;
+    background:var(--primary);
+    color:white;
+    padding:8px 12px;
+    border-radius:7px;
+    font-size:11px;
+    font-weight:700;
+}
+
+/* TOPBAR */
+.main {
+    margin-left:var(--sidebar-width);
+    min-height:100vh;
+}
+
+.topbar {
+    height:76px;
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 35px;
+    position:sticky;
+    top:0;
+    z-index:50;
+}
+
+.top-left,.top-right {
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.breadcrumb { color:#a0aaa4; font-size:13px; }
+.breadcrumb strong { color:var(--ink); }
+
+.icon-btn {
+    width:38px;
+    height:38px;
+    border:1px solid var(--border);
+    background:white;
+    color:#64766c;
+    border-radius:10px;
+    display:grid;
+    place-items:center;
+    position:relative;
+    transition:.2s;
+}
+
+.icon-btn:hover {
+    background:var(--primary-light);
+    color:var(--primary);
+    border-color:#cfe8d9;
+}
+
+.notification-dot {
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#ef6868;
+    position:absolute;
+    right:8px;
+    top:7px;
+    border:1px solid white;
+}
+
+.search-box {
+    width:235px;
+    height:40px;
+    background:#f7f9f8;
+    border:1px solid var(--border);
+    border-radius:9px;
+    display:flex;
+    align-items:center;
+    padding:0 12px;
+    gap:9px;
+    color:#9aa69e;
+}
+
+.search-box input {
+    width:100%;
+    background:transparent;
+    border:0;
+    outline:0;
+    font-size:12px;
+    color:var(--ink);
+}
+
+.profile {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    position:relative;
+}
+
+.avatar {
+    width:37px;
+    height:37px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:#dff2e6;
+    color:var(--primary-dark);
+    font-weight:800;
+    font-size:12px;
+}
+
+.profile-info strong { display:block; font-size:12px; }
+.profile-info span { font-size:11px; color:var(--muted); }
+
+.dropdown {
+    position:absolute;
+    right:0;
+    top:49px;
+    width:195px;
+    background:white;
+    border:1px solid var(--border);
+    border-radius:11px;
+    padding:7px;
+    box-shadow:var(--shadow);
+    display:none;
+    z-index:100;
+    animation:dropIn .2s ease;
+}
+
+.dropdown.show { display:block; }
+
+.dropdown button {
+    display:block;
+    width:100%;
+    border:0;
+    background:none;
+    text-align:left;
+    padding:11px;
+    border-radius:7px;
+    font-size:12px;
+    color:#607168;
+}
+
+.dropdown button:hover { background:var(--green-soft); color:var(--primary); }
+.mobile-menu { display:none; }
+
+/* CONTENT */
+.content {
+    max-width:1600px;
+    margin:auto;
+    padding:32px 35px 45px;
+}
+
+.page-heading {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    margin-bottom:25px;
+    animation:fadeUp .5s ease both;
+}
+
+.eyebrow {
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--primary);
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+.page-heading h1 {
+    font-family:Manrope,sans-serif;
+    font-size:clamp(27px,2.5vw,34px);
+    font-weight:800;
+    letter-spacing:-1px;
+    line-height:1.3;
+}
+
+.page-heading p {
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.7;
+    margin-top:9px;
+}
+
+.heading-actions { display:flex; gap:10px; flex-wrap:wrap; }
+
+/* BUTTONS */
+.btn {
+    border:1px solid var(--border);
+    background:white;
+    color:#53665b;
+    padding:12px 16px;
+    border-radius:9px;
+    font-size:12px;
+    font-weight:700;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    transition:.2s;
+}
+
+.btn:hover {
+    transform:translateY(-2px);
+    box-shadow:var(--shadow);
+}
+
+.btn-primary {
+    background:var(--primary);
+    color:white;
+    border-color:var(--primary);
+    box-shadow:0 5px 13px #16845b25;
+}
+
+.btn-primary:hover { background:var(--primary-dark); }
+.btn-small { padding:8px 11px; font-size:11px; }
+
+/* PRODUCT SELECTOR */
+.product-selector {
+    display:flex;
+    align-items:center;
+    gap:13px;
+    background:white;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:15px 18px;
+    margin-bottom:20px;
+    box-shadow:0 3px 12px rgba(30,70,45,.025);
+    animation:fadeUp .55s ease both;
+}
+
+.selector-icon {
+    width:40px;
+    height:40px;
+    border-radius:11px;
+    background:var(--primary-light);
+    color:var(--primary);
+    display:grid;
+    place-items:center;
+    font-size:17px;
+    flex-shrink:0;
+}
+
+.selector-copy { min-width:140px; }
+.selector-copy strong { display:block; font-size:13px; }
+.selector-copy span { display:block; font-size:10px; color:var(--muted); margin-top:2px; }
+
+.product-select-wrap {
+    flex:1;
+    max-width:420px;
+}
+
+.product-select {
+    width:100%;
+    height:42px;
+    border:1px solid var(--border);
+    background:#fbfcfb;
+    border-radius:8px;
+    padding:0 12px;
+    color:#43584c;
+    outline:none;
+    font-size:12px;
+}
+
+.product-select:focus { border-color:#91c9a7; }
+
+/* STATS */
+.stats-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-bottom:20px;
+}
+
+.stat-card {
+    background:white;
+    border:1px solid var(--border);
+    border-radius:13px;
+    padding:20px;
+    box-shadow:0 3px 12px rgba(30,70,45,.025);
+    transition:.25s ease;
+    animation:fadeUp .55s ease both;
+    animation-delay:var(--delay,0s);
+}
+
+.stat-card:hover {
+    transform:translateY(-4px);
+    box-shadow:0 12px 25px rgba(30,70,45,.08);
+    border-color:#cde7d6;
+}
+
+.stat-top { display:flex; justify-content:space-between; align-items:center; }
+
+.stat-icon {
+    width:39px;
+    height:39px;
+    border-radius:11px;
+    display:grid;
+    place-items:center;
+    font-size:16px;
+}
+
+.stat-icon.green { background:#e9f6ef; color:#16845b; }
+.stat-icon.blue { background:#edf3fc; color:#5485c1; }
+.stat-icon.orange { background:#fff5e9; color:#d4943a; }
+.stat-icon.purple { background:#f3effb; color:#8b6bc1; }
+
+.stat-value {
+    font-family:Manrope,sans-serif;
+    font-size:31px;
+    font-weight:800;
+    margin-top:14px;
+    line-height:1.3;
+}
+
+.stat-label { color:var(--muted); font-size:12px; margin-top:4px; font-weight:600; }
+
+/* PANEL */
+.panel {
+    background:white;
+    border:1px solid var(--border);
+    border-radius:13px;
+    padding:23px;
+    box-shadow:0 3px 12px rgba(30,70,45,.025);
+    min-width:0;
+    animation:fadeUp .6s ease both;
+}
+
+.panel-heading {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:14px;
+    margin-bottom:18px;
+}
+
+.panel-heading h3 {
+    font-family:Manrope,sans-serif;
+    font-size:16px;
+    font-weight:800;
+    line-height:1.5;
+}
+
+.panel-heading p {
+    font-size:12px;
+    color:var(--muted);
+    margin-top:5px;
+    line-height:1.7;
+}
+
+.text-link { color:var(--primary); font-size:11px; font-weight:700; white-space:nowrap; }
+
+/* MODULE TABS */
+.module-panel { margin-bottom:19px; }
+
+.module-tabs {
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+}
+
+.module-tab {
+    text-align:left;
+    background:#fafcfb;
+    border:1px solid #edf1ee;
+    border-radius:11px;
+    padding:15px;
+    transition:.22s ease;
+    position:relative;
+    overflow:hidden;
+}
+
+.module-tab:hover {
+    transform:translateY(-3px);
+    border-color:#b7dec6;
+}
+
+.module-tab.active {
+    background:#eef8f1;
+    border-color:#a9d8bb;
+    box-shadow:0 5px 15px #16845b10;
+}
+
+.module-tab.active:after {
+    content:"";
+    height:3px;
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    background:var(--primary);
+}
+
+.module-tab-top {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+}
+
+.module-badge {
+    width:30px;
+    height:30px;
+    display:grid;
+    place-items:center;
+    background:#e7f5ec;
+    color:var(--primary);
+    border-radius:8px;
+    font-size:11px;
+    font-weight:800;
+}
+
+.module-tab h4 { font-size:12px; line-height:1.5; }
+.module-tab p { font-size:10px; color:var(--muted); margin-top:4px; }
+.module-tab .module-completion { font-size:11px; font-weight:800; color:var(--primary-dark); }
+
+.module-mini-progress {
+    height:5px;
+    width:100%;
+    border-radius:10px;
+    background:#e9efeb;
+    margin-top:12px;
+    overflow:hidden;
+}
+
+.module-mini-progress span {
+    display:block;
+    height:100%;
+    background:linear-gradient(90deg,#16845b,#55b987);
+    border-radius:inherit;
+    transition:width .6s ease;
+}
+
+/* MODULE DETAIL HEADER */
+.module-detail {
+    margin-bottom:19px;
+}
+
+.module-detail-head {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:18px;
+}
+
+.module-detail-title {
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.module-large-icon {
+    width:43px;
+    height:43px;
+    display:grid;
+    place-items:center;
+    border-radius:12px;
+    background:var(--primary-light);
+    color:var(--primary);
+    font-size:17px;
+}
+
+.module-detail-title h3 {
+    font-family:Manrope,sans-serif;
+    font-size:16px;
+    font-weight:800;
+}
+
+.module-detail-title p {
+    font-size:11px;
+    color:var(--muted);
+    margin-top:3px;
+}
+
+.module-progress-summary {
+    min-width:145px;
+    text-align:right;
+}
+
+.module-progress-summary strong {
+    font-family:Manrope;
+    font-size:22px;
+    color:var(--primary-dark);
+}
+
+.module-progress-summary span {
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+}
+
+.overall-progress {
+    height:7px;
+    background:#edf1ee;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:13px;
+}
+
+.overall-progress span {
+    display:block;
+    height:100%;
+    background:linear-gradient(90deg,#16845b,#5bbd89);
+    border-radius:inherit;
+    transition:width .7s ease;
+}
+
+/* FILTERS */
+.document-filters {
+    display:grid;
+    grid-template-columns:minmax(190px,1.5fr) repeat(2,minmax(145px,1fr)) auto;
+    gap:10px;
+    margin-bottom:17px;
+}
+
+.search-control {
+    height:42px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:0 12px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    color:#97a49d;
+    background:#fbfcfb;
+}
+
+.search-control:focus-within {
+    border-color:#91c9a7;
+    box-shadow:0 0 0 3px #16845b12;
+}
+
+.search-control input {
+    width:100%;
+    border:0;
+    background:transparent;
+    outline:0;
+    font-size:12px;
+    color:var(--ink);
+}
+
+.filter-select {
+    width:100%;
+    height:42px;
+    border:1px solid var(--border);
+    background:#fbfcfb;
+    border-radius:8px;
+    padding:0 10px;
+    color:#53665b;
+    font-size:11px;
+    outline:0;
+}
+
+.filter-select:focus { border-color:#91c9a7; }
+
+.clear-filters {
+    border:0;
+    background:none;
+    color:var(--primary);
+    font-size:11px;
+    font-weight:700;
+}
+
+/* DOCUMENT TABLE */
+.document-table-wrap { overflow-x:auto; width:100%; }
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    min-width:770px;
+}
+
+thead th {
+    background:#f8faf8;
+    color:#87968e;
+    text-transform:uppercase;
+    letter-spacing:.6px;
+    font-size:10px;
+    font-weight:800;
+    text-align:left;
+    padding:14px 13px;
+    white-space:nowrap;
+}
+
+tbody td {
+    padding:15px 13px;
+    border-bottom:1px solid #f0f3f1;
+    font-size:11px;
+    color:#596b60;
+    vertical-align:middle;
+}
+
+tbody tr { transition:background .2s; }
+tbody tr:hover { background:#f7fbf8; }
+tbody tr:last-child td { border-bottom:0; }
+
+.document-cell {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:210px;
+}
+
+.file-icon {
+    width:37px;
+    height:39px;
+    border-radius:9px;
+    display:grid;
+    place-items:center;
+    flex-shrink:0;
+    background:#fff0ef;
+    color:#d66a62;
+    font-size:15px;
+}
+
+.file-icon.pdf { background:#fff0ef; color:#d66a62; }
+.file-icon.doc { background:#edf3fc; color:#5485c1; }
+.file-icon.xls { background:#eaf7ef; color:#25845a; }
+.file-icon.other { background:#f3effb; color:#8b6bc1; }
+
+.document-name {
+    display:block;
+    color:var(--ink);
+    font-size:11px;
+    font-weight:800;
+    line-height:1.5;
+}
+
+.document-meta {
+    display:block;
+    color:#98a49c;
+    font-size:9px;
+    margin-top:3px;
+}
+
+.status {
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border-radius:20px;
+    padding:6px 9px;
+    font-size:9px;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.status:before {
+    content:"";
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:currentColor;
+}
+
+.status-draft { background:#f0f3f1; color:#78867e; }
+.status-review { background:#fff5e7; color:#c4872c; }
+.status-approved { background:#eaf7ef; color:#238357; }
+.status-rejected { background:#fff0ef; color:#cc5a54; }
+
+.action-group { display:flex; gap:5px; }
+
+.action-btn {
+    width:30px;
+    height:30px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:white;
+    color:#718078;
+    display:grid;
+    place-items:center;
+    font-size:10px;
+    transition:.2s;
+}
+
+.action-btn:hover {
+    color:var(--primary);
+    background:var(--primary-light);
+    border-color:#cfe8d9;
+}
+
+.action-btn.delete:hover {
+    color:var(--danger);
+    background:#fff0ef;
+    border-color:#f4d1cf;
+}
+
+/* EMPTY STATE */
+.empty-state {
+    padding:43px 20px;
+    text-align:center;
+    color:var(--muted);
+}
+
+.empty-state i {
+    font-size:29px;
+    color:#a8cbb5;
+    margin-bottom:12px;
+}
+
+.empty-state h3 {
+    font-family:Manrope;
+    font-size:16px;
+    color:var(--ink);
+}
+
+.empty-state p { font-size:11px; margin-top:5px; }
+
+/* TABLE FOOTER */
+.table-footer {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    padding:15px 20px;
+    border-top:1px solid var(--border);
+}
+
+.showing-text { color:var(--muted); font-size:10px; }
+
+.pagination { display:flex; gap:5px; }
+
+.page-btn {
+    min-width:30px;
+    height:30px;
+    border:1px solid var(--border);
+    border-radius:7px;
+    background:white;
+    color:#65766c;
+    font-size:10px;
+}
+
+.page-btn:hover,.page-btn.active {
+    color:white;
+    background:var(--primary);
+    border-color:var(--primary);
+}
+
+/* UPLOAD MODAL */
+.modal-backdrop {
+    position:fixed;
+    inset:0;
+    background:rgba(16,36,26,.48);
+    backdrop-filter:blur(5px);
+    z-index:300;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+}
+
+.modal-backdrop.show {
+    display:flex;
+    animation:fadeIn .2s ease;
+}
+
+.modal {
+    width:100%;
+    max-width:640px;
+    max-height:92vh;
+    overflow:auto;
+    background:white;
+    border-radius:16px;
+    padding:26px;
+    box-shadow:0 25px 80px #10241a35;
+    animation:modalIn .25s ease;
+}
+
+.modal-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    padding-bottom:17px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:19px;
+}
+
+.modal-header h3 {
+    font-family:Manrope;
+    font-size:19px;
+    font-weight:800;
+}
+
+.modal-header p {
+    font-size:11px;
+    color:var(--muted);
+    margin-top:5px;
+}
+
+.close-modal {
+    width:33px;
+    height:33px;
+    border:0;
+    border-radius:8px;
+    color:#64766c;
+    background:#f3f6f4;
+}
+
+.form-grid {
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+}
+
+.form-group { min-width:0; }
+.form-group.full { grid-column:1 / -1; }
+
+.form-group label {
+    display:block;
+    font-size:11px;
+    font-weight:700;
+    color:#51645a;
+    margin-bottom:7px;
+}
+
+.form-group label span { color:var(--danger); }
+
+.form-group input,.form-group select,.form-group textarea {
+    width:100%;
+    min-height:42px;
+    padding:10px 12px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    outline:0;
+    background:#fbfcfb;
+    color:var(--ink);
+    font-size:12px;
+}
+
+.form-group textarea { min-height:76px; resize:vertical; }
+
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus {
+    border-color:#86c5a1;
+    box-shadow:0 0 0 3px #16845b12;
+    background:white;
+}
+
+.form-hint { color:#9aa69e; font-size:10px; margin-top:5px; }
+
+.file-drop {
+    border:1.5px dashed #b9d8c4;
+    background:#f8fcf9;
+    padding:24px 16px;
+    border-radius:11px;
+    text-align:center;
+    transition:.2s;
+}
+
+.file-drop:hover,.file-drop.dragover {
+    background:#eff8f2;
+    border-color:var(--primary);
+}
+
+.file-drop i { font-size:25px; color:var(--primary); margin-bottom:9px; }
+.file-drop strong { display:block; font-size:12px; }
+.file-drop p { color:var(--muted); font-size:10px; margin-top:5px; }
+
+.file-drop input { display:none; }
+
+.file-choose {
+    display:inline-flex;
+    margin-top:12px;
+    padding:8px 13px;
+    border:1px solid #b9d8c4;
+    border-radius:7px;
+    color:var(--primary);
+    background:white;
+    font-size:10px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.modal-actions {
+    display:flex;
+    justify-content:flex-end;
+    gap:9px;
+    padding-top:19px;
+    margin-top:19px;
+    border-top:1px solid var(--border);
+}
+
+/* DETAIL MODAL */
+.detail-box {
+    background:#f8faf8;
+    border:1px solid #edf1ee;
+    border-radius:9px;
+    padding:13px;
+    margin-bottom:13px;
+}
+
+.detail-box span { display:block; color:var(--muted); font-size:10px; }
+.detail-box strong { display:block; color:var(--ink); font-size:12px; margin-top:5px; overflow-wrap:anywhere; }
+
+/* TOAST */
+.toast {
+    position:fixed;
+    bottom:25px;
+    right:25px;
+    max-width:min(380px,calc(100% - 40px));
+    background:#183d2c;
+    color:white;
+    padding:13px 18px;
+    border-radius:10px;
+    font-size:12px;
+    box-shadow:0 10px 30px #173c2b30;
+    z-index:500;
+    opacity:0;
+    transform:translateY(15px);
+    pointer-events:none;
+    transition:.3s;
+}
+
+.toast.show { opacity:1; transform:translateY(0); }
+
+/* FOOTER */
+.footer {
+    border-top:1px solid var(--border);
+    padding:19px 35px;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    color:#9aa69e;
+    font-size:10px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+    from { opacity:0; transform:translateY(14px); }
+    to { opacity:1; transform:translateY(0); }
+}
+
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+@keyframes modalIn {
+    from { opacity:0; transform:translateY(12px) scale(.98); }
+    to { opacity:1; transform:translateY(0) scale(1); }
+}
+
+@keyframes dropIn {
+    from { opacity:0; transform:translateY(-5px); }
+    to { opacity:1; transform:translateY(0); }
+}
+
+/* RESPONSIVE */
+@media(max-width:1200px) {
+    .stats-grid { grid-template-columns:repeat(2,1fr); }
+    .module-tabs { grid-template-columns:repeat(3,1fr); }
+    .document-filters { grid-template-columns:repeat(2,1fr); }
+    .search-control { grid-column:span 2; }
+}
+
+@media(max-width:900px) {
+    .sidebar { transform:translateX(-100%); }
+    .sidebar.open { transform:translateX(0); box-shadow:15px 0 40px #10241a20; }
+    .main { margin-left:0; }
+    .mobile-menu { display:grid; }
+}
+
+@media(max-width:650px) {
+    .topbar { height:65px; padding:0 15px; }
+    .content { padding:22px 15px 30px; }
+    .search-box { display:none; }
+    .profile-info,.profile > i { display:none; }
+
+    .page-heading { align-items:flex-start; flex-direction:column; }
+    .page-heading h1 { font-size:27px; }
+    .heading-actions { width:100%; }
+    .heading-actions .btn { flex:1; }
+
+    .product-selector { flex-wrap:wrap; }
+    .product-select-wrap { flex-basis:100%; max-width:none; }
+
+    .stats-grid { gap:10px; }
+    .stat-card { padding:16px; }
+    .stat-value { font-size:27px; }
+    .stat-label { font-size:11px; }
+
+    .module-tabs { grid-template-columns:repeat(2,1fr); }
+    .document-filters { grid-template-columns:1fr; }
+    .search-control { grid-column:auto; }
+    .module-detail-head { align-items:flex-start; }
+    .panel { padding:17px; }
+
+    .form-grid { grid-template-columns:1fr; }
+    .form-group.full { grid-column:auto; }
+
+    .modal { padding:19px; }
+    .table-footer { align-items:flex-start; flex-direction:column; }
+    .footer { padding:15px; flex-direction:column; }
+}
+
+@media(max-width:380px) {
+    .stats-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="brand">
+        <div class="brand-mark"><i class="fa-solid fa-shield-halved"></i></div>
+        <div>
+            <div class="brand-name">Regu<span>Track</span></div>
+            <div class="brand-subtitle">REGULATORY INTELLIGENCE</div>
+        </div>
+    </div>
+
+    <div class="sidebar-scroll">
+        <div class="nav-label">WORKSPACE</div>
+
+        <a href="dashboard.html" class="nav-link">
+            <i class="fa-solid fa-border-all"></i> Dashboard
+        </a>
+        <a href="products.html" class="nav-link">
+            <i class="fa-solid fa-capsules"></i> Product Management
+        </a>
+        <a href="ctd-dossiers.html" class="nav-link active">
+            <i class="fa-solid fa-folder-open"></i> CTD Dossier Management
+        </a>
+        <a href="gap-analysis.html" class="nav-link">
+            <i class="fa-solid fa-magnifying-glass-chart"></i> AI Gap Analysis
+            <span class="nav-count">New</span>
+        </a>
+
+        <div class="nav-label">REGULATORY OPERATIONS</div>
+
+        <a href="regulatory-intelligence.html" class="nav-link">
+            <i class="fa-solid fa-globe"></i> Regulatory Intelligence
+        </a>
+        <a href="impact-assessment.html" class="nav-link">
+            <i class="fa-solid fa-diagram-project"></i> Impact Assessment
+            <span class="nav-count">5</span>
+        </a>
+        <a href="regulatory-calendar.html" class="nav-link">
+            <i class="fa-regular fa-calendar-days"></i> Regulatory Calendar
+        </a>
+
+        <div class="nav-label">MANAGEMENT</div>
+
+        <a href="reports.html" class="nav-link">
+            <i class="fa-solid fa-chart-pie"></i> Reports & Analytics
+        </a>
+        <a href="users.html" class="nav-link">
+            <i class="fa-solid fa-users"></i> User Management
+        </a>
+        <a href="settings.html" class="nav-link">
+            <i class="fa-solid fa-gear"></i> Settings
+        </a>
+    </div>
+
+    <div class="sidebar-bottom">
+        <div class="help-card">
+            <i class="fa-regular fa-circle-question"></i>
+            <h4>Need assistance?</h4>
+            <p>Explore the ReguTrack guide or contact your workspace administrator.</p>
+            <button onclick="showToast('Help & Support module will be connected soon.')">
+                Visit Help Centre <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+        <a href="home.html" class="nav-link">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Back to Website
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+    <header class="topbar">
+        <div class="top-left">
+            <button class="icon-btn mobile-menu" id="menuToggle" aria-label="Toggle menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="breadcrumb">
+                Workspace <span style="margin:0 7px;">/</span>
+                <strong>CTD Dossier Management</strong>
+            </div>
+        </div>
+
+        <div class="top-right">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search" id="globalSearch" placeholder="Search documents...">
+            </div>
+
+            <button class="icon-btn" id="notificationButton" title="Notifications">
+                <i class="fa-regular fa-bell"></i>
+                <span class="notification-dot"></span>
+            </button>
+
+            <div class="profile" id="profileButton">
+                <div class="avatar">VR</div>
+                <div class="profile-info">
+                    <strong>Workspace Admin</strong>
+                    <span>Administrator</span>
+                </div>
+                <i class="fa-solid fa-chevron-down" style="font-size:9px;color:#96a49b;"></i>
+
+                <div class="dropdown" id="profileDropdown">
+                    <button onclick="showToast('Profile page will be connected soon.')">
+                        <i class="fa-regular fa-user"></i> &nbsp; My Profile
+                    </button>
+                    <button onclick="location.href='settings.html'">
+                        <i class="fa-solid fa-gear"></i> &nbsp; Account Settings
+                    </button>
+                    <button onclick="location.href='home.html'">
+                        <i class="fa-solid fa-right-from-bracket"></i> &nbsp; Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+
+        <!-- PAGE HEADING -->
+        <section class="page-heading">
+            <div>
+                <div class="eyebrow">
+                    <i class="fa-solid fa-circle" style="font-size:6px;"></i>
+                    WORKSPACE / DOCUMENTATION
+                </div>
+                <h1>CTD Dossier Management</h1>
+                <p>Organize, upload, review and track pharmaceutical regulatory documents across all five CTD modules.</p>
+            </div>
+
+            <div class="heading-actions">
+                <button class="btn" id="exportDocuments">
+                    <i class="fa-solid fa-file-export"></i> Export List
+                </button>
+                <button class="btn btn-primary" id="uploadDocument">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Document
+                </button>
+            </div>
+        </section>
+
+        <!-- PRODUCT SELECTOR -->
+        <section class="product-selector">
+            <div class="selector-icon"><i class="fa-solid fa-capsules"></i></div>
+            <div class="selector-copy">
+                <strong>Selected Product</strong>
+                <span>Choose a product dossier to manage</span>
+            </div>
+            <div class="product-select-wrap">
+                <select class="product-select" id="productSelector">
+                    <option value="">Loading products...</option>
+                </select>
+            </div>
+            <span class="status status-approved" id="selectedProductStatus">Product workspace</span>
+        </section>
+
+        <!-- SUMMARY -->
+        <section class="stats-grid">
+            <div class="stat-card" style="--delay:.05s">
+                <div class="stat-top">
+                    <div class="stat-icon green"><i class="fa-solid fa-folder-open"></i></div>
+                </div>
+                <div class="stat-value" id="documentTotal">0</div>
+                <div class="stat-label">Total Documents</div>
+            </div>
+
+            <div class="stat-card" style="--delay:.1s">
+                <div class="stat-top">
+                    <div class="stat-icon blue"><i class="fa-solid fa-circle-check"></i></div>
+                </div>
+                <div class="stat-value" id="documentApproved">0</div>
+                <div class="stat-label">Approved Documents</div>
+            </div>
+
+            <div class="stat-card" style="--delay:.15s">
+                <div class="stat-top">
+                    <div class="stat-icon orange"><i class="fa-solid fa-clock"></i></div>
+                </div>
+                <div class="stat-value" id="documentReview">0</div>
+                <div class="stat-label">Under Review</div>
+            </div>
+
+            <div class="stat-card" style="--delay:.2s">
+                <div class="stat-top">
+                    <div class="stat-icon purple"><i class="fa-solid fa-file-circle-plus"></i></div>
+                </div>
+                <div class="stat-value" id="documentDraft">0</div>
+                <div class="stat-label">Draft / Pending</div>
+            </div>
+        </section>
+
+        <!-- MODULES -->
+        <section class="panel module-panel">
+            <div class="panel-heading">
+                <div>
+                    <h3><i class="fa-solid fa-layer-group" style="color:var(--primary);margin-right:7px;"></i> CTD Module Structure</h3>
+                    <p>Select a module to view and manage its dossier documents.</p>
+                </div>
+                <span class="status status-approved">ICH CTD structure</span>
+            </div>
+
+            <div class="module-tabs" id="moduleTabs">
+                <button class="module-tab active" data-module="1">
+                    <div class="module-tab-top">
+                        <span class="module-badge">01</span>
+                        <span class="module-completion" id="modulePercent1">0%</span>
+                    </div>
+                    <h4>Administrative Information</h4>
+                    <p>Regional documents</p>
+                    <div class="module-mini-progress"><span id="moduleBar1" style="width:0%"></span></div>
+                </button>
+
+                <button class="module-tab" data-module="2">
+                    <div class="module-tab-top">
+                        <span class="module-badge">02</span>
+                        <span class="module-completion" id="modulePercent2">0%</span>
+                    </div>
+                    <h4>Common Technical Document Summaries</h4>
+                    <p>Quality, nonclinical and clinical summaries</p>
+                    <div class="module-mini-progress"><span id="moduleBar2" style="width:0%"></span></div>
+                </button>
+
+                <button class="module-tab" data-module="3">
+                    <div class="module-tab-top">
+                        <span class="module-badge">03</span>
+                        <span class="module-completion" id="modulePercent3">0%</span>
+                    </div>
+                    <h4>Quality</h4>
+                    <p>Drug substance and drug product</p>
+                    <div class="module-mini-progress"><span id="moduleBar3" style="width:0%"></span></div>
+                </button>
+
+                <button class="module-tab" data-module="4">
+                    <div class="module-tab-top">
+                        <span class="module-badge">04</span>
+                        <span class="module-completion" id="modulePercent4">0%</span>
+                    </div>
+                    <h4>Nonclinical Study Reports</h4>
+                    <p>Pharmacology and toxicology</p>
+                    <div class="module-mini-progress"><span id="moduleBar4" style="width:0%"></span></div>
+                </button>
+
+                <button class="module-tab" data-module="5">
+                    <div class="module-tab-top">
+                        <span class="module-badge">05</span>
+                        <span class="module-completion" id="modulePercent5">0%</span>
+                    </div>
+                    <h4>Clinical Study Reports</h4>
+                    <p>Clinical study and related reports</p>
+                    <div class="module-mini-progress"><span id="moduleBar5" style="width:0%"></span></div>
+                </button>
+            </div>
+        </section>
+
+        <!-- SELECTED MODULE -->
+        <section class="panel module-detail">
+            <div class="module-detail-head">
+                <div class="module-detail-title">
+                    <div class="module-large-icon"><i class="fa-solid fa-folder-open" id="moduleIcon"></i></div>
+                    <div>
+                        <h3 id="selectedModuleTitle">Module 1 — Administrative Information</h3>
+                        <p id="selectedModuleDescription">Regional administrative documents and product information.</p>
+                    </div>
+                </div>
+
+                <div class="module-progress-summary">
+                    <strong id="selectedModulePercent">0%</strong>
+                    <span>Approved document coverage</span>
+                </div>
+            </div>
+
+            <div class="overall-progress">
+                <span id="selectedModuleBar" style="width:0%"></span>
+            </div>
+        </section>
+
+        <!-- DOCUMENT LIBRARY -->
+        <section class="panel">
+            <div class="panel-heading">
+                <div>
+                    <h3><i class="fa-solid fa-file-lines" style="color:var(--primary);margin-right:7px;"></i> Document Library</h3>
+                    <p>Manage dossier files, revisions and regulatory review status.</p>
+                </div>
+                <span class="status status-review" id="documentCountLabel">0 documents</span>
+            </div>
+
+            <div class="document-filters">
+                <div class="search-control">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" id="documentSearch" placeholder="Search document title or code...">
+                </div>
+
+                <select class="filter-select" id="documentStatusFilter">
+                    <option value="">All review statuses</option>
+                    <option value="Draft">Draft</option>
+                    <option value="Under Review">Under Review</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+
+                <select class="filter-select" id="documentTypeFilter">
+                    <option value="">All document types</option>
+                    <option value="PDF">PDF</option>
+                    <option value="DOC">Word</option>
+                    <option value="XLS">Excel</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <button class="clear-filters" id="clearDocumentFilters">
+                    <i class="fa-solid fa-rotate-left"></i> Reset
+                </button>
+            </div>
+
+            <div class="document-table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Document</th>
+                            <th>CTD Section</th>
+                            <th>Version</th>
+                            <th>Uploaded By</th>
+                            <th>Last Updated</th>
+                            <th>Review Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="documentTableBody"></tbody>
+                </table>
+
+                <div class="empty-state" id="emptyDocuments" hidden>
+                    <i class="fa-solid fa-folder-open"></i>
+                    <h3>No documents found</h3>
+                    <p>Upload a document for this CTD module or adjust your filters.</p>
+                    <button class="btn btn-primary" id="emptyUploadButton" style="margin-top:14px;">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload Document
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-footer">
+                <span class="showing-text" id="documentShowingText">Showing 0 documents</span>
+                <div class="pagination" id="documentPagination"></div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="footer">
+        <span>© 2026 ReguTrack. Regulatory Affairs Workspace.</span>
+        <span>Independent academic project · Not affiliated with regulatory authorities.</span>
+    </footer>
+</main>
+</div>
+
+<!-- UPLOAD DOCUMENT MODAL -->
+<div class="modal-backdrop" id="uploadModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <h3 id="uploadModalTitle">Upload CTD Document</h3>
+                <p>Add a document to the selected product's dossier.</p>
+            </div>
+            <button class="close-modal" id="closeUploadModal" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form id="uploadForm">
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label for="uploadProduct">Product <span>*</span></label>
+                    <select id="uploadProduct" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="uploadModule">CTD Module <span>*</span></label>
+                    <select id="uploadModule" required>
+                        <option value="1">Module 1 — Administrative</option>
+                        <option value="2">Module 2 — Summaries</option>
+                        <option value="3">Module 3 — Quality</option>
+                        <option value="4">Module 4 — Nonclinical</option>
+                        <option value="5">Module 5 — Clinical</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="uploadSection">CTD Section <span>*</span></label>
+                    <select id="uploadSection" required>
+                        <option value="">Select section</option>
+                    </select>
+                </div>
+
+                <div class="form-group full">
+                    <label for="documentTitle">Document Title <span>*</span></label>
+                    <input type="text" id="documentTitle" placeholder="Enter document title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="documentCode">Document Reference / Code</label>
+                    <input type="text" id="documentCode" placeholder="e.g. 3.2.S.1">
+                </div>
+
+                <div class="form-group">
+                    <label for="documentVersion">Version</label>
+                    <input type="text" id="documentVersion" placeholder="e.g. 1.0" value="1.0">
+                </div>
+
+                <div class="form-group">
+                    <label for="uploadedBy">Uploaded By</label>
+                    <input type="text" id="uploadedBy" value="Workspace Admin">
+                </div>
+
+                <div class="form-group">
+                    <label for="initialStatus">Review Status</label>
+                    <select id="initialStatus">
+                        <option value="Draft">Draft</option>
+                        <option value="Under Review">Under Review</option>
+                    </select>
+                    <div class="form-hint">New documents cannot be marked approved by default.</div>
+                </div>
+
+                <div class="form-group full">
+                    <label>Document File <span>*</span></label>
+                    <div class="file-drop" id="fileDrop">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <strong id="fileDropTitle">Drag and drop your file here</strong>
+                        <p>PDF, DOC, DOCX, XLS, XLSX or TXT · Maximum 10 MB</p>
+                        <label class="file-choose" for="documentFile">Choose File</label>
+                        <input type="file" id="documentFile" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt">
+                    </div>
+                </div>
+
+                <div class="form-group full">
+                    <label for="documentNotes">Document Notes</label>
+                    <textarea id="documentNotes" placeholder="Add a description, review context or notes..."></textarea>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn" id="cancelUpload">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Document
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- DOCUMENT DETAIL MODAL -->
+<div class="modal-backdrop" id="detailModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <h3 id="detailTitle">Document Details</h3>
+                <p>Document metadata and review information</p>
+            </div>
+            <button class="close-modal" id="closeDetailModal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div id="documentDetails"></div>
+        <div class="modal-actions">
+            <button class="btn" id="closeDetailButton">Close</button>
+            <button class="btn btn-primary" id="downloadDocument">
+                <i class="fa-solid fa-download"></i> Download
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-backdrop" id="deleteModal">
+    <div class="modal" style="max-width:420px;">
+        <div style="text-align:center;padding:8px 5px;">
+            <div style="width:55px;height:55px;border-radius:15px;background:#fff0ef;color:#d65d56;display:grid;place-items:center;font-size:22px;margin:0 auto 16px;">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <h3 style="font-family:Manrope;font-size:19px;">Remove Document?</h3>
+            <p id="deleteMessage" style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.7;">
+                This document will be removed from the local demo library.
+            </p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn" id="cancelDelete">Cancel</button>
+            <button class="btn" style="background:#d9534f;color:white;border-color:#d9534f;" id="confirmDelete">
+                Remove Document
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==========================================
+   CTD DOSSIER MANAGEMENT
+   Frontend demo using browser localStorage
+========================================== */
+
+const PRODUCT_KEY = "regutrack_products_v1";
+const DOSSIER_KEY = "regutrack_ctd_documents_v1";
+const PAGE_SIZE = 8;
+
+const $ = id => document.getElementById(id);
+
+let products = [];
+let documents = [];
+let activeProductId = "";
+let activeModule = "1";
+let currentPage = 1;
+let deleteDocumentId = null;
+let detailDocumentId = null;
+let toastTimer = null;
+
+/* CTD MODULE INFORMATION */
+const modules = {
+    "1": {
+        title: "Module 1 — Administrative Information",
+        description: "Regional administrative documents, application forms and product information.",
+        icon: "fa-file-signature",
+        sections: [
+            ["1.0", "Cover Letter"],
+            ["1.1", "Comprehensive Table of Contents"],
+            ["1.2", "Application Forms"],
+            ["1.3", "Product Information"],
+            ["1.4", "Regional Information"],
+            ["1.5", "Information Specific to Region"]
+        ]
+    },
+    "2": {
+        title: "Module 2 — CTD Summaries",
+        description: "Quality overall summary, nonclinical and clinical summaries.",
+        icon: "fa-file-lines",
+        sections: [
+            ["2.1", "CTD Table of Contents"],
+            ["2.2", "Introduction"],
+            ["2.3", "Quality Overall Summary"],
+            ["2.4", "Nonclinical Overview"],
+            ["2.5", "Clinical Overview"],
+            ["2.6", "Nonclinical Written and Tabulated Summaries"],
+            ["2.7", "Clinical Summary"]
+        ]
+    },
+    "3": {
+        title: "Module 3 — Quality",
+        description: "Chemistry, manufacturing and controls documentation for drug substance and drug product.",
+        icon: "fa-flask",
+        sections: [
+            ["3.1", "Module 3 Table of Contents"],
+            ["3.2.S", "Drug Substance"],
+            ["3.2.P", "Drug Product"],
+            ["3.2.A", "Appendices"],
+            ["3.2.R", "Regional Information"],
+            ["3.3", "Literature References"]
+        ]
+    },
+    "4": {
+        title: "Module 4 — Nonclinical Study Reports",
+        description: "Nonclinical pharmacology, pharmacokinetics and toxicology study reports.",
+        icon: "fa-microscope",
+        sections: [
+            ["4.1", "Module 4 Table of Contents"],
+            ["4.2.1", "Pharmacology"],
+            ["4.2.2", "Pharmacokinetics"],
+            ["4.2.3", "Toxicology"],
+            ["4.3", "Literature References"]
+        ]
+    },
+    "5": {
+        title: "Module 5 — Clinical Study Reports",
+        description: "Clinical study reports, efficacy, safety and supporting clinical information.",
+        icon: "fa-user-doctor",
+        sections: [
+            ["5.1", "Module 5 Table of Contents"],
+            ["5.2", "Clinical Study Tabulations"],
+            ["5.3.1", "Biopharmaceutic Studies"],
+            ["5.3.2", "Studies Using Human Biomaterials"],
+            ["5.3.3", "Human Pharmacokinetics"],
+            ["5.3.4", "Human Pharmacodynamics"],
+            ["5.3.5", "Efficacy and Safety Studies"],
+            ["5.3.6", "Post-Marketing Experience"],
+            ["5.4", "Literature References"]
+        ]
+    }
+};
+
+/* SAMPLE DOCUMENTS: ILLUSTRATIVE ONLY */
+const sampleDocuments = [
+    {
+        id:"doc-demo-1", productId:"demo-001", module:"1",
+        section:"1.2", sectionName:"Application Forms",
+        title:"Marketing Authorization Application",
+        code:"M1-APP-001", version:"1.0",
+        fileName:"marketing-application.pdf", fileType:"PDF",
+        fileData:"", fileSize:0,
+        uploadedBy:"RA Team", uploadedAt:"2026-11-01",
+        status:"Approved", notes:"Illustrative sample document.",
+        history:[{version:"1.0",date:"2026-11-01",user:"RA Team",action:"Sample record"}]
+    },
+    {
+        id:"doc-demo-2", productId:"demo-001", module:"2",
+        section:"2.3", sectionName:"Quality Overall Summary",
+        title:"Quality Overall Summary",
+        code:"M2-QOS-001", version:"1.0",
+        fileName:"quality-summary.pdf", fileType:"PDF",
+        fileData:"", fileSize:0,
+        uploadedBy:"RA Team", uploadedAt:"2026-11-02",
+        status:"Under Review", notes:"Illustrative sample document.",
+        history:[{version:"1.0",date:"2026-11-02",user:"RA Team",action:"Sample record"}]
+    },
+    {
+        id:"doc-demo-3", productId:"demo-001", module:"3",
+        section:"3.2.S", sectionName:"Drug Substance",
+        title:"Drug Substance Characterisation",
+        code:"M3-DS-001", version:"1.1",
+        fileName:"drug-substance.pdf", fileType:"PDF",
+        fileData:"", fileSize:0,
+        uploadedBy:"RA Team", uploadedAt:"2026-11-03",
+        status:"Approved", notes:"Illustrative sample document.",
+        history:[{version:"1.0",date:"2026-10-30",user:"RA Team",action:"Initial sample"},{version:"1.1",date:"2026-11-03",user:"RA Team",action:"Sample revision"}]
+    },
+    {
+        id:"doc-demo-4", productId:"demo-001", module:"3",
+        section:"3.2.P", sectionName:"Drug Product",
+        title:"Finished Product Specifications",
+        code:"M3-DP-001", version:"1.0",
+        fileName:"product-specifications.pdf", fileType:"PDF",
+        fileData:"", fileSize:0,
+        uploadedBy:"RA Team", uploadedAt:"2026-11-04",
+        status:"Draft", notes:"Illustrative sample document.",
+        history:[{version:"1.0",date:"2026-11-04",user:"RA Team",action:"Sample record"}]
+    },
+    {
+        id:"doc-demo-5", productId:"demo-001", module:"4",
+        section:"4.2.3", sectionName:"Toxicology",
+        title:"Toxicology Study Report",
+        code:"M4-TOX-001", version:"1.0",
+        fileName:"toxicology-report.pdf", fileType:"PDF",
+        fileData:"", fileSize:0,
+        uploadedBy:"RA Team", uploadedAt:"2026-11-04",
+        status:"Under Review", notes:"Illustrative sample document.",
+        history:[{version:"1.0",date:"2026-11-04",user:"RA Team",action:"Sample record"}]
+    },
+    {
+        id:"doc-demo-6", productId:"demo-001", module:"5",
+        section:"5.3.5", sectionName:"Efficacy and Safety Studies",
+        title:"Clinical Efficacy Study Report",
+        code:"M5-CLN-001", version:"1.0",
+        fileName:"clinical-efficacy.pdf", fileType:"PDF",
+        fileData:"", fileSize:0,
+        uploadedBy:"RA Team", uploadedAt:"2026-11-05",
+        status:"Draft", notes:"Illustrative sample document.",
+        history:[{version:"1.0",date:"2026-11-05",user:"RA Team",action:"Sample record"}]
+    }
+];
+
+/* TOAST */
+function showToast(message) {
+    $("toast").textContent = message;
+    $("toast").classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => $("toast").classList.remove("show"), 3200);
+}
+
+/* SAFE TEXT */
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, ch => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#39;"
+    })[ch]);
+}
+
+/* STORAGE */
+function loadProducts() {
+    try {
+        const saved = localStorage.getItem(PRODUCT_KEY);
+        if (saved === null) {
+            products = [];
+            return;
+        }
+        const parsed = JSON.parse(saved);
+        products = Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+        console.error(error);
+        products = [];
+    }
+}
+
+function loadDocuments() {
+    try {
+        const saved = localStorage.getItem(DOSSIER_KEY);
+
+        if (saved !== null) {
+            const parsed = JSON.parse(saved);
+            documents = Array.isArray(parsed) ? parsed : [];
+        } else {
+            documents = [...sampleDocuments];
+            saveDocuments();
+        }
+    } catch (error) {
+        console.error(error);
+        documents = [...sampleDocuments];
+        showToast("Could not read saved dossier records. Demo records loaded.");
+    }
+}
+
+function saveDocuments() {
+    try {
+        localStorage.setItem(DOSSIER_KEY, JSON.stringify(documents));
+        return true;
+    } catch (error) {
+        console.error(error);
+        showToast("Unable to save. Browser storage may be full.");
+        return false;
+    }
+}
+
+/* PRODUCT SELECTOR */
+function productName(product) {
+    return product.name || product.productName || product.code || "Unnamed product";
+}
+
+function productCode(product) {
+    return product.code || product.productCode || "No product code";
+}
+
+function populateProductSelectors() {
+    const selectors = [$("productSelector"), $("uploadProduct")];
+
+    selectors.forEach(select => {
+        select.innerHTML = "";
+
+        if (!products.length) {
+            select.add(new Option("No products found — add a product first", ""));
+            select.disabled = true;
+            return;
+        }
+
+        select.disabled = false;
+        products.forEach(product => {
+            select.add(new Option(
+                `${productName(product)} · ${productCode(product)}`,
+                product.id
+            ));
+        });
+    });
+
+    const preferred = products.find(p => p.id === activeProductId) || products[0];
+
+    if (preferred) {
+        activeProductId = preferred.id;
+        $("productSelector").value = activeProductId;
+        $("uploadProduct").value = activeProductId;
+        $("selectedProductStatus").textContent = preferred.status || "Product selected";
+    } else {
+        activeProductId = "";
+        $("selectedProductStatus").textContent = "No products";
+    }
+}
+
+/* SELECTED PRODUCT DOCUMENTS */
+function currentProductDocuments() {
+    return documents.filter(doc => doc.productId === activeProductId);
+}
+
+function currentModuleDocuments() {
+    return currentProductDocuments().filter(doc => doc.module === activeModule);
+}
+
+function getModuleCoverage(module) {
+    const moduleDocs = currentProductDocuments().filter(doc => doc.module === module);
+    if (!moduleDocs.length) return 0;
+
+    const approved = moduleDocs.filter(doc => doc.status === "Approved").length;
+    return Math.round((approved / moduleDocs.length) * 100);
+}
+
+/* SUMMARY COUNTS */
+function updateStats() {
+    const docs = currentProductDocuments();
+
+    $("documentTotal").textContent = docs.length;
+    $("documentApproved").textContent = docs.filter(d => d.status === "Approved").length;
+    $("documentReview").textContent = docs.filter(d => d.status === "Under Review").length;
+    $("documentDraft").textContent = docs.filter(d =>
+        d.status === "Draft" || d.status === "Rejected"
+    ).length;
+
+    for (let i = 1; i <= 5; i++) {
+        const percentage = getModuleCoverage(String(i));
+        $("modulePercent" + i).textContent = percentage + "%";
+        $("moduleBar" + i).style.width = percentage + "%";
+    }
+}
+
+/* MODULE CONTENT */
+function selectModule(module) {
+    activeModule = String(module);
+    currentPage = 1;
+
+    document.querySelectorAll(".module-tab").forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.module === activeModule);
+    });
+
+    const info = modules[activeModule];
+    $("selectedModuleTitle").textContent = info.title;
+    $("selectedModuleDescription").textContent = info.description;
+    $("moduleIcon").className = "fa-solid " + info.icon;
+
+    updateModuleProgress();
+    renderDocuments();
+}
+
+function updateModuleProgress() {
+    const percentage = getModuleCoverage(activeModule);
+    $("selectedModulePercent").textContent = percentage + "%";
+    $("selectedModuleBar").style.width = percentage + "%";
+}
+
+/* DOCUMENT FILTER */
+function getFilteredDocuments() {
+    const query = $("documentSearch").value.toLowerCase().trim();
+    const status = $("documentStatusFilter").value;
+    const type = $("documentTypeFilter").value;
+
+    return currentModuleDocuments().filter(doc => {
+        const searchText = [
+            doc.title, doc.code, doc.fileName, doc.sectionName, doc.section
+        ].join(" ").toLowerCase();
+
+        return searchText.includes(query)
+            && (!status || doc.status === status)
+            && (!type || doc.fileType === type);
+    });
+}
+
+/* FILE TYPE */
+function fileIcon(type) {
+    if (type === "PDF") return "pdf";
+    if (type === "DOC") return "doc";
+    if (type === "XLS") return "xls";
+    return "other";
+}
+
+function fileIconClass(type) {
+    if (type === "PDF") return "fa-file-pdf";
+    if (type === "DOC") return "fa-file-word";
+    if (type === "XLS") return "fa-file-excel";
+    return "fa-file-lines";
+}
+
+function documentStatusClass(status) {
+    return {
+        "Draft":"status-draft",
+        "Under Review":"status-review",
+        "Approved":"status-approved",
+        "Rejected":"status-rejected"
+    }[status] || "status-draft";
+}
+
+/* DATE DISPLAY */
+function formatDate(value) {
+    if (!value) return "—";
+    const date = new Date(value + "T00:00:00");
+    if (Number.isNaN(date.getTime())) return value;
+
+    return date.toLocaleDateString("en-IN", {
+        day:"2-digit", month:"short", year:"numeric"
+    });
+}
+
+/* RENDER TABLE */
+function renderDocuments() {
+    const filtered = getFilteredDocuments();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+
+    currentPage = Math.min(currentPage, totalPages);
+
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const visible = filtered.slice(start, start + PAGE_SIZE);
+
+    $("documentTableBody").innerHTML = "";
+
+    visible.forEach(doc => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>
+                <div class="document-cell">
+                    <div class="file-icon ${fileIcon(doc.fileType)}">
+                        <i class="fa-solid ${fileIconClass(doc.fileType)}"></i>
+                    </div>
+                    <div>
+                        <span class="document-name">${escapeHTML(doc.title)}</span>
+                        <span class="document-meta">${escapeHTML(doc.fileName || "No file attached")}</span>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <strong style="color:var(--ink);font-size:11px;">${escapeHTML(doc.section)}</strong>
+                <span class="document-meta">${escapeHTML(doc.sectionName)}</span>
+            </td>
+            <td><strong style="font-size:11px;">${escapeHTML(doc.version || "1.0")}</strong></td>
+            <td>${escapeHTML(doc.uploadedBy || "—")}</td>
+            <td>${formatDate(doc.uploadedAt)}</td>
+            <td><span class="status ${documentStatusClass(doc.status)}">${escapeHTML(doc.status)}</span></td>
+            <td>
+                <div class="action-group">
+                    <button class="action-btn" data-action="view" data-id="${escapeHTML(doc.id)}" title="View">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                    <button class="action-btn" data-action="status" data-id="${escapeHTML(doc.id)}" title="Change review status">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                    </button>
+                    <button class="action-btn delete" data-action="delete" data-id="${escapeHTML(doc.id)}" title="Remove">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+
+        $("documentTableBody").appendChild(row);
+    });
+
+    $("emptyDocuments").hidden = filtered.length !== 0;
+    $("documentCountLabel").textContent = filtered.length + " documents";
+
+    $("documentShowingText").textContent = filtered.length
+        ? `Showing ${start + 1}–${Math.min(start + PAGE_SIZE, filtered.length)} of ${filtered.length} documents`
+        : "Showing 0 documents";
+
+    renderPagination(totalPages);
+    updateStats();
+    updateModuleProgress();
+}
+
+function renderPagination(totalPages) {
+    const container = $("documentPagination");
+    container.innerHTML = "";
+
+    const addPageButton = (label, page, active = false, disabled = false) => {
+        const button = document.createElement("button");
+        button.className = "page-btn" + (active ? " active" : "");
+        button.textContent = label;
+        button.disabled = disabled;
+        button.addEventListener("click", () => {
+            currentPage = page;
+            renderDocuments();
+        });
+        container.appendChild(button);
+    };
+
+    addPageButton("‹", Math.max(1, currentPage - 1), false, currentPage === 1);
+
+    for (let page = 1; page <= totalPages; page++) {
+        addPageButton(String(page), page, page === currentPage);
+    }
+
+    addPageButton("›", Math.min(totalPages, currentPage + 1), false, currentPage === totalPages);
+}
+
+/* SECTION DROPDOWN */
+function populateSections(module) {
+    const select = $("uploadSection");
+    select.innerHTML = '<option value="">Select section</option>';
+
+    modules[String(module)].sections.forEach(([code, name]) => {
+        select.add(new Option(`${code} — ${name}`, code));
+    });
+}
+
+/* FILE PICKER */
+let selectedFile = null;
+
+function setSelectedFile(file) {
+    if (!file) return;
+
+    const allowed = /\.(pdf|doc|docx|xls|xlsx|txt)$/i;
+    if (!allowed.test(file.name)) {
+        showToast("Unsupported file type. Select PDF, DOC, DOCX, XLS, XLSX or TXT.");
+        return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+        showToast("File is larger than 10 MB. Please select a smaller file.");
+        return;
+    }
+
+    selectedFile = file;
+    $("fileDropTitle").textContent = file.name;
+}
+
+/* DATA URL CONVERSION */
+function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Could not read the selected file."));
+        reader.readAsDataURL(file);
+    });
+}
+
+/* OPEN UPLOAD */
+function openUploadModal() {
+    if (!products.length) {
+        showToast("Add a product in Product Management before uploading a dossier document.");
+        return;
+    }
+
+    $("uploadForm").reset();
+    selectedFile = null;
+
+    $("uploadProduct").value = activeProductId;
+    $("uploadModule").value = activeModule;
+    $("uploadedBy").value = "Workspace Admin";
+    $("documentVersion").value = "1.0";
+    $("fileDropTitle").textContent = "Drag and drop your file here";
+
+    populateSections(activeModule);
+    openModal("uploadModal");
+}
+
+/* UPLOAD FORM */
+$("uploadForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (!selectedFile) {
+        showToast("Please select a document file.");
+        return;
+    }
+
+    const productId = $("uploadProduct").value;
+    const product = products.find(p => p.id === productId);
+
+    if (!product) {
+        showToast("Select a valid product first.");
+        return;
+    }
+
+    const module = $("uploadModule").value;
+    const sectionCode = $("uploadSection").value;
+
+    if (!sectionCode) {
+        showToast("Please select a CTD section.");
+        return;
+    }
+
+    const sectionInfo = modules[module].sections.find(item => item[0] === sectionCode);
+
+    try {
+        const fileData = await readFileAsDataURL(selectedFile);
+
+        const document = {
+            id:"doc-" + Date.now() + "-" + Math.random().toString(36).slice(2,7),
+            productId,
+            module,
+            section:sectionCode,
+            sectionName:sectionInfo ? sectionInfo[1] : sectionCode,
+            title:$("documentTitle").value.trim(),
+            code:$("documentCode").value.trim(),
+            version:$("documentVersion").value.trim() || "1.0",
+            fileName:selectedFile.name,
+            fileType:(selectedFile.name.split(".").pop() || "Other").toUpperCase(),
+            fileData,
+            fileSize:selectedFile.size,
+            uploadedBy:$("uploadedBy").value.trim() || "Workspace User",
+            uploadedAt:new Date().toISOString().slice(0,10),
+            status:$("initialStatus").value,
+            notes:$("documentNotes").value.trim(),
+            history:[{
+                version:$("documentVersion").value.trim() || "1.0",
+                date:new Date().toISOString().slice(0,10),
+                user:$("uploadedBy").value.trim() || "Workspace User",
+                action:"Uploaded"
+            }]
+        };
+
+        if (!document.title) {
+            showToast("Please enter a document title.");
+            return;
+        }
+
+        documents.unshift(document);
+
+        if (!saveDocuments()) {
+            documents.shift();
+            return;
+        }
+
+        activeProductId = productId;
+        $("productSelector").value = productId;
+        closeModal("uploadModal");
+        selectedFile = null;
+
+        renderDocuments();
+        showToast("Document uploaded and added to the dossier.");
+    } catch (error) {
+        console.error(error);
+        showToast(error.message || "Document upload failed.");
+    }
+});
+
+/* DOCUMENT VIEW */
+function openDocumentDetail(id) {
+    const doc = documents.find(d => d.id === id);
+    if (!doc) return;
+
+    detailDocumentId = id;
+    $("detailTitle").textContent = doc.title;
+
+    const product = products.find(p => p.id === doc.productId);
+
+    const fields = [
+        ["Product", product ? productName(product) : "Unknown product"],
+        ["CTD Module", "Module " + doc.module],
+        ["CTD Section", doc.section + " — " + doc.sectionName],
+        ["Document Code", doc.code || "Not specified"],
+        ["Version", doc.version],
+        ["File", doc.fileName],
+        ["File Size", doc.fileSize ? (doc.fileSize / 1024 / 1024).toFixed(2) + " MB" : "Sample record"],
+        ["Uploaded By", doc.uploadedBy],
+        ["Upload Date", formatDate(doc.uploadedAt)],
+        ["Review Status", doc.status],
+        ["Notes", doc.notes || "No notes"]
+    ];
+
+    $("documentDetails").innerHTML = `
+        <div class="detail-box">
+            <span>Review Status</span>
+            <strong><span class="status ${documentStatusClass(doc.status)}">${escapeHTML(doc.status)}</span></strong>
+        </div>
+        <div class="form-grid">
+            ${fields.slice(0, 10).map(([label,value]) => `
+                <div class="detail-box">
+                    <span>${escapeHTML(label)}</span>
+                    <strong>${escapeHTML(value || "Not provided")}</strong>
+                </div>
+            `).join("")}
+            <div class="detail-box form-group full">
+                <span>Notes</span>
+                <strong>${escapeHTML(doc.notes || "No notes")}</strong>
+            </div>
+        </div>
+        <div class="form-section-title">Version History</div>
+        <div>
+            ${(doc.history || []).map(version => `
+                <div class="detail-box">
+                    <strong>Version ${escapeHTML(version.version)}</strong>
+                    <span>${escapeHTML(version.action)} · ${escapeHTML(version.user)} · ${formatDate(version.date)}</span>
+                </div>
+            `).join("")}
+        </div>
+    `;
+
+    const hasFile = Boolean(doc.fileData && doc.fileData.startsWith("data:"));
+    $("downloadDocument").disabled = !hasFile;
+    $("downloadDocument").style.opacity = hasFile ? "1" : ".45";
+
+    openModal("detailModal");
+}
+
+/* REVIEW STATUS CHANGE */
+function changeDocumentStatus(id) {
+    const doc = documents.find(d => d.id === id);
+    if (!doc) return;
+
+    const nextStatus = prompt(
+        `Current status: ${doc.status}\n\nChoose a status:\n1. Draft\n2. Under Review\n3. Approved\n4. Rejected\n\nEnter 1, 2, 3 or 4:`
+    );
+
+    if (nextStatus === null) return;
+
+    const choices = {
+        "1":"Draft",
+        "2":"Under Review",
+        "3":"Approved",
+        "4":"Rejected"
+    };
+
+    if (!choices[nextStatus]) {
+        showToast("Invalid selection.");
+        return;
+    }
+
+    const status = choices[nextStatus];
+
+    if (status === "Approved") {
+        const reviewer = prompt("Enter the authorized reviewer name:");
+        if (!reviewer || !reviewer.trim()) {
+            showToast("Approval requires a reviewer name.");
+            return;
+        }
+        doc.reviewedBy = reviewer.trim();
+    }
+
+    doc.status = status;
+    doc.history = doc.history || [];
+    doc.history.push({
+        version:doc.version,
+        date:new Date().toISOString().slice(0,10),
+        user:doc.reviewedBy || "Workspace Admin",
+        action:"Status changed to " + status
+    });
+
+    if (!saveDocuments()) return;
+
+    renderDocuments();
+    showToast("Document status updated.");
+}
+
+/* DELETE DOCUMENT */
+function confirmDocumentDelete(id) {
+    const doc = documents.find(d => d.id === id);
+    if (!doc) return;
+
+    deleteDocumentId = id;
+    $("deleteMessage").textContent =
+        `Remove "${doc.title}" from this browser's dossier records?`;
+
+    openModal("deleteModal");
+}
+
+$("confirmDelete").addEventListener("click", () => {
+    if (!deleteDocumentId) return;
+
+    const index = documents.findIndex(d => d.id === deleteDocumentId);
+    if (index < 0) return;
+
+    const removed = documents.splice(index, 1)[0];
+
+    if (!saveDocuments()) {
+        documents.splice(index, 0, removed);
+        return;
+    }
+
+    deleteDocumentId = null;
+    closeModal("deleteModal");
+    renderDocuments();
+    showToast("Document removed from the demo dossier.");
+});
+
+/* TABLE ACTIONS */
+$("documentTableBody").addEventListener("click", event => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const { action, id } = button.dataset;
+
+    if (action === "view") openDocumentDetail(id);
+    if (action === "status") changeDocumentStatus(id);
+    if (action === "delete") confirmDocumentDelete(id);
+});
+
+/* DOWNLOAD SELECTED DOCUMENT */
+$("downloadDocument").addEventListener("click", () => {
+    const doc = documents.find(d => d.id === detailDocumentId);
+    if (!doc || !doc.fileData) {
+        showToast("No actual file is available for this sample record.");
+        return;
+    }
+
+    const link = document.createElement("a");
+    link.href = doc.fileData;
+    link.download = doc.fileName || "document";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+});
+
+/* EXPORT DOCUMENT REGISTER */
+$("exportDocuments").addEventListener("click", () => {
+    const docs = currentProductDocuments();
+
+    if (!docs.length) {
+        showToast("No dossier documents available to export.");
+        return;
+    }
+
+    const columns = [
+        ["Product ID","productId"],
+        ["Document Title","title"],
+        ["Document Code","code"],
+        ["Module","module"],
+        ["Section","section"],
+        ["Version","version"],
+        ["File Name","fileName"],
+        ["Uploaded By","uploadedBy"],
+        ["Upload Date","uploadedAt"],
+        ["Review Status","status"]
+    ];
+
+    const quote = value => `"${String(value ?? "").replace(/"/g,'""')}"`;
+
+    const csv = [
+        columns.map(c => quote(c[0])).join(","),
+        ...docs.map(doc => columns.map(c => quote(doc[c[1]])).join(","))
+    ].join("\r\n");
+
+    const blob = new Blob(["\uFEFF" + csv], { type:"text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "regutrack-ctd-document-register.csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+
+    showToast("CTD document register exported.");
+});
+
+/* FILTER LISTENERS */
+["documentSearch","documentStatusFilter","documentTypeFilter"].forEach(id => {
+    $(id).addEventListener(id === "documentSearch" ? "input" : "change", () => {
+        currentPage = 1;
+        renderDocuments();
+    });
+});
+
+$("clearDocumentFilters").addEventListener("click", () => {
+    $("documentSearch").value = "";
+    $("documentStatusFilter").value = "";
+    $("documentTypeFilter").value = "";
+    currentPage = 1;
+    renderDocuments();
+});
+
+$("globalSearch").addEventListener("input", event => {
+    $("documentSearch").value = event.target.value;
+    currentPage = 1;
+    renderDocuments();
+});
+
+/* PRODUCT CHANGE */
+$("productSelector").addEventListener("change", event => {
+    activeProductId = event.target.value;
+    currentPage = 1;
+    $("uploadProduct").value = activeProductId;
+
+    const product = products.find(p => p.id === activeProductId);
+    $("selectedProductStatus").textContent = product ? (product.status || "Selected") : "No product";
+
+    renderDocuments();
+});
+
+/* MODULE TABS */
+$("moduleTabs").addEventListener("click", event => {
+    const tab = event.target.closest(".module-tab");
+    if (!tab) return;
+    selectModule(tab.dataset.module);
+});
+
+/* UPLOAD CONTROLS */
+$("uploadDocument").addEventListener("click", openUploadModal);
+$("emptyUploadButton").addEventListener("click", openUploadModal);
+
+$("uploadModule").addEventListener("change", event => {
+    populateSections(event.target.value);
+});
+
+$("documentFile").addEventListener("change", event => {
+    setSelectedFile(event.target.files[0]);
+});
+
+/* DRAG AND DROP */
+const dropArea = $("fileDrop");
+
+["dragenter","dragover"].forEach(name => {
+    dropArea.addEventListener(name, event => {
+        event.preventDefault();
+        dropArea.classList.add("dragover");
+    });
+});
+
+["dragleave","drop"].forEach(name => {
+    dropArea.addEventListener(name, event => {
+        event.preventDefault();
+        dropArea.classList.remove("dragover");
+    });
+});
+
+dropArea.addEventListener("drop", event => {
+    setSelectedFile(event.dataTransfer.files[0]);
+});
+
+/* MODAL CLOSE */
+function openModal(id) { $(id).classList.add("show"); }
+function closeModal(id) { $(id).classList.remove("show"); }
+
+$("closeUploadModal").addEventListener("click", () => closeModal("uploadModal"));
+$("cancelUpload").addEventListener("click", () => closeModal("uploadModal"));
+$("closeDetailModal").addEventListener("click", () => closeModal("detailModal"));
+$("closeDetailButton").addEventListener("click", () => closeModal("detailModal"));
+$("cancelDelete").addEventListener("click", () => closeModal("deleteModal"));
+
+document.querySelectorAll(".modal-backdrop").forEach(backdrop => {
+    backdrop.addEventListener("click", event => {
+        if (event.target === backdrop) closeModal(backdrop.id);
+    });
+});
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+        document.querySelectorAll(".modal-backdrop.show").forEach(modal => {
+            closeModal(modal.id);
+        });
+    }
+});
+
+/* SIDEBAR AND PROFILE */
+$("menuToggle").addEventListener("click", () => $("sidebar").classList.toggle("open"));
+
+document.addEventListener("click", event => {
+    if (
+        window.innerWidth <= 900 &&
+        $("sidebar").classList.contains("open") &&
+        !$("sidebar").contains(event.target) &&
+        !event.target.closest("#menuToggle")
+    ) {
+        $("sidebar").classList.remove("open");
+    }
+});
+
+$("profileButton").addEventListener("click", event => {
+    event.stopPropagation();
+    $("profileDropdown").classList.toggle("show");
+});
+
+document.addEventListener("click", event => {
+    if (!$("profileButton").contains(event.target)) {
+        $("profileDropdown").classList.remove("show");
+    }
+});
+
+$("notificationButton").addEventListener("click", () => {
+    const count = currentProductDocuments().filter(d => d.status === "Under Review").length;
+    showToast(`${count} document(s) are currently under review in this product dossier.`);
+});
+
+/* INITIALIZE */
+function initialize() {
+    loadProducts();
+    loadDocuments();
+    populateProductSelectors();
+    populateSections(activeModule);
+
+    if (activeProductId) {
+        $("uploadProduct").value = activeProductId;
+    }
+
+    selectModule("1");
+}
+
+initialize();
+</script>
+</body>
+</html>
