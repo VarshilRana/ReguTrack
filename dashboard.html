@@ -959,38 +959,18 @@ tbody tr:last-child td { border-bottom: none; }
 
 
 /* ==========================================
-   REGUTRACK - READABILITY ENHANCEMENT
-   Larger typography and better spacing
-   Existing layout and functionality preserved
+   REGUTRACK - COMPLETE TEXT READABILITY
+   Larger text + comfortable spacing
 ========================================== */
 
 body {
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.7;
 }
 
-/* Main welcome section */
-.welcome h1 {
-    font-size: clamp(28px, 2.5vw, 34px);
-}
-
-.welcome p {
-    font-size: 14px;
-    margin-top: 10px;
-    line-height: 1.8;
-}
-
-.eyebrow {
-    font-size: 12px;
-    margin-bottom: 13px;
-}
-
-/* Sidebar */
-.nav-link {
-    font-size: 14px;
-    padding: 13px 13px;
-    margin: 5px 0;
-    gap: 15px;
+/* SIDEBAR */
+.brand-subtitle {
+    font-size: 10px;
 }
 
 .nav-label {
@@ -999,13 +979,32 @@ body {
     margin-bottom: 13px;
 }
 
-.brand-subtitle {
-    font-size: 10px;
+.nav-link {
+    font-size: 14px;
+    padding: 14px 13px;
+    line-height: 1.5;
 }
 
-/* Top navigation */
+.nav-count {
+    font-size: 11px;
+}
+
+.help-card h4 {
+    font-size: 14px;
+}
+
+.help-card p {
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.help-card button {
+    font-size: 12px;
+}
+
+/* TOP NAVBAR */
 .breadcrumb {
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .search-box input {
@@ -1017,187 +1016,235 @@ body {
 }
 
 .profile-info span {
-    font-size: 11px;
+    font-size: 12px;
 }
 
-/* Buttons */
+.dropdown button {
+    font-size: 13px;
+    padding: 12px;
+}
+
+/* WELCOME SECTION */
+.eyebrow {
+    font-size: 12px;
+    margin-bottom: 14px;
+}
+
+.welcome h1 {
+    font-size: clamp(28px, 2.5vw, 35px);
+    line-height: 1.4;
+}
+
+.welcome p {
+    font-size: 15px;
+    line-height: 1.8;
+    margin-top: 12px;
+}
+
 .btn {
     font-size: 13px;
-    padding: 12px 17px;
+    padding: 13px 17px;
 }
 
 .btn-small {
-    font-size: 11px;
+    font-size: 12px;
 }
 
-/* KPI cards */
+/* KPI CARDS */
 .kpi-card {
-    padding: 22px;
+    padding: 25px;
 }
 
 .kpi-value {
-    font-size: 32px;
-    margin-top: 17px;
+    font-size: 35px;
+    line-height: 1.3;
+    margin-top: 20px;
 }
 
 .kpi-label {
-    font-size: 13px;
-    margin-top: 7px;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-top: 9px;
 }
 
 .kpi-foot {
-    font-size: 11px;
-    margin-top: 14px;
+    font-size: 12px;
+    line-height: 1.7;
+    margin-top: 15px;
 }
 
 .kpi-change {
-    font-size: 10px;
+    font-size: 11px;
+    padding: 6px 9px;
 }
 
-/* Main panels */
+/* ALL SECTION PANELS */
 .panel {
-    padding: 24px;
+    padding: 25px;
 }
 
 .panel-heading {
-    margin-bottom: 22px;
+    margin-bottom: 23px;
 }
 
 .panel-heading h3 {
-    font-size: 17px;
+    font-size: 18px;
+    line-height: 1.5;
 }
 
 .panel-heading p {
-    font-size: 12px;
-    margin-top: 7px;
+    font-size: 13px;
     line-height: 1.7;
+    margin-top: 8px;
 }
 
 .text-link {
+    font-size: 13px;
+}
+
+.tag {
+    font-size: 11px;
+    padding: 7px 10px;
+}
+
+/* REGULATORY INTELLIGENCE */
+.update-item {
+    padding: 19px 0;
+    gap: 16px;
+}
+
+.authority-icon {
     font-size: 12px;
 }
 
-/* Regulatory updates */
-.update-item {
-    padding: 17px 0;
-    gap: 15px;
-}
-
 .update-info h4 {
-    font-size: 13px;
-    line-height: 1.65;
+    font-size: 14px;
+    line-height: 1.7;
 }
 
 .update-info p {
-    font-size: 11px;
-    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.7;
+    margin-top: 7px;
 }
 
 .update-meta {
-    margin-top: 10px;
+    margin-top: 11px;
     gap: 9px;
 }
 
-/* Impact assessment */
+.update-meta > span[style] {
+    font-size: 11px !important;
+}
+
+/* IMPACT ASSESSMENT */
 .impact-intro h4 {
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .impact-intro p {
-    font-size: 11px;
+    font-size: 12px;
+    line-height: 1.7;
 }
 
 .impact-stats {
-    gap: 12px;
+    gap: 13px;
 }
 
 .impact-stat {
-    padding: 17px;
+    padding: 19px;
 }
 
 .impact-stat strong {
-    font-size: 26px;
+    font-size: 29px;
+    line-height: 1.4;
 }
 
 .impact-stat span {
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.7;
 }
 
 .impact-note {
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.8;
-    padding: 14px;
-}
-
-/* Tables */
-th {
-    font-size: 11px;
     padding: 15px;
 }
 
-td {
+/* PRODUCT TABLE */
+.table-search {
     font-size: 12px;
-    padding: 17px 15px;
+    padding: 11px 13px;
+}
+
+th {
+    font-size: 11px;
+    padding: 17px 14px;
+}
+
+td {
+    font-size: 13px;
+    padding: 18px 14px;
+    line-height: 1.6;
 }
 
 .product-name {
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .subtext {
-    font-size: 11px;
-    margin-top: 6px;
-}
-
-.tag {
-    font-size: 10px;
-    padding: 6px 10px;
-}
-
-.table-search {
     font-size: 12px;
-    padding: 10px 12px;
+    margin-top: 7px;
+    line-height: 1.6;
 }
 
-/* CTD modules */
+.progress-number {
+    font-size: 11px;
+}
+
+/* CTD MODULES */
 .ctd-grid {
-    gap: 12px;
+    gap: 13px;
 }
 
 .ctd-module {
-    padding: 16px 12px;
+    padding: 18px 13px;
+}
+
+.module-number {
+    font-size: 12px;
+    margin-bottom: 12px;
 }
 
 .ctd-module h4 {
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.6;
-    min-height: 36px;
+    min-height: 40px;
 }
 
 .ctd-module p {
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.7;
-    margin-top: 8px;
+    margin-top: 9px;
 }
 
 .module-percent {
     font-size: 12px;
 }
 
-/* Deadlines */
+/* DEADLINES */
 .deadline-item {
-    padding: 16px 0;
-    gap: 15px;
+    padding: 18px 0;
+    gap: 16px;
 }
 
 .date-box {
-    width: 48px;
-    height: 51px;
+    width: 50px;
+    height: 54px;
 }
 
 .date-box strong {
-    font-size: 18px;
+    font-size: 19px;
 }
 
 .date-box span {
@@ -1205,95 +1252,144 @@ td {
 }
 
 .deadline-info h4 {
-    font-size: 12px;
+    font-size: 13px;
+    line-height: 1.6;
 }
 
 .deadline-info p {
     font-size: 11px;
-    margin-top: 6px;
+    line-height: 1.6;
+    margin-top: 7px;
 }
 
-/* Activity */
+/* RECENT ACTIVITY */
 .activity-item {
-    padding: 14px 0;
-    gap: 14px;
+    padding: 16px 0;
+    gap: 15px;
+}
+
+.activity-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
 }
 
 .activity-text {
-    font-size: 12px;
-    line-height: 1.7;
+    font-size: 13px;
+    line-height: 1.8;
 }
 
 .activity-time {
-    font-size: 10px;
-    margin-top: 6px;
+    font-size: 11px;
+    line-height: 1.6;
+    margin-top: 7px;
 }
 
-/* Quick actions and help card */
-.help-card h4 {
+/* QUICK ACTIONS */
+.panel button span {
     font-size: 13px;
 }
 
-.help-card p {
-    font-size: 11px;
-    line-height: 1.7;
+.panel > div[style*="background:#f5faf7"] div {
+    font-size: 13px !important;
 }
 
-.help-card button {
-    font-size: 11px;
+.panel > div[style*="background:#f5faf7"] p {
+    font-size: 12px !important;
+    line-height: 1.8 !important;
 }
 
-.empty-state {
-    font-size: 13px;
-    padding: 30px;
-}
-
-/* Form and modal text */
+/* MODALS */
 .modal-header h3 {
-    font-size: 19px;
+    font-size: 20px;
 }
 
 .modal-header p {
-    font-size: 12px;
+    font-size: 13px;
+    line-height: 1.7;
 }
 
 .form-group label {
-    font-size: 12px;
+    font-size: 13px;
+    margin-bottom: 9px;
 }
 
 .form-group input,
 .form-group select {
-    font-size: 13px;
-    padding: 13px;
+    font-size: 14px;
+    padding: 14px;
 }
 
-/* Footer */
+.modal {
+    padding: 28px;
+}
+
+/* FOOTER */
 .footer {
     font-size: 11px;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    line-height: 1.7;
+    padding-top: 21px;
+    padding-bottom: 21px;
 }
 
-/* Mobile adjustments */
+/* TOAST */
+.toast {
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* MOBILE RESPONSIVENESS */
 @media (max-width: 650px) {
     .welcome h1 {
         font-size: 27px;
+    }
+
+    .welcome p {
+        font-size: 13px;
     }
 
     .panel {
         padding: 18px;
     }
 
+    .panel-heading h3 {
+        font-size: 16px;
+    }
+
+    .panel-heading p {
+        font-size: 11px;
+    }
+
     .kpi-card {
-        padding: 17px;
+        padding: 18px;
     }
 
     .kpi-value {
-        font-size: 27px;
+        font-size: 29px;
+    }
+
+    .kpi-label {
+        font-size: 13px;
+    }
+
+    .kpi-foot {
+        font-size: 11px;
+    }
+
+    .update-info h4 {
+        font-size: 12px;
+    }
+
+    .activity-text {
+        font-size: 12px;
     }
 
     .nav-link {
         font-size: 14px;
+    }
+
+    .footer {
+        font-size: 10px;
     }
 }
 
