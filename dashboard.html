@@ -1,0 +1,1903 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | ReguTrack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root {
+    --primary: #16845b;
+    --primary-dark: #106b49;
+    --primary-light: #eaf6f0;
+    --green-soft: #f3faf6;
+    --ink: #172c25;
+    --muted: #7c8b84;
+    --border: #e8eee9;
+    --surface: #ffffff;
+    --background: #f6f9f7;
+    --danger: #dc5555;
+    --warning: #d99a32;
+    --blue: #4c83c4;
+    --sidebar-width: 255px;
+    --shadow: 0 8px 28px rgba(28, 62, 45, .055);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--background);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+
+.app { min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background: #fff;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    transition: transform .3s ease, width .3s ease;
+}
+
+.brand {
+    height: 83px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 25px;
+    border-bottom: 1px solid var(--border);
+}
+
+.brand-mark {
+    width: 39px;
+    height: 39px;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #1b9a68, #087348);
+    color: white;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+    box-shadow: 0 5px 12px #16845b30;
+}
+
+.brand-name {
+    font-family: Manrope, sans-serif;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -.8px;
+}
+
+.brand-name span { color: var(--primary); }
+
+.brand-subtitle {
+    font-size: 9px;
+    color: #94a39a;
+    letter-spacing: 1.6px;
+    margin-top: 1px;
+    font-weight: 700;
+}
+
+.sidebar-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 22px 14px;
+}
+
+.nav-label {
+    padding: 0 12px;
+    margin: 16px 0 10px;
+    font-size: 10px;
+    font-weight: 800;
+    color: #a0ada5;
+    letter-spacing: 1.4px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 11px 13px;
+    border-radius: 9px;
+    color: #687b71;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 3px 0;
+    transition: .2s ease;
+    position: relative;
+}
+
+.nav-link i {
+    width: 18px;
+    text-align: center;
+    font-size: 15px;
+}
+
+.nav-link:hover {
+    background: #f3f8f5;
+    color: var(--primary);
+    transform: translateX(3px);
+}
+
+.nav-link.active {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+
+.nav-link.active:before {
+    content: "";
+    width: 3px;
+    height: 23px;
+    background: var(--primary);
+    position: absolute;
+    left: -14px;
+    border-radius: 0 5px 5px 0;
+}
+
+.nav-count {
+    margin-left: auto;
+    font-size: 10px;
+    background: #fff0e8;
+    color: #d27a38;
+    border-radius: 20px;
+    padding: 3px 7px;
+}
+
+.sidebar-bottom {
+    padding: 14px;
+    border-top: 1px solid var(--border);
+}
+
+.help-card {
+    background: linear-gradient(135deg, #edf8f2, #f7fbf8);
+    border: 1px solid #e0f0e6;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 13px;
+}
+
+.help-card i { color: var(--primary); font-size: 18px; }
+.help-card h4 { font-size: 12px; margin: 9px 0 4px; }
+.help-card p { font-size: 10px; line-height: 1.5; color: var(--muted); }
+
+.help-card button {
+    margin-top: 11px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 7px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* MAIN AREA */
+.main {
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    transition: margin .3s ease;
+}
+
+.topbar {
+    height: 76px;
+    background: rgba(255,255,255,.94);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 35px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.top-left, .top-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.breadcrumb {
+    color: #a0aaa4;
+    font-size: 12px;
+}
+
+.breadcrumb strong { color: var(--ink); }
+
+.icon-btn {
+    width: 37px;
+    height: 37px;
+    border: 1px solid var(--border);
+    background: white;
+    color: #64766c;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    position: relative;
+    transition: .2s;
+}
+
+.icon-btn:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: #cfe8d9;
+}
+
+.notification-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ef6868;
+    position: absolute;
+    right: 8px;
+    top: 7px;
+    border: 1px solid white;
+}
+
+.search-box {
+    width: 245px;
+    height: 38px;
+    background: #f7f9f8;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 9px;
+    color: #9aa69e;
+}
+
+.search-box input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 11px;
+    color: var(--ink);
+}
+
+.search-box:focus-within {
+    border-color: #a5d5b9;
+    box-shadow: 0 0 0 3px #16845b12;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    position: relative;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #dff2e6;
+    color: var(--primary-dark);
+    font-weight: 800;
+    font-size: 12px;
+}
+
+.profile-info strong { display: block; font-size: 11px; }
+.profile-info span { font-size: 10px; color: var(--muted); }
+
+.dropdown {
+    position: absolute;
+    right: 0;
+    top: 49px;
+    width: 190px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 7px;
+    box-shadow: var(--shadow);
+    display: none;
+    z-index: 100;
+    animation: dropIn .2s ease;
+}
+
+.dropdown.show { display: block; }
+
+.dropdown button {
+    display: block;
+    width: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+    padding: 10px;
+    border-radius: 7px;
+    font-size: 11px;
+    color: #607168;
+}
+
+.dropdown button:hover { background: var(--green-soft); color: var(--primary); }
+
+.mobile-menu { display: none; }
+
+/* PAGE CONTENT */
+.content {
+    max-width: 1600px;
+    margin: auto;
+    padding: 30px 35px 45px;
+}
+
+.welcome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 26px;
+    animation: fadeUp .55s ease both;
+}
+
+.eyebrow {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.6px;
+    color: var(--primary);
+    font-weight: 800;
+    margin-bottom: 9px;
+}
+
+.welcome h1 {
+    font-family: Manrope, sans-serif;
+    font-size: clamp(23px, 2.5vw, 30px);
+    letter-spacing: -.9px;
+    font-weight: 800;
+}
+
+.welcome p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 7px;
+}
+
+.welcome-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.btn {
+    border: 1px solid var(--border);
+    background: white;
+    color: #53665b;
+    padding: 11px 15px;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: .2s ease;
+}
+
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 5px 13px #16845b25;
+}
+
+.btn-primary:hover { background: var(--primary-dark); }
+
+.btn-small { padding: 8px 11px; font-size: 10px; }
+
+/* KPI CARDS */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.kpi-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 18px 19px;
+    box-shadow: 0 3px 12px rgba(30,70,45,.025);
+    transition: .25s ease;
+    animation: fadeUp .55s ease both;
+    animation-delay: var(--delay, 0s);
+    cursor: pointer;
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(30,70,45,.08);
+    border-color: #cde7d6;
+}
+
+.kpi-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.kpi-icon {
+    width: 39px;
+    height: 39px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+}
+
+.kpi-icon.green { background: #e9f6ef; color: #16845b; }
+.kpi-icon.blue { background: #edf3fc; color: #5485c1; }
+.kpi-icon.orange { background: #fff5e9; color: #d4943a; }
+.kpi-icon.purple { background: #f3effb; color: #8b6bc1; }
+.kpi-icon.red { background: #fff0ef; color: #d96a62; }
+
+.kpi-change {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--primary);
+    background: #eff8f2;
+    padding: 5px 7px;
+    border-radius: 20px;
+}
+
+.kpi-value {
+    font-family: Manrope, sans-serif;
+    font-size: 27px;
+    font-weight: 800;
+    margin-top: 13px;
+    letter-spacing: -.7px;
+}
+
+.kpi-label {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 3px;
+    font-weight: 600;
+}
+
+.kpi-foot {
+    color: #9aa79f;
+    font-size: 9px;
+    margin-top: 11px;
+}
+
+/* SECTION CARDS */
+.grid-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 19px;
+}
+
+.panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 20px;
+    box-shadow: 0 3px 12px rgba(30,70,45,.025);
+    min-width: 0;
+    animation: fadeUp .6s ease both;
+}
+
+.panel-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 17px;
+}
+
+.panel-heading h3 {
+    font-family: Manrope, sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.panel-heading p {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+.text-link {
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.text-link:hover { text-decoration: underline; }
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 20px;
+    padding: 5px 8px;
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.tag-green { background: #eaf7ef; color: #238357; }
+.tag-orange { background: #fff5e7; color: #c4872c; }
+.tag-red { background: #fff0ef; color: #cc5a54; }
+.tag-blue { background: #edf4fc; color: #4e7eb6; }
+.tag-grey { background: #f0f3f1; color: #78867e; }
+
+/* REGULATORY UPDATES */
+.update-list { display: flex; flex-direction: column; }
+
+.update-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 0;
+    border-bottom: 1px solid #f0f3f1;
+}
+
+.update-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+.authority-icon {
+    flex-shrink: 0;
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.authority-cdsco { background: #eaf4ff; color: #3b76b7; }
+.authority-ich { background: #f1edfc; color: #8466b8; }
+.authority-fda { background: #fff3e9; color: #d28a3c; }
+.authority-ema { background: #eaf7ef; color: #25845a; }
+
+.update-info { flex: 1; min-width: 0; }
+.update-info h4 { font-size: 11px; line-height: 1.5; font-weight: 700; }
+.update-info p { font-size: 9px; color: var(--muted); margin-top: 4px; }
+.update-meta { display: flex; gap: 7px; align-items: center; margin-top: 7px; flex-wrap: wrap; }
+
+/* IMPACT ASSESSMENT */
+.impact-panel {
+    background: linear-gradient(140deg, #f1faf5 0%, #ffffff 75%);
+    border-color: #dcefe3;
+}
+
+.impact-intro {
+    display: flex;
+    gap: 11px;
+    align-items: center;
+    margin-bottom: 17px;
+}
+
+.impact-logo {
+    width: 42px;
+    height: 42px;
+    background: #dff3e6;
+    color: var(--primary);
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+}
+
+.impact-intro h4 { font-size: 12px; }
+.impact-intro p { font-size: 9px; color: var(--muted); margin-top: 4px; }
+
+.impact-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.impact-stat {
+    background: rgba(255,255,255,.85);
+    border: 1px solid #e7f1e9;
+    border-radius: 10px;
+    padding: 13px;
+}
+
+.impact-stat strong {
+    font-family: Manrope, sans-serif;
+    font-size: 22px;
+    display: block;
+}
+
+.impact-stat span { color: var(--muted); font-size: 9px; }
+
+.impact-note {
+    margin-top: 13px;
+    padding: 10px;
+    background: #e8f5ed;
+    border-radius: 8px;
+    color: #4f7960;
+    font-size: 9px;
+    line-height: 1.6;
+}
+
+/* TABLES */
+.table-panel { margin-bottom: 19px; }
+
+.table-tools {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.table-search {
+    border: 1px solid var(--border);
+    background: #fbfcfb;
+    padding: 8px 10px;
+    border-radius: 7px;
+    font-size: 10px;
+    outline: none;
+    min-width: 145px;
+}
+
+.table-search:focus { border-color: #9acdad; }
+
+.table-wrap { width: 100%; overflow-x: auto; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 680px;
+}
+
+th {
+    background: #f8faf8;
+    color: #8b9991;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    font-size: 9px;
+    font-weight: 800;
+    text-align: left;
+    padding: 12px 13px;
+    white-space: nowrap;
+}
+
+td {
+    padding: 13px;
+    border-bottom: 1px solid #f0f3f1;
+    font-size: 10px;
+    color: #596b60;
+    white-space: nowrap;
+}
+
+tbody tr { transition: background .2s; }
+tbody tr:hover { background: #f8fbf9; }
+tbody tr:last-child td { border-bottom: none; }
+
+.product-name {
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 10px;
+}
+
+.subtext { display: block; font-size: 9px; color: #98a49c; margin-top: 4px; }
+
+.progress-cell { min-width: 120px; }
+.progress-line {
+    height: 6px;
+    width: 95px;
+    border-radius: 10px;
+    background: #edf1ee;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 6px;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #16845b, #55b987);
+    transition: width 1s ease;
+}
+
+.progress-number { font-size: 9px; font-weight: 700; color: #607269; }
+
+/* CTD MODULES */
+.ctd-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 9px;
+}
+
+.ctd-module {
+    padding: 13px 10px;
+    background: #fafcfb;
+    border: 1px solid #edf1ee;
+    border-radius: 10px;
+    transition: .2s;
+}
+
+.ctd-module:hover { border-color: #b7dec6; transform: translateY(-3px); }
+
+.module-number {
+    width: 27px;
+    height: 27px;
+    display: grid;
+    place-items: center;
+    background: #e7f5ec;
+    color: var(--primary);
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.ctd-module h4 { font-size: 10px; line-height: 1.4; min-height: 28px; }
+.ctd-module p { color: var(--muted); font-size: 9px; margin-top: 6px; }
+.ctd-module .progress-line { width: 100%; margin: 10px 0 5px; }
+.module-percent { font-size: 10px; font-weight: 800; }
+
+/* DEADLINES */
+.deadline-list { display: flex; flex-direction: column; }
+
+.deadline-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f3f1;
+}
+
+.deadline-item:last-child { border: none; }
+
+.date-box {
+    width: 42px;
+    height: 45px;
+    border-radius: 9px;
+    background: #f0f7f2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.date-box strong { font-size: 15px; color: var(--primary-dark); }
+.date-box span { font-size: 8px; color: var(--muted); text-transform: uppercase; }
+
+.deadline-info { flex: 1; min-width: 0; }
+.deadline-info h4 { font-size: 10px; }
+.deadline-info p { font-size: 9px; color: var(--muted); margin-top: 4px; }
+
+/* ACTIVITY */
+.activity-list { position: relative; }
+
+.activity-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    position: relative;
+}
+
+.activity-icon {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    background: #eaf6ef;
+    color: var(--primary);
+}
+
+.activity-text { font-size: 10px; line-height: 1.5; color: #596b60; }
+.activity-text strong { color: var(--ink); }
+.activity-time { font-size: 9px; color: #9aa69e; margin-top: 4px; }
+
+/* EMPTY STATE */
+.empty-state {
+    padding: 25px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* FOOTER */
+.footer {
+    border-top: 1px solid var(--border);
+    padding: 17px 35px;
+    display: flex;
+    justify-content: space-between;
+    color: #9aa69e;
+    font-size: 9px;
+}
+
+/* MODALS */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(16, 36, 26, .42);
+    backdrop-filter: blur(4px);
+    z-index: 300;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+.modal-backdrop.show { display: flex; animation: fadeIn .2s ease; }
+
+.modal {
+    background: white;
+    width: 100%;
+    max-width: 470px;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 25px 80px #10241a30;
+    animation: modalIn .25s ease;
+}
+
+.modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 { font-family: Manrope; font-size: 17px; }
+.modal-header p { font-size: 10px; color: var(--muted); margin-top: 5px; }
+
+.close-modal {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: #f3f6f4;
+    border-radius: 8px;
+    color: #64766c;
+}
+
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 10px; font-weight: 700; margin-bottom: 7px; }
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    font-size: 11px;
+    background: white;
+}
+.form-group input:focus, .form-group select:focus { border-color: #86c5a1; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+
+/* TOAST */
+.toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: #183d2c;
+    color: white;
+    padding: 13px 18px;
+    border-radius: 10px;
+    font-size: 11px;
+    box-shadow: 0 10px 30px #173c2b30;
+    z-index: 500;
+    opacity: 0;
+    transform: translateY(15px);
+    pointer-events: none;
+    transition: .3s;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modalIn {
+    from { opacity: 0; transform: translateY(12px) scale(.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes dropIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1150px) {
+    .content { padding: 25px; }
+    .topbar { padding: 0 25px; }
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .ctd-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); box-shadow: 15px 0 40px #10241a20; }
+    .main { margin-left: 0; }
+    .mobile-menu { display: grid; }
+    .grid-two { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 650px) {
+    .topbar { height: 65px; padding: 0 15px; }
+    .content { padding: 22px 15px 30px; }
+    .search-box { display: none; }
+    .profile-info, .profile > i { display: none; }
+    .welcome { align-items: flex-start; flex-direction: column; }
+    .welcome-actions { width: 100%; }
+    .welcome-actions .btn { flex: 1; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .kpi-card { padding: 14px; }
+    .kpi-value { font-size: 23px; }
+    .kpi-label { font-size: 10px; }
+    .panel { padding: 15px; }
+    .ctd-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer { padding: 15px; flex-direction: column; gap: 6px; }
+}
+
+@media (max-width: 380px) {
+    .kpi-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="brand">
+        <div class="brand-mark"><i class="fa-solid fa-shield-halved"></i></div>
+        <div>
+            <div class="brand-name">Regu<span>Track</span></div>
+            <div class="brand-subtitle">REGULATORY INTELLIGENCE</div>
+        </div>
+    </div>
+
+    <div class="sidebar-scroll">
+        <div class="nav-label">WORKSPACE</div>
+
+        <a href="dashboard.html" class="nav-link active">
+            <i class="fa-solid fa-border-all"></i> Dashboard
+        </a>
+        <a href="products.html" class="nav-link">
+            <i class="fa-solid fa-capsules"></i> Product Management
+        </a>
+        <a href="ctd-dossiers.html" class="nav-link">
+            <i class="fa-solid fa-folder-open"></i> CTD Dossier Management
+        </a>
+        <a href="gap-analysis.html" class="nav-link">
+            <i class="fa-solid fa-magnifying-glass-chart"></i> AI Gap Analysis
+            <span class="nav-count">New</span>
+        </a>
+
+        <div class="nav-label">REGULATORY OPERATIONS</div>
+
+        <a href="regulatory-intelligence.html" class="nav-link">
+            <i class="fa-solid fa-globe"></i> Regulatory Intelligence
+        </a>
+        <a href="impact-assessment.html" class="nav-link">
+            <i class="fa-solid fa-diagram-project"></i> Impact Assessment
+            <span class="nav-count">5</span>
+        </a>
+        <a href="regulatory-calendar.html" class="nav-link">
+            <i class="fa-regular fa-calendar-days"></i> Regulatory Calendar
+        </a>
+
+        <div class="nav-label">MANAGEMENT</div>
+
+        <a href="reports.html" class="nav-link">
+            <i class="fa-solid fa-chart-pie"></i> Reports & Analytics
+        </a>
+        <a href="users.html" class="nav-link">
+            <i class="fa-solid fa-users"></i> User Management
+        </a>
+        <a href="settings.html" class="nav-link">
+            <i class="fa-solid fa-gear"></i> Settings
+        </a>
+    </div>
+
+    <div class="sidebar-bottom">
+        <div class="help-card">
+            <i class="fa-regular fa-circle-question"></i>
+            <h4>Need assistance?</h4>
+            <p>Explore the ReguTrack guide or contact your workspace administrator.</p>
+            <button onclick="showToast('Help & Support module will be connected soon.')">Visit Help Centre <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+        <a href="home.html" class="nav-link">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Back to Website
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- TOP NAVBAR -->
+    <header class="topbar">
+        <div class="top-left">
+            <button class="icon-btn mobile-menu" id="menuToggle" aria-label="Toggle menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="breadcrumb">Workspace <span style="margin:0 7px;">/</span> <strong>Dashboard</strong></div>
+        </div>
+
+        <div class="top-right">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search" id="globalSearch" placeholder="Search products, dossiers...">
+                <span style="font-size:9px;color:#a0aaa4;">⌘ K</span>
+            </div>
+
+            <button class="icon-btn" id="notificationButton" title="Notifications">
+                <i class="fa-regular fa-bell"></i>
+                <span class="notification-dot"></span>
+            </button>
+
+            <div class="profile" id="profileButton">
+                <div class="avatar">VR</div>
+                <div class="profile-info">
+                    <strong>Workspace Admin</strong>
+                    <span>Administrator</span>
+                </div>
+                <i class="fa-solid fa-chevron-down" style="font-size:9px;color:#96a49b;"></i>
+
+                <div class="dropdown" id="profileDropdown">
+                    <button onclick="showToast('Profile page will be connected soon.')"><i class="fa-regular fa-user"></i> &nbsp; My Profile</button>
+                    <button onclick="location.href='settings.html'"><i class="fa-solid fa-gear"></i> &nbsp; Account Settings</button>
+                    <button onclick="showToast('Password management will be connected to authentication.')"><i class="fa-solid fa-lock"></i> &nbsp; Change Password</button>
+                    <button onclick="location.href='home.html'"><i class="fa-solid fa-right-from-bracket"></i> &nbsp; Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+
+        <!-- WELCOME -->
+        <section class="welcome">
+            <div>
+                <div class="eyebrow"><i class="fa-solid fa-circle" style="font-size:6px;"></i> REGULATORY WORKSPACE</div>
+                <h1>Good afternoon, Varshil <span>👋</span></h1>
+                <p>Here's what's happening across your regulatory workspace today.</p>
+            </div>
+
+            <div class="welcome-actions">
+                <button class="btn" onclick="openModal('updateModal')">
+                    <i class="fa-solid fa-plus"></i> Add Regulatory Update
+                </button>
+                <button class="btn btn-primary" onclick="openModal('productModal')">
+                    <i class="fa-solid fa-plus"></i> Add Product
+                </button>
+            </div>
+        </section>
+
+        <!-- KPI CARDS -->
+        <section class="kpi-grid">
+            <div class="kpi-card" style="--delay:.05s" onclick="location.href='products.html'">
+                <div class="kpi-top">
+                    <div class="kpi-icon green"><i class="fa-solid fa-capsules"></i></div>
+                    <span class="kpi-change">Portfolio</span>
+                </div>
+                <div class="kpi-value counter" data-target="24">0</div>
+                <div class="kpi-label">Total Products</div>
+                <div class="kpi-foot">Products registered in workspace</div>
+            </div>
+
+            <div class="kpi-card" style="--delay:.1s" onclick="location.href='products.html'">
+                <div class="kpi-top">
+                    <div class="kpi-icon blue"><i class="fa-solid fa-file-circle-check"></i></div>
+                    <span class="kpi-change">75% of total</span>
+                </div>
+                <div class="kpi-value counter" data-target="18">0</div>
+                <div class="kpi-label">Active Registrations</div>
+                <div class="kpi-foot">Registration status overview</div>
+            </div>
+
+            <div class="kpi-card" style="--delay:.15s" onclick="location.href='ctd-dossiers.html'">
+                <div class="kpi-top">
+                    <div class="kpi-icon purple"><i class="fa-solid fa-folder-open"></i></div>
+                    <span class="kpi-change">Dossier records</span>
+                </div>
+                <div class="kpi-value counter" data-target="12">0</div>
+                <div class="kpi-label">CTD Dossiers</div>
+                <div class="kpi-foot">Product-linked dossier records</div>
+            </div>
+
+            <div class="kpi-card" style="--delay:.2s" onclick="location.href='ctd-dossiers.html'">
+                <div class="kpi-top">
+                    <div class="kpi-icon green"><i class="fa-solid fa-chart-line"></i></div>
+                    <span class="kpi-change">Overall progress</span>
+                </div>
+                <div class="kpi-value"><span class="counter" data-target="78">0</span><small style="font-size:15px;">%</small></div>
+                <div class="kpi-label">Dossier Completion</div>
+                <div class="kpi-foot">Average illustrative completion</div>
+            </div>
+
+            <div class="kpi-card" style="--delay:.25s" onclick="location.href='regulatory-intelligence.html'">
+                <div class="kpi-top">
+                    <div class="kpi-icon orange"><i class="fa-solid fa-bullhorn"></i></div>
+                    <span class="kpi-change">Latest records</span>
+                </div>
+                <div class="kpi-value counter" data-target="9">0</div>
+                <div class="kpi-label">Regulatory Updates</div>
+                <div class="kpi-foot">Updates recorded in this workspace</div>
+            </div>
+
+            <div class="kpi-card" style="--delay:.3s" onclick="location.href='impact-assessment.html'">
+                <div class="kpi-top">
+                    <div class="kpi-icon red"><i class="fa-solid fa-clipboard-check"></i></div>
+                    <span class="tag tag-orange">Needs review</span>
+                </div>
+                <div class="kpi-value counter" data-target="5">0</div>
+                <div class="kpi-label">Pending Impact Assessments</div>
+                <div class="kpi-foot">Awaiting human RA verification</div>
+            </div>
+        </section>
+
+        <!-- REGULATORY UPDATES + IMPACT ASSESSMENT -->
+        <section class="grid-two">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3><i class="fa-solid fa-earth-asia" style="color:var(--primary);margin-right:7px;"></i> Regulatory Intelligence</h3>
+                        <p>Recent regulatory updates from monitored authorities</p>
+                    </div>
+                    <a href="regulatory-intelligence.html" class="text-link">View all <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div class="update-list">
+                    <div class="update-item">
+                        <div class="authority-icon authority-cdsco">CDS</div>
+                        <div class="update-info">
+                            <h4>Updated guidance on pharmaceutical product submissions</h4>
+                            <p>CDSCO · Illustrative reference: REG-2026-001</p>
+                            <div class="update-meta">
+                                <span class="tag tag-blue">Guideline</span>
+                                <span class="tag tag-orange">Under review</span>
+                                <span style="font-size:9px;color:#9aa69e;">06 Nov 2026</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="update-item">
+                        <div class="authority-icon authority-ich">ICH</div>
+                        <div class="update-info">
+                            <h4>Quality guideline revision – technical document review</h4>
+                            <p>ICH · Illustrative reference: Q-REV-2026</p>
+                            <div class="update-meta">
+                                <span class="tag tag-green">Quality</span>
+                                <span class="tag tag-blue">New</span>
+                                <span style="font-size:9px;color:#9aa69e;">04 Nov 2026</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="update-item">
+                        <div class="authority-icon authority-fda">FDA</div>
+                        <div class="update-info">
+                            <h4>Regulatory guidance update for electronic submissions</h4>
+                            <p>USFDA · Illustrative reference: FDA-2026-014</p>
+                            <div class="update-meta">
+                                <span class="tag tag-blue">Submission</span>
+                                <span class="tag tag-green">Recorded</span>
+                                <span style="font-size:9px;color:#9aa69e;">02 Nov 2026</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel impact-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary);margin-right:7px;"></i> AI Regulatory Impact Assessment</h3>
+                        <p>Potential regulatory changes mapped to your product dossiers</p>
+                    </div>
+                    <span class="tag tag-green">AI-assisted</span>
+                </div>
+
+                <div class="impact-intro">
+                    <div class="impact-logo"><i class="fa-solid fa-diagram-project"></i></div>
+                    <div>
+                        <h4>Impact assessment overview</h4>
+                        <p>AI suggestions require human RA verification.</p>
+                    </div>
+                </div>
+
+                <div class="impact-stats">
+                    <div class="impact-stat">
+                        <strong>14</strong>
+                        <span>Assessments generated</span>
+                    </div>
+                    <div class="impact-stat">
+                        <strong>8</strong>
+                        <span>Potentially affected products</span>
+                    </div>
+                    <div class="impact-stat">
+                        <strong>21</strong>
+                        <span>Potentially affected documents</span>
+                    </div>
+                    <div class="impact-stat">
+                        <strong style="color:#d28b35;">5</strong>
+                        <span>Awaiting RA verification</span>
+                    </div>
+                </div>
+
+                <div class="impact-note">
+                    <i class="fa-solid fa-circle-info"></i>
+                    AI identifies potential relationships between regulatory updates and dossier content. Final applicability is determined by an authorized RA reviewer.
+                </div>
+
+                <div style="display:flex;justify-content:flex-end;margin-top:13px;">
+                    <a href="impact-assessment.html" class="btn btn-primary btn-small">Review Assessments <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRODUCT PORTFOLIO -->
+        <section class="panel table-panel">
+            <div class="panel-heading">
+                <div>
+                    <h3><i class="fa-solid fa-boxes-stacked" style="color:var(--primary);margin-right:7px;"></i> Product Portfolio</h3>
+                    <p>Overview of registered and in-progress pharmaceutical products</p>
+                </div>
+                <div class="table-tools">
+                    <input class="table-search" type="search" id="productSearch" placeholder="Search products...">
+                    <select class="table-search" id="statusFilter" aria-label="Filter by status">
+                        <option value="">All statuses</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Under Review">Under Review</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                    <a href="products.html" class="text-link">View all <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table id="productTable">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Product Code</th>
+                            <th>Dosage Form</th>
+                            <th>Market</th>
+                            <th>Registration</th>
+                            <th>CTD Completion</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="product-name">Paracetamol 500 mg</span><span class="subtext">Analgesic</span></td>
+                            <td>PRD-001</td>
+                            <td>Tablet</td>
+                            <td>India</td>
+                            <td><span class="tag tag-green">Approved</span></td>
+                            <td class="progress-cell"><span class="progress-line"><span class="progress-fill" style="width:95%"></span></span><span class="progress-number">95%</span></td>
+                            <td><button class="icon-btn view-product" title="View product"><i class="fa-regular fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><span class="product-name">Amoxicillin 250 mg</span><span class="subtext">Antibiotic</span></td>
+                            <td>PRD-002</td>
+                            <td>Capsule</td>
+                            <td>India</td>
+                            <td><span class="tag tag-orange">Under Review</span></td>
+                            <td class="progress-cell"><span class="progress-line"><span class="progress-fill" style="width:72%"></span></span><span class="progress-number">72%</span></td>
+                            <td><button class="icon-btn view-product" title="View product"><i class="fa-regular fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><span class="product-name">Metformin 500 mg</span><span class="subtext">Antidiabetic</span></td>
+                            <td>PRD-003</td>
+                            <td>Tablet</td>
+                            <td>US</td>
+                            <td><span class="tag tag-green">Approved</span></td>
+                            <td class="progress-cell"><span class="progress-line"><span class="progress-fill" style="width:88%"></span></span><span class="progress-number">88%</span></td>
+                            <td><button class="icon-btn view-product" title="View product"><i class="fa-regular fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><span class="product-name">Cetirizine 10 mg</span><span class="subtext">Antihistamine</span></td>
+                            <td>PRD-004</td>
+                            <td>Tablet</td>
+                            <td>EU</td>
+                            <td><span class="tag tag-grey">Pending</span></td>
+                            <td class="progress-cell"><span class="progress-line"><span class="progress-fill" style="width:43%"></span></span><span class="progress-number">43%</span></td>
+                            <td><button class="icon-btn view-product" title="View product"><i class="fa-regular fa-eye"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="empty-state" id="noProducts" style="display:none;">No matching products found.</div>
+            </div>
+        </section>
+
+        <!-- CTD PROGRESS + DEADLINES -->
+        <section class="grid-two">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3><i class="fa-solid fa-folder-tree" style="color:var(--primary);margin-right:7px;"></i> CTD Dossier Progress</h3>
+                        <p>Illustrative completion by CTD module</p>
+                    </div>
+                    <a href="ctd-dossiers.html" class="text-link">View dossiers <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;">
+                    <div>
+                        <div style="font-size:25px;font-weight:800;font-family:Manrope;">78%</div>
+                        <div style="font-size:9px;color:var(--muted);">Overall completion</div>
+                    </div>
+                    <span class="tag tag-green">Across demo records</span>
+                </div>
+
+                <div class="ctd-grid">
+                    <div class="ctd-module">
+                        <div class="module-number">01</div>
+                        <h4>Administrative</h4>
+                        <p>Documents: 18 / 20</p>
+                        <div class="progress-line"><div class="progress-fill" style="width:90%"></div></div>
+                        <span class="module-percent">90%</span>
+                    </div>
+                    <div class="ctd-module">
+                        <div class="module-number">02</div>
+                        <h4>Summaries</h4>
+                        <p>Documents: 14 / 18</p>
+                        <div class="progress-line"><div class="progress-fill" style="width:78%"></div></div>
+                        <span class="module-percent">78%</span>
+                    </div>
+                    <div class="ctd-module">
+                        <div class="module-number">03</div>
+                        <h4>Quality</h4>
+                        <p>Documents: 22 / 30</p>
+                        <div class="progress-line"><div class="progress-fill" style="width:73%"></div></div>
+                        <span class="module-percent">73%</span>
+                    </div>
+                    <div class="ctd-module">
+                        <div class="module-number">04</div>
+                        <h4>Nonclinical</h4>
+                        <p>Documents: 10 / 12</p>
+                        <div class="progress-line"><div class="progress-fill" style="width:83%"></div></div>
+                        <span class="module-percent">83%</span>
+                    </div>
+                    <div class="ctd-module">
+                        <div class="module-number">05</div>
+                        <h4>Clinical</h4>
+                        <p>Documents: 15 / 25</p>
+                        <div class="progress-line"><div class="progress-fill" style="width:60%"></div></div>
+                        <span class="module-percent">60%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3><i class="fa-regular fa-calendar-check" style="color:var(--primary);margin-right:7px;"></i> Upcoming Deadlines</h3>
+                        <p>Important regulatory activities and due dates</p>
+                    </div>
+                    <a href="regulatory-calendar.html" class="text-link">View calendar <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div class="deadline-list">
+                    <div class="deadline-item">
+                        <div class="date-box"><strong>12</strong><span>Nov</span></div>
+                        <div class="deadline-info">
+                            <h4>Registration renewal review</h4>
+                            <p>Paracetamol 500 mg · India</p>
+                        </div>
+                        <span class="tag tag-red">Urgent</span>
+                    </div>
+                    <div class="deadline-item">
+                        <div class="date-box"><strong>18</strong><span>Nov</span></div>
+                        <div class="deadline-info">
+                            <h4>CTD Module 3 document review</h4>
+                            <p>Amoxicillin 250 mg · Quality</p>
+                        </div>
+                        <span class="tag tag-orange">Upcoming</span>
+                    </div>
+                    <div class="deadline-item">
+                        <div class="date-box"><strong>24</strong><span>Nov</span></div>
+                        <div class="deadline-info">
+                            <h4>Regulatory response preparation</h4>
+                            <p>Metformin 500 mg · US</p>
+                        </div>
+                        <span class="tag tag-blue">Scheduled</span>
+                    </div>
+                    <div class="deadline-item">
+                        <div class="date-box"><strong>30</strong><span>Nov</span></div>
+                        <div class="deadline-info">
+                            <h4>Periodic document review</h4>
+                            <p>Cetirizine 10 mg · EU</p>
+                        </div>
+                        <span class="tag tag-grey">Planned</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RECENT ACTIVITY + QUICK ACTIONS -->
+        <section class="grid-two">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3><i class="fa-solid fa-clock-rotate-left" style="color:var(--primary);margin-right:7px;"></i> Recent Activity</h3>
+                        <p>Latest actions performed in the workspace</p>
+                    </div>
+                    <a href="#" class="text-link" onclick="showToast('Full activity history will be available in a future update.');return false;">View history</a>
+                </div>
+
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon"><i class="fa-solid fa-file-arrow-up"></i></div>
+                        <div>
+                            <div class="activity-text"><strong>CTD document uploaded</strong> for Paracetamol 500 mg – Module 3.</div>
+                            <div class="activity-time">Workspace activity · Illustrative record · 2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                        <div>
+                            <div class="activity-text"><strong>Regulatory update recorded</strong> from CDSCO.</div>
+                            <div class="activity-time">Workspace activity · Illustrative record · 5 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon"><i class="fa-solid fa-diagram-project"></i></div>
+                        <div>
+                            <div class="activity-text"><strong>Impact assessment generated</strong> for a quality guideline update.</div>
+                            <div class="activity-time">Workspace activity · Illustrative record · Yesterday</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon"><i class="fa-solid fa-capsules"></i></div>
+                        <div>
+                            <div class="activity-text"><strong>Product record created</strong> for Cetirizine 10 mg.</div>
+                            <div class="activity-time">Workspace activity · Illustrative record · 2 days ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3><i class="fa-solid fa-bolt" style="color:var(--primary);margin-right:7px;"></i> Quick Actions</h3>
+                        <p>Frequently used regulatory workspace operations</p>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+                    <button class="btn" style="justify-content:flex-start;padding:16px 12px;" onclick="openModal('productModal')">
+                        <i class="fa-solid fa-capsules" style="color:var(--primary);font-size:15px;"></i>
+                        <span>Add Product</span>
+                    </button>
+                    <button class="btn" style="justify-content:flex-start;padding:16px 12px;" onclick="showToast('Open the CTD Dossier Management page to upload documents.')">
+                        <i class="fa-solid fa-file-arrow-up" style="color:#5485c1;font-size:15px;"></i>
+                        <span>Upload CTD</span>
+                    </button>
+                    <button class="btn" style="justify-content:flex-start;padding:16px 12px;" onclick="openModal('updateModal')">
+                        <i class="fa-solid fa-globe" style="color:#9a73c5;font-size:15px;"></i>
+                        <span>Add Update</span>
+                    </button>
+                    <button class="btn" style="justify-content:flex-start;padding:16px 12px;" onclick="location.href='impact-assessment.html'">
+                        <i class="fa-solid fa-wand-magic-sparkles" style="color:#d39439;font-size:15px;"></i>
+                        <span>Run Assessment</span>
+                    </button>
+                </div>
+
+                <div style="background:#f5faf7;border:1px solid #e8f2eb;border-radius:10px;padding:14px;margin-top:17px;">
+                    <div style="font-size:11px;font-weight:700;"><i class="fa-solid fa-lightbulb" style="color:#d99a32;margin-right:6px;"></i> RA Workspace Tip</div>
+                    <p style="font-size:10px;color:var(--muted);line-height:1.6;margin-top:6px;">Review regulatory updates regularly and verify AI-generated impact suggestions before making product or dossier decisions.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="footer">
+        <span>© 2026 ReguTrack. Regulatory Affairs Workspace.</span>
+        <span>Independent academic project · Not affiliated with regulatory authorities.</span>
+    </footer>
+</main>
+</div>
+
+<!-- ADD PRODUCT MODAL -->
+<div class="modal-backdrop" id="productModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <h3>Add New Product</h3>
+                <p>Create a product record in your workspace.</p>
+            </div>
+            <button class="close-modal" onclick="closeModal('productModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form id="productForm">
+            <div class="form-group">
+                <label>Product Name *</label>
+                <input type="text" id="newProductName" placeholder="e.g. Paracetamol 500 mg" required>
+            </div>
+            <div class="form-group">
+                <label>Product Code *</label>
+                <input type="text" id="newProductCode" placeholder="e.g. PRD-005" required>
+            </div>
+            <div class="form-group">
+                <label>Dosage Form</label>
+                <select id="newProductForm">
+                    <option>Tablet</option>
+                    <option>Capsule</option>
+                    <option>Injection</option>
+                    <option>Oral Solution</option>
+                    <option>Cream</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Target Market</label>
+                <select id="newProductMarket">
+                    <option>India</option>
+                    <option>US</option>
+                    <option>EU</option>
+                    <option>UK</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn" onclick="closeModal('productModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create Product</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ADD UPDATE MODAL -->
+<div class="modal-backdrop" id="updateModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <h3>Add Regulatory Update</h3>
+                <p>Record a regulatory intelligence item.</p>
+            </div>
+            <button class="close-modal" onclick="closeModal('updateModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form id="updateForm">
+            <div class="form-group">
+                <label>Update Title *</label>
+                <input type="text" id="updateTitle" placeholder="Enter regulatory update title" required>
+            </div>
+            <div class="form-group">
+                <label>Regulatory Authority *</label>
+                <select id="updateAuthority">
+                    <option>CDSCO</option>
+                    <option>ICH</option>
+                    <option>USFDA</option>
+                    <option>EMA</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Reference Number</label>
+                <input type="text" id="updateReference" placeholder="Enter reference number">
+            </div>
+            <div class="form-group">
+                <label>Publication Date</label>
+                <input type="date" id="updateDate">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn" onclick="closeModal('updateModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// SIDEBAR
+const sidebar = document.getElementById('sidebar');
+document.getElementById('menuToggle').addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+});
+
+document.addEventListener('click', (event) => {
+    if (window.innerWidth <= 900 &&
+        sidebar.classList.contains('open') &&
+        !sidebar.contains(event.target) &&
+        !event.target.closest('#menuToggle')) {
+        sidebar.classList.remove('open');
+    }
+});
+
+// PROFILE DROPDOWN
+const profileButton = document.getElementById('profileButton');
+const profileDropdown = document.getElementById('profileDropdown');
+
+profileButton.addEventListener('click', (event) => {
+    event.stopPropagation();
+    profileDropdown.classList.toggle('show');
+});
+
+document.addEventListener('click', (event) => {
+    if (!profileButton.contains(event.target)) {
+        profileDropdown.classList.remove('show');
+    }
+});
+
+// ANIMATED KPI COUNTERS
+const counters = document.querySelectorAll('.counter');
+
+const counterObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+
+        const counter = entry.target;
+        const target = Number(counter.dataset.target);
+        const duration = 1000;
+        const start = performance.now();
+
+        function updateCounter(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            counter.textContent = Math.floor(target * eased);
+
+            if (progress < 1) requestAnimationFrame(updateCounter);
+            else counter.textContent = target;
+        }
+
+        requestAnimationFrame(updateCounter);
+        observer.unobserve(counter);
+    });
+}, { threshold: .5 });
+
+counters.forEach(counter => counterObserver.observe(counter));
+
+// MODALS
+function openModal(id) {
+    document.getElementById(id).classList.add('show');
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('show');
+}
+
+document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+    backdrop.addEventListener('click', (event) => {
+        if (event.target === backdrop) backdrop.classList.remove('show');
+    });
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        document.querySelectorAll('.modal-backdrop.show').forEach(modal => {
+            modal.classList.remove('show');
+        });
+    }
+});
+
+// TOAST NOTIFICATION
+let toastTimer;
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// PRODUCT TABLE SEARCH AND FILTER
+const productSearch = document.getElementById('productSearch');
+const statusFilter = document.getElementById('statusFilter');
+const productTable = document.getElementById('productTable');
+const noProducts = document.getElementById('noProducts');
+
+function filterProducts() {
+    const query = productSearch.value.toLowerCase().trim();
+    const status = statusFilter.value;
+    const rows = productTable.querySelectorAll('tbody tr');
+    let visible = 0;
+
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const rowStatus = row.cells[4].textContent.trim();
+        const matchesQuery = text.includes(query);
+        const matchesStatus = !status || rowStatus === status;
+
+        row.style.display = matchesQuery && matchesStatus ? '' : 'none';
+
+        if (matchesQuery && matchesStatus) visible++;
+    });
+
+    noProducts.style.display = visible === 0 ? 'block' : 'none';
+    productTable.style.display = visible === 0 ? 'none' : 'table';
+}
+
+productSearch.addEventListener('input', filterProducts);
+statusFilter.addEventListener('change', filterProducts);
+
+// ADD PRODUCT - FRONTEND DEMO
+document.getElementById('productForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const name = document.getElementById('newProductName').value.trim();
+    const code = document.getElementById('newProductCode').value.trim();
+    const dosage = document.getElementById('newProductForm').value;
+    const market = document.getElementById('newProductMarket').value;
+
+    if (!name || !code) {
+        showToast('Please complete the required fields.');
+        return;
+    }
+
+    const tbody = productTable.querySelector('tbody');
+    const row = document.createElement('tr');
+
+    const values = [
+        { text: name, className: 'product-name' },
+        { text: code },
+        { text: dosage },
+        { text: market }
+    ];
+
+    values.forEach((item, index) => {
+        const cell = document.createElement('td');
+
+        if (index === 0) {
+            const title = document.createElement('span');
+            title.className = 'product-name';
+            title.textContent = item.text;
+
+            const sub = document.createElement('span');
+            sub.className = 'subtext';
+            sub.textContent = 'New product';
+
+            cell.append(title, sub);
+        } else {
+            cell.textContent = item.text;
+        }
+
+        row.appendChild(cell);
+    });
+
+    const statusCell = document.createElement('td');
+    const statusTag = document.createElement('span');
+    statusTag.className = 'tag tag-grey';
+    statusTag.textContent = 'Pending';
+    statusCell.appendChild(statusTag);
+    row.appendChild(statusCell);
+
+    const progressCell = document.createElement('td');
+    progressCell.className = 'progress-cell';
+    progressCell.innerHTML = '<span class="progress-line"><span class="progress-fill" style="width:0%"></span></span><span class="progress-number">0%</span>';
+    row.appendChild(progressCell);
+
+    const actionCell = document.createElement('td');
+    const viewButton = document.createElement('button');
+    viewButton.className = 'icon-btn view-product';
+    viewButton.innerHTML = '<i class="fa-regular fa-eye"></i>';
+    viewButton.addEventListener('click', () => showToast('Product details will open in Product Management.'));
+    actionCell.appendChild(viewButton);
+    row.appendChild(actionCell);
+
+    tbody.prepend(row);
+
+    document.getElementById('productForm').reset();
+    closeModal('productModal');
+    showToast('Product added to this demo table.');
+
+    filterProducts();
+});
+
+// ADD REGULATORY UPDATE - FRONTEND DEMO
+document.getElementById('updateForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const title = document.getElementById('updateTitle').value.trim();
+    const authority = document.getElementById('updateAuthority').value;
+    const reference = document.getElementById('updateReference').value.trim();
+    const date = document.getElementById('updateDate').value;
+
+    if (!title) {
+        showToast('Please enter an update title.');
+        return;
+    }
+
+    const list = document.querySelector('.update-list');
+    const item = document.createElement('div');
+    item.className = 'update-item';
+
+    const authorityBox = document.createElement('div');
+    authorityBox.className = 'authority-icon ' + (
+        authority === 'CDSCO' ? 'authority-cdsco' :
+        authority === 'ICH' ? 'authority-ich' :
+        authority === 'USFDA' ? 'authority-fda' : 'authority-ema'
+    );
+    authorityBox.textContent = authority === 'USFDA' ? 'FDA' : authority;
+
+    const info = document.createElement('div');
+    info.className = 'update-info';
+
+    const heading = document.createElement('h4');
+    heading.textContent = title;
+
+    const description = document.createElement('p');
+    description.textContent = authority + ' · ' + (reference || 'No reference number');
+
+    const meta = document.createElement('div');
+    meta.className = 'update-meta';
+
+    const status = document.createElement('span');
+    status.className = 'tag tag-blue';
+    status.textContent = 'New';
+
+    const dateText = document.createElement('span');
+    dateText.style.cssText = 'font-size:9px;color:#9aa69e;';
+    dateText.textContent = date || 'Date not specified';
+
+    meta.append(status, dateText);
+    info.append(heading, description, meta);
+    item.append(authorityBox, info);
+    list.prepend(item);
+
+    document.getElementById('updateForm').reset();
+    closeModal('updateModal');
+    showToast('Regulatory update added to this demo view.');
+});
+
+// GLOBAL SEARCH
+document.getElementById('globalSearch').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        const query = event.target.value.trim();
+        if (query) {
+            document.getElementById('productSearch').value = query;
+            filterProducts();
+            document.getElementById('productTable').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+});
+
+// NOTIFICATIONS
+document.getElementById('notificationButton').addEventListener('click', () => {
+    showToast('You have 5 illustrative items awaiting review.');
+});
+
+// PRODUCT VIEW BUTTONS
+document.querySelectorAll('.view-product').forEach(button => {
+    button.addEventListener('click', () => {
+        showToast('Product details will open in Product Management.');
+    });
+});
+
+// CURRENT DATE GREETING
+const hour = new Date().getHours();
+const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+document.querySelector('.welcome h1').innerHTML = `${greeting}, Varshil <span>👋</span>`;
+
+</script>
+</body>
+</html>
