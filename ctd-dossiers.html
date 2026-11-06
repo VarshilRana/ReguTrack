@@ -749,6 +749,55 @@ a { color:inherit; text-decoration:none; }
     font-weight:700;
 }
 
+/* CTD SECTION WORKSPACE */
+.section-workspace{display:grid;grid-template-columns:285px minmax(0,1fr);gap:18px;margin:0 0 20px;align-items:stretch}
+.section-sidebar,.section-workspace-main{background:#fff;border:1px solid var(--border);border-radius:13px;box-shadow:0 3px 12px rgba(30,70,45,.025);min-width:0}
+.section-sidebar{padding:17px;align-self:start}
+.section-sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:2px 2px 14px;border-bottom:1px solid var(--border);margin-bottom:10px}
+.section-sidebar-head h3,.section-workspace-head h3{font:800 16px Manrope,sans-serif}
+.section-sidebar-head p{font-size:11px;color:var(--muted);margin-top:3px}
+.section-sidebar-head>i{color:var(--primary);font-size:17px}
+.ctd-section-list{display:flex;flex-direction:column;gap:4px;max-height:650px;overflow:auto}
+.ctd-section-item{width:100%;display:flex;align-items:center;gap:10px;text-align:left;border:1px solid transparent;background:transparent;padding:10px;border-radius:8px;color:#596d61;transition:.18s}
+.ctd-section-item:hover{background:#f5faf7}
+.ctd-section-item.active{background:var(--primary-light);border-color:#d8eddf;color:var(--primary-dark)}
+.ctd-section-code{font-size:11px;font-weight:800;min-width:48px;color:var(--primary)}
+.ctd-section-name{font-size:12px;font-weight:700;line-height:1.4;flex:1}
+.ctd-section-count{font-size:10px;color:var(--muted);white-space:nowrap}
+.section-workspace-main{padding:21px}
+.section-workspace-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+.section-kicker{display:block;color:var(--primary);font-size:10px;letter-spacing:1.1px;font-weight:800;margin-bottom:5px}
+.section-workspace-head h3{font-size:19px}
+.section-workspace-head p{font-size:12px;color:var(--muted);margin-top:4px}
+.section-guidance{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;background:#f5faf7;border:1px solid #e2f0e7;border-radius:10px}
+.guidance-icon{width:30px;height:30px;flex-shrink:0;border-radius:8px;background:#e5f4eb;color:var(--primary);display:grid;place-items:center}
+.section-guidance strong{font-size:12px}
+.section-guidance p{font-size:11px;color:var(--muted);line-height:1.6;margin-top:3px}
+.section-document-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 20px}
+.section-document-summary>div{padding:12px 14px;background:#fafcfb;border:1px solid #edf1ee;border-radius:9px}
+.section-document-summary span{display:block;font-size:10px;color:var(--muted)}
+.section-document-summary strong{display:block;font:800 18px Manrope;margin-top:4px;color:var(--ink)}
+.section-document-summary>div:last-child strong{font-size:13px;color:var(--warning)}
+.section-document-summary>div:last-child strong.complete{color:var(--primary)}
+.section-documents-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.section-documents-head h4{font:800 14px Manrope}
+.section-documents-head p,.section-required-note{font-size:10px;color:var(--muted);margin-top:3px}
+.section-document-list{display:flex;flex-direction:column;gap:9px}
+.section-file-row{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid var(--border);border-radius:9px}
+.section-file-row .file-icon{width:36px;height:38px}
+.section-file-info{flex:1;min-width:0}
+.section-file-info strong{display:block;font-size:12px;overflow-wrap:anywhere}
+.section-file-info span{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+.section-file-actions{display:flex;gap:6px}
+.section-empty{padding:24px 15px;text-align:center;border:1px dashed #dce8e0;border-radius:10px;color:var(--muted)}
+.section-empty i{font-size:22px;color:#9dc8ac;margin-bottom:8px}
+.section-empty strong{display:block;color:var(--ink);font-size:12px}
+.section-empty p{font-size:11px;margin-top:4px}
+.pdf-preview{width:100%;height:65vh;min-height:420px;border:1px solid var(--border);border-radius:10px;background:#f5f7f5}
+@media(max-width:1100px){.section-workspace{grid-template-columns:245px minmax(0,1fr)}}
+@media(max-width:850px){.section-workspace{grid-template-columns:1fr}.ctd-section-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-height:330px}.section-workspace-head{align-items:flex-start;flex-direction:column}}
+@media(max-width:560px){.section-workspace-main{padding:15px}.ctd-section-list{grid-template-columns:1fr}.section-document-summary{grid-template-columns:1fr 1fr}.section-document-summary>div:last-child{grid-column:1/-1}.section-documents-head{align-items:flex-start;flex-direction:column}.section-file-row{align-items:flex-start;flex-wrap:wrap}.section-file-actions{width:100%;justify-content:flex-end}.pdf-preview{height:55vh;min-height:320px}}
+ 
 /* DOCUMENT TABLE */
 .document-table-wrap { overflow-x:auto; width:100%; }
 
@@ -1594,6 +1643,34 @@ td { font-size: 13px; padding: 15px 14px; line-height: 1.5; }
             </div>
         </section>
 
+        <!-- CTD SECTION WORKSPACE -->
+        <section class="section-workspace">
+            <aside class="section-sidebar">
+                <div class="section-sidebar-head">
+                    <div><h3>CTD Sections</h3><p id="sectionCount">Select a subsection</p></div>
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div id="ctdSectionList" class="ctd-section-list"></div>
+            </aside>
+            <div class="section-workspace-main">
+                <div class="section-workspace-head">
+                    <div><span class="section-kicker" id="selectedSectionCode">SECTION 1.0</span><h3 id="selectedSectionTitle">Cover Letter</h3><p id="selectedSectionHelp">Manage the documents required for this CTD subsection.</p></div>
+                    <button class="btn btn-primary" id="uploadSectionDocument"><i class="fa-solid fa-cloud-arrow-up"></i> Upload to this section</button>
+                </div>
+                <div class="section-guidance">
+                    <div class="guidance-icon"><i class="fa-solid fa-circle-info"></i></div>
+                    <div><strong>Section preparation guidance</strong><p id="sectionGuidanceText">Upload the applicable document and verify that it matches the selected CTD section and target market.</p></div>
+                </div>
+                <div class="section-document-summary">
+                    <div><span>Documents in this section</span><strong id="sectionDocumentCount">0</strong></div>
+                    <div><span>Approved</span><strong id="sectionApprovedCount">0</strong></div>
+                    <div><span>Preparation status</span><strong id="sectionPreparationStatus">Missing</strong></div>
+                </div>
+                <div class="section-documents-head"><div><h4>Section documents</h4><p>Files uploaded against this exact CTD subsection.</p></div><span class="section-required-note">Requirements depend on product and market</span></div>
+                <div id="sectionDocumentList" class="section-document-list"></div>
+            </div>
+        </section>
+
         <!-- DOCUMENT LIBRARY -->
         <section class="panel">
             <div class="panel-heading">
@@ -1779,6 +1856,7 @@ td { font-size: 13px; padding: 15px 14px; line-height: 1.5; }
             </button>
         </div>
         <div id="documentDetails"></div>
+        <div id="pdfPreviewContainer" hidden></div>
         <div class="modal-actions">
             <button class="btn" id="closeDetailButton">Close</button>
             <button class="btn btn-primary" id="downloadDocument">
@@ -1831,6 +1909,7 @@ let currentPage = 1;
 let deleteDocumentId = null;
 let detailDocumentId = null;
 let toastTimer = null;
+let activeSectionCode = "";
 
 /* CTD MODULE INFORMATION */
 const modules = {
@@ -2117,6 +2196,64 @@ function updateStats() {
 }
 
 /* MODULE CONTENT */
+function selectSection(code) {
+    activeSectionCode = code;
+    const info = modules[activeModule].sections.find(item => item[0] === code);
+    if (!info) return;
+    $("selectedSectionCode").textContent = "SECTION " + code;
+    $("selectedSectionTitle").textContent = info[1];
+    $("selectedSectionHelp").textContent = "Manage files, preparation notes and review status for " + code + " — " + info[1] + ".";
+    $("sectionGuidanceText").textContent = getSectionGuidance(code, info[1]);
+    renderSectionWorkspace();
+    document.querySelectorAll(".ctd-section-item").forEach(button => button.classList.toggle("active", button.dataset.section === code));
+}
+function getSectionGuidance(code, name) {
+    const guidance = {
+        "1.0":"Provide a signed cover letter identifying the application, product and submission purpose.",
+        "1.1":"Maintain an accurate table of contents that maps the submitted dossier files and their locations.",
+        "1.2":"Attach the applicable application forms and supporting administrative information for the selected authority.",
+        "1.3":"Check product information, prescribing information, labelling and package leaflet requirements for the target market.",
+        "2.3":"Prepare the Quality Overall Summary using the relevant Module 3 information and ensure consistency.",
+        "2.4":"Summarise the nonclinical strategy and key findings with references to Module 4 reports.",
+        "2.5":"Summarise the clinical development programme, efficacy and safety conclusions with references to Module 5.",
+        "3.2.S":"Organise drug-substance information including manufacture, characterisation, controls, standards and stability.",
+        "3.2.P":"Organise drug-product composition, pharmaceutical development, manufacture, controls, specifications and stability.",
+        "4.2.1":"Group pharmacology study reports and supporting documentation under the appropriate study headings.",
+        "4.2.2":"Group pharmacokinetic study reports and supporting documentation under the appropriate study headings.",
+        "4.2.3":"Group toxicology study reports and supporting documentation under the appropriate study headings.",
+        "5.3.5":"Organise clinical efficacy and safety study reports, including study-level supporting documents."
+    };
+    return guidance[code] || "Check the applicable CTD/ICH and target-market requirements for " + name + ". Upload the relevant source document and record any justified non-applicability. This guidance is a preparation aid, not an official completeness determination.";
+}
+function renderSectionWorkspace() {
+    const list = $("ctdSectionList");
+    const sectionDocs = currentProductDocuments().filter(doc => String(doc.module) === activeModule && doc.section === activeSectionCode);
+    list.innerHTML = modules[activeModule].sections.map(([code,name]) => {
+        const count = currentProductDocuments().filter(doc => String(doc.module) === activeModule && doc.section === code).length;
+        return '<button type="button" class="ctd-section-item '+(code===activeSectionCode?'active':'')+'" data-section="'+escapeHTML(code)+'"><span class="ctd-section-code">'+escapeHTML(code)+'</span><span class="ctd-section-name">'+escapeHTML(name)+'</span><span class="ctd-section-count">'+count+'</span></button>';
+    }).join("");
+    $("sectionCount").textContent = modules[activeModule].sections.length + " subsections";
+    $("sectionDocumentCount").textContent = sectionDocs.length;
+    $("sectionApprovedCount").textContent = sectionDocs.filter(doc => doc.status === "Approved").length;
+    const state = sectionDocs.some(doc=>doc.status==="Approved") ? "Approved" : sectionDocs.length ? "Uploaded" : "Missing";
+    $("sectionPreparationStatus").textContent = state;
+    $("sectionPreparationStatus").classList.toggle("complete",state==="Approved");
+    $("sectionDocumentList").innerHTML = sectionDocs.length ? sectionDocs.map(doc => '<div class="section-file-row"><div class="file-icon '+fileIcon(doc.fileType)+'"><i class="fa-solid '+fileIconClass(doc.fileType)+'"></i></div><div class="section-file-info"><strong>'+escapeHTML(doc.title)+'</strong><span>'+escapeHTML(doc.fileName||"No file attached")+' · v'+escapeHTML(doc.version||"1.0")+' · '+escapeHTML(doc.status)+'</span></div><div class="section-file-actions"><button class="action-btn" data-section-action="view" data-id="'+escapeHTML(doc.id)+'" title="View details"><i class="fa-regular fa-eye"></i></button><button class="action-btn" data-section-action="preview" data-id="'+escapeHTML(doc.id)+'" title="Preview PDF"><i class="fa-solid fa-file-pdf"></i></button></div></div>').join("") : '<div class="section-empty"><i class="fa-regular fa-folder-open"></i><strong>No documents in this subsection yet</strong><p>Upload the relevant file to start preparing this section.</p></div>';
+}
+function previewDocument(id) {
+    const doc = documents.find(item=>item.id===id);
+    if (!doc || !doc.fileData || !doc.fileData.startsWith("data:application/pdf")) {
+        showToast("PDF preview is available for uploaded PDF files only.");
+        return;
+    }
+    $("detailTitle").textContent = "PDF Preview — " + doc.title;
+    $("documentDetails").hidden = true;
+    $("pdfPreviewContainer").hidden = false;
+    $("pdfPreviewContainer").innerHTML = '<iframe class="pdf-preview" title="PDF preview" src="'+doc.fileData+'"></iframe>';
+    $("downloadDocument").disabled = false;
+    $("downloadDocument").style.opacity = "1";
+    openModal("detailModal");
+}
 function selectModule(module) {
     activeModule = String(module);
     currentPage = 1;
@@ -2131,6 +2268,8 @@ function selectModule(module) {
     $("moduleIcon").className = "fa-solid " + info.icon;
 
     updateModuleProgress();
+    if (!modules[activeModule].sections.some(item => item[0] === activeSectionCode)) activeSectionCode = modules[activeModule].sections[0][0];
+    selectSection(activeSectionCode);
     renderDocuments();
 }
 
@@ -2253,6 +2392,7 @@ function renderDocuments() {
         : "Showing 0 documents";
 
     renderPagination(totalPages);
+    renderSectionWorkspace();
     updateStats();
     updateModuleProgress();
 }
@@ -2340,6 +2480,7 @@ function openUploadModal() {
     $("fileDropTitle").textContent = "Drag and drop your file here";
 
     populateSections(activeModule);
+    if (activeSectionCode) $("uploadSection").value = activeSectionCode;
     openModal("uploadModal");
 }
 
@@ -2447,6 +2588,9 @@ function openDocumentDetail(id) {
         ["Notes", doc.notes || "No notes"]
     ];
 
+    $("pdfPreviewContainer").hidden = true;
+    $("pdfPreviewContainer").innerHTML = "";
+    $("documentDetails").hidden = false;
     $("documentDetails").innerHTML = `
         <div class="detail-box">
             <span>Review Status</span>
@@ -2562,6 +2706,20 @@ $("confirmDelete").addEventListener("click", () => {
     showToast("Document removed from the demo dossier.");
 });
 
+$("ctdSectionList").addEventListener("click", event => {
+    const button = event.target.closest("[data-section]");
+    if (button) { currentPage = 1; selectSection(button.dataset.section); renderDocuments(); }
+});
+$("sectionDocumentList").addEventListener("click", event => {
+    const button = event.target.closest("[data-section-action]");
+    if (!button) return;
+    if (button.dataset.sectionAction === "view") openDocumentDetail(button.dataset.id);
+    if (button.dataset.sectionAction === "preview") previewDocument(button.dataset.id);
+});
+$("uploadSectionDocument").addEventListener("click", () => {
+    openUploadModal();
+    if (activeSectionCode) $("uploadSection").value = activeSectionCode;
+});
 /* TABLE ACTIONS */
 $("documentTableBody").addEventListener("click", event => {
     const button = event.target.closest("button[data-action]");
@@ -2708,7 +2866,7 @@ dropArea.addEventListener("drop", event => {
 
 /* MODAL CLOSE */
 function openModal(id) { $(id).classList.add("show"); }
-function closeModal(id) { $(id).classList.remove("show"); }
+function closeModal(id) { $(id).classList.remove("show"); if(id==="detailModal"){ $("pdfPreviewContainer").hidden=true; $("pdfPreviewContainer").innerHTML=""; $("documentDetails").hidden=false; } }
 
 $("closeUploadModal").addEventListener("click", () => closeModal("uploadModal"));
 $("cancelUpload").addEventListener("click", () => closeModal("uploadModal"));
