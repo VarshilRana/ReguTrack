@@ -1180,6 +1180,140 @@ tbody tr:last-child td { border-bottom:0; }
 @media(max-width:380px) {
     .stats-grid { grid-template-columns:1fr; }
 }
+
+/* ==========================================
+   REGUTRACK GLOBAL READABILITY / DENSITY PASS
+   Keep this block last in the page stylesheet.
+========================================== */
+html { font-size: 16px; }
+body { font-size: 15px; line-height: 1.65; }
+
+.brand-subtitle { font-size: 11px; }
+.nav-label { font-size: 11px; margin: 19px 0 11px; }
+.nav-link { font-size: 14px; line-height: 1.45; padding: 12px 13px; }
+.nav-link i { font-size: 16px; }
+.nav-count { font-size: 11px; }
+.help-card h4 { font-size: 14px; }
+.help-card p { font-size: 12px; line-height: 1.65; }
+.help-card button { font-size: 12px; padding: 9px 13px; }
+
+.topbar { min-height: 76px; }
+.breadcrumb { font-size: 13px; }
+.search-box { min-height: 42px; }
+.search-box input { font-size: 13px; }
+.profile-info strong { font-size: 13px; }
+.profile-info span { font-size: 11px; }
+
+.content { padding: 26px 30px 36px; }
+.welcome { margin-bottom: 22px; }
+.eyebrow { font-size: 11px; letter-spacing: 1.35px; margin-bottom: 7px; }
+.welcome h1, .page-heading h1 {
+  font-size: clamp(28px, 2.2vw, 34px);
+  line-height: 1.2; letter-spacing: -.8px;
+}
+.welcome p, .page-heading p { font-size: 14px; line-height: 1.6; }
+.btn { font-size: 13px; padding: 11px 16px; }
+.btn-small { font-size: 12px; padding: 9px 12px; }
+
+.panel { padding: 22px; border-radius: 15px; }
+.panel-heading { margin-bottom: 18px; }
+.panel-heading h3 { font-size: 17px; line-height: 1.35; }
+.panel-heading p { font-size: 13px; line-height: 1.55; }
+.text-link { font-size: 12px; }
+.tag { font-size: 11px; padding: 6px 9px; }
+
+.kpi-card, .stat-card { padding: 20px; border-radius: 15px; }
+.kpi-value, .stat-value { font-size: 32px; line-height: 1.2; }
+.kpi-label, .stat-label { font-size: 13px; line-height: 1.45; }
+.kpi-foot, .stat-foot { font-size: 11px; line-height: 1.5; }
+.kpi-icon { width: 43px; height: 43px; font-size: 18px; }
+
+.form-group { margin-bottom: 16px; }
+.form-group label { font-size: 13px; margin-bottom: 8px; }
+.form-group input, .form-group select, .form-group textarea,
+input, select, textarea { font-size: 14px; }
+.form-group input, .form-group select, .form-group textarea {
+  padding: 13px 14px; border-radius: 9px;
+}
+.form-group textarea { min-height: 92px; line-height: 1.6; }
+.form-hint { font-size: 11px; line-height: 1.55; }
+
+.table-search, .table-toolbar input, .table-toolbar select,
+.table-tools input, .table-tools select { font-size: 13px; }
+th { font-size: 11px; padding: 14px 14px; }
+td { font-size: 13px; padding: 15px 14px; line-height: 1.5; }
+.product-name { font-size: 13px; }
+.subtext { font-size: 11px; line-height: 1.5; }
+.showing-text { font-size: 12px; }
+
+.update-item { padding: 15px 0; gap: 14px; }
+.authority-icon { width: 39px; height: 39px; font-size: 11px; }
+.update-info h4, .deadline-info h4 { font-size: 13px; line-height: 1.5; }
+.update-info p, .deadline-info p { font-size: 11px; line-height: 1.55; }
+.update-meta { margin-top: 9px; }
+.impact-intro h4 { font-size: 14px; }
+.impact-intro p { font-size: 11px; line-height: 1.55; }
+.impact-stat { padding: 15px; }
+.impact-stat strong { font-size: 25px; }
+.impact-stat span, .impact-note { font-size: 11px; line-height: 1.6; }
+
+.ctd-module { padding: 15px 13px; }
+.ctd-module h4 { font-size: 12px; line-height: 1.5; min-height: 36px; }
+.ctd-module p { font-size: 11px; line-height: 1.5; }
+.module-number { width: 31px; height: 31px; font-size: 12px; }
+.module-percent { font-size: 12px; }
+.date-box { width: 48px; height: 51px; }
+.date-box strong { font-size: 18px; }
+.date-box span { font-size: 10px; }
+.activity-text { font-size: 13px; line-height: 1.6; }
+.activity-time { font-size: 11px; line-height: 1.5; }
+
+.empty-state, .empty-results { font-size: 13px; line-height: 1.6; }
+.empty-state h3, .empty-results h4 { font-size: 16px; }
+.empty-state p, .empty-results p { font-size: 12px; line-height: 1.6; }
+.footer { font-size: 11px; line-height: 1.55; padding-top: 18px; padding-bottom: 18px; }
+.toast { font-size: 13px; line-height: 1.5; }
+
+.config-grid, .grid-two { gap: 16px; }
+.kpi-grid { gap: 15px; }
+.results-section { margin-top: 18px; }
+.finding-title { font-size: 13px; line-height: 1.45; }
+.finding-desc { font-size: 12px; line-height: 1.65; }
+.finding-meta .meta-chip { font-size: 11px; }
+.severity { font-size: 10px; }
+.picker-head strong { font-size: 12px; }
+.picker-list { max-height: 260px; padding: 5px 14px; }
+.picker-item { font-size: 12px; padding: 12px 2px; line-height: 1.45; }
+.picker-item small { font-size: 11px; line-height: 1.45; }
+.form-hint, .small { font-size: 11px; }
+.config-actions { margin-top: 18px; }
+.analysis-progress { padding: 20px; }
+.progress-head { font-size: 12px; }
+.progress-caption { font-size: 11px; line-height: 1.55; }
+.disclaimer { font-size: 11px; line-height: 1.65; padding: 14px 16px; }
+
+@media (min-width: 1400px) {
+  .content { padding-left: 34px; padding-right: 34px; }
+  .grid-two, .config-grid { gap: 20px; }
+  .panel { padding: 24px; }
+}
+@media (max-width: 900px) {
+  .content { padding: 24px 22px 32px; }
+}
+@media (max-width: 650px) {
+  .content { padding: 20px 15px 28px; }
+  .welcome h1, .page-heading h1 { font-size: 27px; }
+  .welcome p, .page-heading p { font-size: 13px; }
+  .panel { padding: 17px; }
+  .panel-heading h3 { font-size: 16px; }
+  .panel-heading p { font-size: 12px; }
+  .kpi-card, .stat-card { padding: 15px; }
+  .kpi-value, .stat-value { font-size: 27px; }
+  .kpi-label, .stat-label { font-size: 12px; }
+  .kpi-foot, .stat-foot { font-size: 10px; }
+  .footer { font-size: 10px; }
+}
+
 </style>
 </head>
 
