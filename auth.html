@@ -1,0 +1,982 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f8faf9">
+
+<title>Account Access — ReguTrack</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --green:#176b57;
+    --deep:#105343;
+    --soft:#e8f4ee;
+    --ink:#172c27;
+    --muted:#75847c;
+    --line:#e5ede7;
+    --bg:#f8fbf9;
+}
+
+* {
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html,
+body {
+    width:100%;
+    min-height:100%;
+}
+
+body {
+    font-family:"DM Sans",sans-serif;
+    color:var(--ink);
+    background:#fff;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+button,
+input {
+    font:inherit;
+}
+
+button {
+    cursor:pointer;
+}
+
+/* MAIN LAYOUT */
+
+.auth-shell {
+    min-height:100vh;
+    display:grid;
+    grid-template-columns:.9fr 1.1fr;
+    background:#fff;
+}
+
+/* LEFT BRAND PANEL */
+
+.visual-panel {
+    position:relative;
+    overflow:hidden;
+    padding:42px 40px;
+
+    background:
+        radial-gradient(circle at 15% 15%,#dff2e6 0,transparent 34%),
+        linear-gradient(145deg,#f3faf5,#eaf5ee 65%,#e2f0e7);
+
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.visual-panel:before,
+.visual-panel:after {
+    content:"";
+    position:absolute;
+    border:1px solid #c9e1d1;
+    border-radius:50%;
+    pointer-events:none;
+}
+
+.visual-panel:before {
+    width:430px;
+    height:430px;
+    right:-190px;
+    top:90px;
+}
+
+.visual-panel:after {
+    width:330px;
+    height:330px;
+    right:-140px;
+    top:140px;
+}
+
+/* BRAND */
+
+.brand {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    position:relative;
+    z-index:1;
+    font:800 22px Manrope,sans-serif;
+    letter-spacing:-.7px;
+    text-decoration:none;
+    color:var(--ink);
+}
+
+.brand-mark {
+    height:38px;
+    width:38px;
+    border-radius:12px;
+    background:var(--green);
+    color:white;
+    display:grid;
+    place-items:center;
+    font-size:20px;
+}
+
+.brand span span {
+    color:var(--green);
+}
+
+/* LEFT CONTENT */
+
+.visual-copy {
+    position:relative;
+    z-index:1;
+    max-width:390px;
+    margin:auto 0;
+}
+
+.eyebrow {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:7px 12px;
+    background:#ffffffb8;
+    border:1px solid #d9e9de;
+    border-radius:30px;
+    color:var(--green);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.4px;
+}
+
+.dot {
+    width:7px;
+    height:7px;
+    background:#35a875;
+    border-radius:50%;
+    box-shadow:0 0 0 4px #d7f0e2;
+}
+
+.visual-copy h1 {
+    font:800 clamp(30px,4vw,43px)/1.15 Manrope,sans-serif;
+    letter-spacing:-1.7px;
+    margin:23px 0 15px;
+}
+
+.visual-copy h1 em {
+    font-style:normal;
+    color:var(--green);
+}
+
+.visual-copy p {
+    font-size:14px;
+    line-height:1.85;
+    color:#64766c;
+    max-width:360px;
+}
+
+.visual-points {
+    display:grid;
+    gap:13px;
+    margin-top:30px;
+}
+
+.visual-point {
+    display:flex;
+    align-items:center;
+    gap:11px;
+    font-size:12px;
+    color:#40584c;
+    font-weight:600;
+}
+
+.check {
+    width:23px;
+    height:23px;
+    border-radius:8px;
+    background:#fff;
+    color:var(--green);
+    display:grid;
+    place-items:center;
+    font-size:13px;
+    box-shadow:0 3px 10px #184c2a0c;
+}
+
+.visual-foot {
+    position:relative;
+    z-index:1;
+    color:#82938a;
+    font-size:10px;
+    letter-spacing:.2px;
+}
+
+/* RIGHT FORM PANEL */
+
+.form-panel {
+    padding:54px clamp(28px,6vw,76px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+}
+
+.form-wrap {
+    width:100%;
+    max-width:390px;
+    animation:rise .45s ease both;
+}
+
+@keyframes rise {
+    from {
+        opacity:0;
+        transform:translateY(14px);
+    }
+    to {
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.mobile-brand {
+    display:none;
+}
+
+.form-top {
+    margin-bottom:27px;
+}
+
+.form-top .kicker {
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:1.1px;
+    text-transform:uppercase;
+    color:var(--green);
+}
+
+.form-top h2 {
+    font:800 29px/1.2 Manrope,sans-serif;
+    letter-spacing:-1px;
+    margin:9px 0 8px;
+}
+
+.form-top p {
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.7;
+}
+
+/* LOGIN / SIGNUP TABS */
+
+.tabs {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    padding:5px;
+    background:#f2f6f3;
+    border:1px solid #e9efeb;
+    border-radius:11px;
+    margin-bottom:24px;
+}
+
+.tab {
+    border:0;
+    background:transparent;
+    color:#7a8981;
+    padding:10px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:700;
+    transition:.2s;
+}
+
+.tab.active {
+    background:#fff;
+    color:var(--green);
+    box-shadow:0 2px 9px #193e2b12;
+}
+
+/* FORM FIELDS */
+
+.field {
+    margin-bottom:16px;
+}
+
+.field[hidden] {
+    display:none;
+}
+
+.field label {
+    display:block;
+    font-size:11px;
+    font-weight:700;
+    color:#43564b;
+    margin-bottom:7px;
+}
+
+.input-wrap {
+    position:relative;
+}
+
+.field input {
+    width:100%;
+    height:46px;
+    border:1px solid #dfe8e2;
+    border-radius:9px;
+    padding:0 13px;
+    background:#fff;
+    color:var(--ink);
+    font-size:13px;
+    outline:none;
+    transition:.2s;
+}
+
+.field input::placeholder {
+    color:#a4b0a8;
+}
+
+.field input:focus {
+    border-color:#6eaa8b;
+    box-shadow:0 0 0 3px #e8f4ee;
+}
+
+.password-input {
+    padding-right:66px!important;
+}
+
+.toggle-pass {
+    position:absolute;
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    border:0;
+    background:none;
+    color:var(--green);
+    font-size:10px;
+    font-weight:800;
+    padding:5px;
+}
+
+/* OPTIONS */
+
+.form-meta {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin:2px 0 20px;
+    font-size:11px;
+    color:#728178;
+}
+
+.form-meta[hidden] {
+    display:none;
+}
+
+.remember {
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+.remember input {
+    accent-color:var(--green);
+}
+
+.text-link {
+    color:var(--green);
+    font-weight:700;
+    text-decoration:none;
+}
+
+.text-link:hover {
+    text-decoration:underline;
+}
+
+/* SUBMIT BUTTON */
+
+.submit {
+    width:100%;
+    height:48px;
+    border:0;
+    border-radius:10px;
+    background:var(--green);
+    color:#fff;
+    font-size:13px;
+    font-weight:800;
+    box-shadow:0 8px 18px #176b5726;
+    transition:.22s;
+}
+
+.submit:hover {
+    background:var(--deep);
+    transform:translateY(-2px);
+    box-shadow:0 12px 23px #176b5733;
+}
+
+.submit:active {
+    transform:translateY(0);
+}
+
+/* FORM FEEDBACK */
+
+.notice {
+    display:none;
+    margin-top:14px;
+    padding:11px 12px;
+    border-radius:9px;
+    background:#eef8f1;
+    color:#236b4b;
+    border:1px solid #d9ecdf;
+    font-size:11px;
+    line-height:1.6;
+}
+
+.notice.show {
+    display:block;
+    animation:rise .25s ease;
+}
+
+.notice.error {
+    background:#fff3f1;
+    border-color:#f4d8d3;
+    color:#a44438;
+}
+
+/* FOOTER */
+
+.terms {
+    font-size:10px;
+    color:#93a097;
+    line-height:1.7;
+    text-align:center;
+    margin-top:20px;
+}
+
+.terms a {
+    color:#547b65;
+    text-decoration:underline;
+}
+
+.switch-copy {
+    text-align:center;
+    font-size:12px;
+    color:#77857d;
+    margin-top:22px;
+}
+
+.secure-note {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:7px;
+    margin-top:27px;
+    font-size:10px;
+    color:#9aa69f;
+}
+
+.secure-note svg {
+    width:13px;
+    height:13px;
+    color:#6c9d7e;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:720px) {
+
+    .auth-shell {
+        grid-template-columns:1fr;
+    }
+
+    .visual-panel {
+        display:none;
+    }
+
+    .form-panel {
+        padding:48px 25px 34px;
+        min-height:100vh;
+    }
+
+    .mobile-brand {
+        display:flex;
+        margin-bottom:35px;
+    }
+
+    .form-wrap {
+        max-width:420px;
+    }
+
+    .form-top h2 {
+        font-size:27px;
+    }
+}
+
+@media(max-width:380px) {
+
+    .form-panel {
+        padding-inline:19px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+
+    *,
+    *:before,
+    *:after {
+        animation:none!important;
+        transition:none!important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="auth-shell">
+
+    <!-- LEFT BRANDING PANEL -->
+
+    <aside class="visual-panel">
+
+        <a class="brand" href="home.html">
+            <span class="brand-mark">R</span>
+            <span>Regu<span>Track</span></span>
+        </a>
+
+        <div class="visual-copy">
+
+            <span class="eyebrow">
+                <i class="dot"></i>
+                REGULATORY INTELLIGENCE WORKSPACE
+            </span>
+
+            <h1>
+                Stay ahead of
+                <em>regulatory change.</em>
+            </h1>
+
+            <p>
+                Bring product registrations, CTD documentation
+                and regulatory intelligence together in one
+                organized workspace.
+            </p>
+
+            <div class="visual-points">
+
+                <div class="visual-point">
+                    <span class="check">✓</span>
+                    Structured CTD dossier management
+                </div>
+
+                <div class="visual-point">
+                    <span class="check">✓</span>
+                    Regulatory updates in context
+                </div>
+
+                <div class="visual-point">
+                    <span class="check">✓</span>
+                    AI-assisted impact assessment with human review
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="visual-foot">
+            A connected workspace for pharmaceutical regulatory affairs.
+        </div>
+
+    </aside>
+
+    <!-- RIGHT AUTHENTICATION PANEL -->
+
+    <main class="form-panel">
+
+        <div class="form-wrap">
+
+            <a class="brand mobile-brand" href="home.html">
+                <span class="brand-mark">R</span>
+                <span>Regu<span>Track</span></span>
+            </a>
+
+            <div class="form-top">
+
+                <div class="kicker" id="kicker">
+                    WELCOME BACK
+                </div>
+
+                <h2 id="heading">
+                    Sign in to ReguTrack
+                </h2>
+
+                <p id="subheading">
+                    Access your regulatory workspace and continue
+                    where you left off.
+                </p>
+
+            </div>
+
+            <!-- TABS -->
+
+            <div class="tabs">
+
+                <button class="tab active"
+                        id="loginTab"
+                        type="button">
+                    Log in
+                </button>
+
+                <button class="tab"
+                        id="signupTab"
+                        type="button">
+                    Create account
+                </button>
+
+            </div>
+
+            <!-- AUTH FORM -->
+
+            <form id="authForm" novalidate>
+
+                <div id="nameField" class="field" hidden>
+                    <label for="fullName">Full name</label>
+
+                    <input
+                        id="fullName"
+                        name="fullName"
+                        type="text"
+                        placeholder="Enter your full name"
+                        autocomplete="name">
+                </div>
+
+                <div class="field">
+                    <label for="email">Work email</label>
+
+                    <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="you@company.com"
+                        autocomplete="email"
+                        required>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+
+                    <div class="input-wrap">
+
+                        <input
+                            class="password-input"
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                            minlength="8">
+
+                        <button
+                            class="toggle-pass"
+                            id="togglePass"
+                            type="button">
+                            SHOW
+                        </button>
+
+                    </div>
+                </div>
+
+                <div id="confirmField" class="field" hidden>
+                    <label for="confirmPassword">
+                        Confirm password
+                    </label>
+
+                    <input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type="password"
+                        placeholder="Re-enter your password"
+                        autocomplete="new-password">
+                </div>
+
+                <!-- LOGIN OPTIONS -->
+
+                <div class="form-meta" id="loginMeta">
+
+                    <label class="remember">
+                        <input type="checkbox" id="remember">
+                        Remember me
+                    </label>
+
+                    <a class="text-link"
+                       href="#"
+                       id="forgotLink">
+                        Forgot password?
+                    </a>
+
+                </div>
+
+                <!-- SIGNUP OPTIONS -->
+
+                <div class="form-meta" id="signupMeta" hidden>
+
+                    <label class="remember">
+                        <input type="checkbox" id="agree">
+                        I agree to the
+                        <a class="text-link" href="#terms">terms</a>
+                    </label>
+
+                </div>
+
+                <button class="submit"
+                        id="submitBtn"
+                        type="submit">
+                    Log in to workspace →
+                </button>
+
+                <div class="notice"
+                     id="notice"
+                     role="status"
+                     aria-live="polite">
+                </div>
+
+            </form>
+
+            <p class="switch-copy" id="switchCopy">
+                New to ReguTrack?
+                <a href="#signup"
+                   class="text-link"
+                   id="switchLink">
+                    Create an account
+                </a>
+            </p>
+
+            <div class="terms">
+                By continuing, you acknowledge that ReguTrack
+                supports regulatory workflows and does not replace
+                official guidance or qualified regulatory review.
+            </div>
+
+            <div class="secure-note">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+
+                    <rect x="4" y="10" width="16" height="11" rx="2"/>
+                    <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+
+                </svg>
+
+                Your account interface is protected with secure form practices
+
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script>
+
+const $ = id => document.getElementById(id);
+
+let mode = "login";
+
+/* CHANGE LOGIN / SIGNUP MODE */
+
+function setMode(next) {
+
+    mode = next === "signup" ? "signup" : "login";
+
+    const signup = mode === "signup";
+
+    $("loginTab").classList.toggle("active", !signup);
+    $("signupTab").classList.toggle("active", signup);
+
+    $("nameField").hidden = !signup;
+    $("confirmField").hidden = !signup;
+
+    $("loginMeta").hidden = signup;
+    $("signupMeta").hidden = !signup;
+
+    $("kicker").textContent = signup
+        ? "CREATE YOUR ACCOUNT"
+        : "WELCOME BACK";
+
+    $("heading").textContent = signup
+        ? "Create your ReguTrack account"
+        : "Sign in to ReguTrack";
+
+    $("subheading").textContent = signup
+        ? "Set up your account to organize your regulatory workspace."
+        : "Access your regulatory workspace and continue where you left off.";
+
+    $("submitBtn").innerHTML = signup
+        ? 'Create account <span aria-hidden="true">→</span>'
+        : 'Log in to workspace <span aria-hidden="true">→</span>';
+
+    $("switchCopy").innerHTML = signup
+        ? 'Already have an account? <a href="#login" class="text-link" id="switchLink">Log in</a>'
+        : 'New to ReguTrack? <a href="#signup" class="text-link" id="switchLink">Create an account</a>';
+
+    $("password").autocomplete = signup
+        ? "new-password"
+        : "current-password";
+
+    $("notice").className = "notice";
+    $("notice").textContent = "";
+
+    $("authForm").reset();
+
+}
+
+/* TAB EVENTS */
+
+$("loginTab").addEventListener("click", () => {
+    setMode("login");
+});
+
+$("signupTab").addEventListener("click", () => {
+    setMode("signup");
+});
+
+/* SWITCH LINK */
+
+$("switchCopy").addEventListener("click", event => {
+
+    if (event.target.closest("#switchLink")) {
+
+        event.preventDefault();
+
+        setMode(mode === "login" ? "signup" : "login");
+
+    }
+
+});
+
+/* SHOW / HIDE PASSWORD */
+
+$("togglePass").addEventListener("click", () => {
+
+    const field = $("password");
+
+    const visible = field.type === "password";
+
+    field.type = visible ? "text" : "password";
+
+    $("togglePass").textContent = visible ? "HIDE" : "SHOW";
+
+});
+
+/* FORGOT PASSWORD */
+
+$("forgotLink").addEventListener("click", event => {
+
+    event.preventDefault();
+
+    $("notice").className = "notice show";
+
+    $("notice").textContent =
+        "Password reset will be available when the authentication backend and email service are connected.";
+
+});
+
+/* FORM VALIDATION */
+
+$("authForm").addEventListener("submit", event => {
+
+    event.preventDefault();
+
+    const email = $("email").value.trim();
+    const password = $("password").value;
+
+    const notice = $("notice");
+
+    notice.className = "notice";
+
+    if (mode === "signup" && !$("fullName").value.trim()) {
+
+        $("fullName").focus();
+
+        notice.textContent = "Please enter your full name.";
+
+        notice.classList.add("show", "error");
+
+        return;
+    }
+
+    if (!email || !$("email").checkValidity()) {
+
+        $("email").focus();
+
+        notice.textContent = "Please enter a valid email address.";
+
+        notice.classList.add("show", "error");
+
+        return;
+    }
+
+    if (password.length < 8) {
+
+        $("password").focus();
+
+        notice.textContent =
+            "Password must contain at least 8 characters.";
+
+        notice.classList.add("show", "error");
+
+        return;
+    }
+
+    if (mode === "signup" &&
+        password !== $("confirmPassword").value) {
+
+        $("confirmPassword").focus();
+
+        notice.textContent = "Your passwords do not match.";
+
+        notice.classList.add("show", "error");
+
+        return;
+    }
+
+    if (mode === "signup" && !$("agree").checked) {
+
+        notice.textContent = "Please accept the terms to continue.";
+
+        notice.classList.add("show", "error");
+
+        return;
+    }
+
+    if (mode === "signup") {
+
+        notice.textContent =
+            "The form is valid. Connect a backend (for example, Node.js/Express with a database) to create and store user accounts.";
+
+    } else {
+
+        notice.textContent =
+            "The form is valid. Connect your authentication API to verify credentials and start a secure session.";
+
+    }
+
+    notice.classList.add("show");
+
+});
+
+/* INITIAL MODE FROM HOMEPAGE */
+
+const initial =
+    new URLSearchParams(window.location.search).get("mode");
+
+setMode(initial === "signup" ? "signup" : "login");
+
+</script>
+
+</body>
+</html>

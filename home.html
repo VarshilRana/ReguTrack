@@ -1,0 +1,3071 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f8faf9">
+<meta name="description" content="ReguTrack connects pharmaceutical regulatory intelligence, product registration, CTD dossier management and AI-assisted regulatory impact assessment.">
+<title>ReguTrack — Connected Regulatory Intelligence</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --green:#176b57;
+    --green-dark:#105343;
+    --green-soft:#e8f4ee;
+    --ink:#172c27;
+    --muted:#71817b;
+    --bg:#f8faf9;
+    --white:#fff;
+    --line:#e6ede8;
+    --shadow:0 18px 55px rgba(25,65,48,.08);
+    --radius:18px;
+}
+
+* {
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html {
+    scroll-behavior:smooth;
+    scroll-padding-top:88px;
+}
+
+body {
+    font-family:"DM Sans",sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.65;
+    overflow-x:hidden;
+}
+
+a {
+    text-decoration:none;
+    color:inherit;
+}
+
+button {
+    font:inherit;
+    cursor:pointer;
+}
+
+.container {
+    width:min(1160px,calc(100% - 44px));
+    margin:auto;
+}
+
+.section {
+    padding:100px 0;
+}
+
+.label {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--green-soft);
+    color:var(--green);
+    border-radius:30px;
+    padding:7px 13px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.7px;
+    text-transform:uppercase;
+}
+
+.heading {
+    text-align:center;
+    margin:0 auto 48px;
+    max-width:760px;
+}
+
+.heading h2,
+.feature-copy h2,
+.hero h1,
+.ai-copy h2,
+.cta h2 {
+    font-family:Manrope,sans-serif;
+    letter-spacing:-1.5px;
+    line-height:1.16;
+    font-weight:800;
+}
+
+.heading h2 {
+    font-size:clamp(31px,4vw,45px);
+    margin-top:17px;
+}
+
+.heading p {
+    color:var(--muted);
+    font-size:15px;
+    line-height:1.85;
+    max-width:650px;
+    margin:15px auto 0;
+}
+
+.green {
+    color:var(--green);
+}
+
+.btn {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    padding:13px 20px;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:700;
+    border:1px solid transparent;
+    transition:.25s;
+}
+
+.btn-primary {
+    background:var(--green);
+    color:#fff;
+    box-shadow:0 7px 18px #176b5726;
+}
+
+.btn-primary:hover {
+    background:var(--green-dark);
+    transform:translateY(-3px);
+    box-shadow:0 12px 25px #176b5733;
+}
+
+.btn-outline {
+    background:#fff;
+    border-color:var(--line);
+    color:var(--ink);
+}
+
+.btn-outline:hover {
+    border-color:#9fc7b1;
+    color:var(--green);
+    transform:translateY(-2px);
+}
+
+/* NAVIGATION */
+
+.navbar {
+    position:fixed;
+    inset:0 0 auto;
+    z-index:100;
+    background:#f8faf9ef;
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid #e6ede8cc;
+    transition:box-shadow .25s;
+}
+
+.nav-inner {
+    height:76px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+}
+
+.logo {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font:800 22px Manrope,sans-serif;
+    letter-spacing:-.8px;
+    white-space:nowrap;
+}
+
+.logo-mark {
+    height:38px;
+    width:38px;
+    border-radius:12px;
+    background:var(--green);
+    color:#fff;
+    display:grid;
+    place-items:center;
+    font-size:20px;
+}
+
+.logo-name span {
+    color:var(--green);
+}
+
+.nav-links {
+    display:flex;
+    align-items:center;
+    gap:28px;
+}
+
+.nav-links a,
+.login {
+    font-size:12px;
+    font-weight:700;
+    color:#66766e;
+    transition:.2s;
+}
+
+.nav-links a:hover,
+.login:hover {
+    color:var(--green);
+}
+
+.nav-actions {
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.menu-toggle {
+    display:none;
+    background:none;
+    border:0;
+    font-size:24px;
+    color:var(--ink);
+}
+
+/* HERO */
+
+.hero {
+    padding:153px 0 88px;
+    background:
+        radial-gradient(ellipse at 83% 35%,#d9eee2a8,transparent 43%),
+        radial-gradient(ellipse at 8% 5%,#e8f2e9,transparent 36%),
+        var(--bg);
+    overflow:hidden;
+}
+
+.hero-grid {
+    display:grid;
+    grid-template-columns:1fr .96fr;
+    align-items:center;
+    gap:52px;
+}
+
+.hero-content {
+    position:relative;
+    z-index:2;
+}
+
+.pulse {
+    height:8px;
+    width:8px;
+    border-radius:50%;
+    background:#31a879;
+    box-shadow:0 0 0 4px #e0f5e9;
+}
+
+.hero-badge {
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:#fff;
+    border:1px solid var(--line);
+    padding:8px 13px;
+    border-radius:30px;
+    color:var(--green);
+    font-size:11px;
+    font-weight:700;
+    margin-bottom:23px;
+    box-shadow:0 4px 14px #173e2a09;
+}
+
+.hero h1 {
+    font-size:clamp(42px,5.2vw,64px);
+    letter-spacing:-2.8px;
+    margin-bottom:22px;
+}
+
+.hero-copy {
+    max-width:560px;
+    color:var(--muted);
+    font-size:15px;
+    line-height:1.9;
+    margin-bottom:27px;
+}
+
+.hero-buttons {
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.hero-note {
+    font-size:11px;
+    color:#8a9891;
+    margin-top:20px;
+}
+
+.dashboard-wrap {
+    position:relative;
+    perspective:1000px;
+}
+
+.dashboard {
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:21px;
+    box-shadow:0 26px 75px #1a46311f;
+    animation:float 7s ease-in-out infinite;
+    transform:rotateY(-4deg);
+}
+
+@keyframes float {
+    0%,100% { transform:rotateY(-4deg) translateY(0); }
+    50% { transform:rotateY(-4deg) translateY(-10px); }
+}
+
+.dash-head {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-bottom:16px;
+    border-bottom:1px solid var(--line);
+}
+
+.dash-head strong {
+    font-size:14px;
+}
+
+.dash-head small {
+    display:block;
+    color:#91a097;
+    font-size:10px;
+}
+
+.avatar {
+    height:34px;
+    width:34px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:var(--green-soft);
+    color:var(--green);
+    font-size:11px;
+    font-weight:800;
+}
+
+.stats {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:9px;
+    margin:18px 0;
+}
+
+.stat {
+    padding:12px 10px;
+    background:#f7faf8;
+    border:1px solid #edf2ee;
+    border-radius:11px;
+}
+
+.stat small {
+    display:block;
+    color:#819087;
+    font-size:9px;
+}
+
+.stat strong {
+    font:800 21px Manrope,sans-serif;
+}
+
+.chart-title {
+    display:flex;
+    justify-content:space-between;
+    font-size:11px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.chart-title small {
+    color:#91a097;
+    font-weight:500;
+}
+
+.chart {
+    height:100px;
+    display:flex;
+    align-items:end;
+    gap:9px;
+    padding:0 8px;
+    border-bottom:1px solid var(--line);
+    background:repeating-linear-gradient(to bottom,transparent 0,transparent 32px,#eff3f0 33px);
+}
+
+.bar {
+    flex:1;
+    border-radius:5px 5px 0 0;
+    background:linear-gradient(#8bc9a8,var(--green));
+    transform-origin:bottom;
+    animation:grow 1.2s ease both;
+}
+
+@keyframes grow {
+    from { transform:scaleY(0); }
+    to { transform:scaleY(1); }
+}
+
+.activity-title {
+    font-size:11px;
+    font-weight:800;
+    margin:17px 0 8px;
+}
+
+.activity {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    padding:10px 0;
+    border-top:1px solid #f0f3f0;
+    font-size:10px;
+}
+
+.activity small {
+    display:block;
+    color:#89968f;
+    font-size:9px;
+}
+
+.pill {
+    font-size:9px;
+    padding:4px 8px;
+    border-radius:20px;
+    background:#e8f5ed;
+    color:#25835c;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.pill.amber {
+    background:#fff4df;
+    color:#9b6a1b;
+}
+
+.float-note {
+    position:absolute;
+    bottom:34px;
+    left:-37px;
+    background:#fff;
+    border:1px solid var(--line);
+    box-shadow:var(--shadow);
+    border-radius:12px;
+    padding:12px 15px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    animation:floatNote 5s ease-in-out infinite;
+}
+
+@keyframes floatNote {
+    0%,100% { transform:translateY(0); }
+    50% { transform:translateY(-8px); }
+}
+
+.float-icon {
+    height:34px;
+    width:34px;
+    border-radius:10px;
+    background:var(--green-soft);
+    color:var(--green);
+    display:grid;
+    place-items:center;
+}
+
+.float-note strong {
+    font-size:11px;
+    display:block;
+}
+
+.float-note small {
+    font-size:9px;
+    color:var(--muted);
+}
+
+/* AUTHORITIES */
+
+.authorities {
+    background:#fff;
+    border-block:1px solid var(--line);
+    padding:24px 0;
+}
+
+.authority-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.authority-intro {
+    font-size:10px;
+    color:#93a097;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    font-weight:700;
+}
+
+.authority {
+    font:800 17px Manrope,sans-serif;
+    color:#77867e;
+    letter-spacing:-.4px;
+}
+
+/* REGULATORY CHALLENGE */
+
+.problem-band {
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:65px 0;
+}
+
+.problem-grid {
+    display:grid;
+    grid-template-columns:.85fr 1.15fr;
+    gap:60px;
+    align-items:center;
+}
+
+.problem-grid h2 {
+    font:800 32px/1.2 Manrope,sans-serif;
+    letter-spacing:-1px;
+    margin:15px 0;
+}
+
+.problem-grid>div>p {
+    color:var(--muted);
+    font-size:17px;
+    line-height:1.85;
+}
+
+.problem-list {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:13px;
+}
+
+.problem-item {
+    padding:17px;
+    background:#f8faf9;
+    border:1px solid var(--line);
+    border-radius:13px;
+    font-size:15px;
+    font-weight:700;
+}
+
+.problem-item span {
+    display:block;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:400;
+    margin-top:7px;
+    line-height:1.7;
+}
+
+/* PLATFORM */
+
+.platform-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.info-card {
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:27px;
+    transition:.3s;
+}
+
+.info-card:hover {
+    transform:translateY(-6px);
+    box-shadow:var(--shadow);
+    border-color:#c5ddce;
+}
+
+.icon-box {
+    height:46px;
+    width:46px;
+    border-radius:13px;
+    background:var(--green-soft);
+    color:var(--green);
+    display:grid;
+    place-items:center;
+    font-size:20px;
+    margin-bottom:20px;
+}
+
+.info-card h3 {
+    font:700 16px Manrope,sans-serif;
+    margin-bottom:9px;
+}
+
+.info-card p {
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.85;
+}
+
+/* CTD */
+
+.ctd-section {
+    background:#eff5f1;
+}
+
+.ctd-grid {
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:12px;
+}
+
+.ctd-card {
+    background:#fff;
+    border:1px solid #e2ebe4;
+    border-radius:15px;
+    padding:20px 17px;
+    transition:.3s;
+    min-width:0;
+}
+
+.ctd-card:hover {
+    transform:translateY(-5px);
+    box-shadow:var(--shadow);
+    border-color:#b8d5c2;
+}
+
+.ctd-top {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+}
+
+.ctd-number {
+    font:800 25px Manrope,sans-serif;
+    color:#b7d7c3;
+}
+
+.ctd-tag {
+    font-size:9px;
+    font-weight:700;
+    color:var(--green);
+    background:var(--green-soft);
+    padding:4px 7px;
+    border-radius:20px;
+}
+
+.ctd-card h3 {
+    font:700 14px/1.4 Manrope,sans-serif;
+    margin-bottom:8px;
+}
+
+.ctd-card p {
+    font-size:11px;
+    line-height:1.7;
+    color:var(--muted);
+    min-height:94px;
+}
+
+.ctd-card ul {
+    list-style:none;
+    border-top:1px solid var(--line);
+    padding-top:12px;
+    margin-top:12px;
+}
+
+.ctd-card li {
+    font-size:10px;
+    color:#607169;
+    padding:4px 0;
+}
+
+.ctd-card li:before {
+    content:"✓";
+    color:var(--green);
+    font-weight:800;
+    margin-right:7px;
+}
+
+.ctd-note {
+    max-width:780px;
+    margin:25px auto 0;
+    text-align:center;
+    color:#78877f;
+    font-size:11px;
+    line-height:1.8;
+}
+
+/* FEATURES */
+
+.features {
+    background:#fff;
+}
+
+.feature-layout {
+    display:grid;
+    grid-template-columns:.88fr 1.12fr;
+    align-items:center;
+    gap:65px;
+}
+
+.feature-copy h2 {
+    font-size:clamp(30px,3.7vw,42px);
+    margin:18px 0;
+}
+
+.feature-copy>p {
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.9;
+}
+
+.feature-points {
+    display:grid;
+    gap:14px;
+    margin-top:23px;
+}
+
+.feature-point {
+    display:flex;
+    gap:11px;
+    align-items:flex-start;
+    font-size:12px;
+    font-weight:600;
+}
+
+.check {
+    flex:0 0 22px;
+    height:22px;
+    border-radius:50%;
+    background:#dcefe4;
+    color:var(--green);
+    display:grid;
+    place-items:center;
+}
+
+.module-panel {
+    background:#fbfdfb;
+    border:1px solid var(--line);
+    border-radius:19px;
+    padding:23px;
+    box-shadow:var(--shadow);
+}
+
+.panel-head {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:17px;
+}
+
+.panel-head strong {
+    font-size:13px;
+}
+
+.panel-head span {
+    font-size:10px;
+    color:var(--green);
+    font-weight:700;
+}
+
+.module {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px;
+    border:1px solid var(--line);
+    border-radius:11px;
+    background:#fff;
+    margin-top:9px;
+    transition:.2s;
+}
+
+.module:hover {
+    background:#f5faf6;
+    border-color:#c3dacb;
+}
+
+.module-icon {
+    height:35px;
+    width:35px;
+    flex:0 0 35px;
+    border-radius:9px;
+    background:var(--green-soft);
+    color:var(--green);
+    display:grid;
+    place-items:center;
+    font-size:11px;
+    font-weight:800;
+}
+
+.module-info {
+    flex:1;
+}
+
+.module-info strong {
+    display:block;
+    font-size:11px;
+}
+
+.module-info small {
+    font-size:9px;
+    color:var(--muted);
+}
+
+.module-status {
+    font-size:9px;
+    color:var(--green);
+    background:var(--green-soft);
+    padding:4px 7px;
+    border-radius:20px;
+}
+
+/* WORKFLOW */
+
+.workflow-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.workflow-card {
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:25px;
+}
+
+.step {
+    font:800 38px Manrope,sans-serif;
+    color:#c7dfd0;
+    margin-bottom:12px;
+}
+
+.workflow-card h3 {
+    font:700 15px Manrope,sans-serif;
+    margin-bottom:8px;
+}
+
+.workflow-card p {
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.85;
+}
+
+.workflow-card small {
+    display:block;
+    color:var(--green);
+    font-weight:700;
+    font-size:10px;
+    margin-top:14px;
+}
+
+/* SOURCES */
+
+.sources {
+    background:#fff;
+}
+
+.source-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.source-card {
+    border:1px solid var(--line);
+    border-radius:15px;
+    padding:23px 18px;
+    transition:.25s;
+}
+
+.source-card:hover {
+    transform:translateY(-4px);
+    border-color:#b8d5c2;
+    background:#fbfdfb;
+}
+
+.source-mark {
+    height:45px;
+    width:45px;
+    border-radius:13px;
+    background:var(--green-soft);
+    color:var(--green);
+    display:grid;
+    place-items:center;
+    font:800 13px Manrope,sans-serif;
+    margin-bottom:14px;
+}
+
+.source-card h3 {
+    font:700 14px Manrope,sans-serif;
+    margin-bottom:6px;
+}
+
+.source-card p {
+    font-size:11px;
+    color:var(--muted);
+    line-height:1.7;
+}
+
+.source-footnote {
+    font-size:10px;
+    color:#8b9991;
+    margin-top:18px;
+    line-height:1.7;
+}
+
+/* AI IMPACT */
+
+.ai-section {
+    padding:90px 0;
+}
+
+.ai-card {
+    background:linear-gradient(120deg,#124e40,#176b57 65%,#328b68);
+    border-radius:23px;
+    color:#fff;
+    padding:56px;
+    display:grid;
+    grid-template-columns:1.08fr .92fr;
+    gap:40px;
+    align-items:center;
+    position:relative;
+    overflow:hidden;
+}
+
+.ai-card:after {
+    content:"";
+    position:absolute;
+    width:380px;
+    height:380px;
+    border:1px solid #ffffff20;
+    border-radius:50%;
+    right:-90px;
+    top:-180px;
+    box-shadow:0 0 0 40px #ffffff08,0 0 0 80px #ffffff08;
+}
+
+.ai-copy,
+.impact-panel {
+    position:relative;
+    z-index:1;
+}
+
+.ai-copy .label {
+    background:#ffffff20;
+    color:#fff;
+}
+
+.ai-copy h2 {
+    font-size:clamp(30px,3.5vw,42px);
+    margin:19px 0;
+}
+
+.ai-copy p {
+    font-size:13px;
+    color:#d3e8de;
+    line-height:1.9;
+    margin-bottom:22px;
+}
+
+.ai-copy .btn {
+    background:#fff;
+    color:var(--green);
+}
+
+.impact-panel {
+    background:#ffffff12;
+    border:1px solid #ffffff35;
+    border-radius:15px;
+    padding:22px;
+    backdrop-filter:blur(10px);
+}
+
+.impact-panel h3 {
+    font-size:12px;
+    margin-bottom:13px;
+}
+
+.impact-row {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    padding:12px 0;
+    border-bottom:1px solid #ffffff25;
+    font-size:10px;
+}
+
+.impact-row:last-child {
+    border:0;
+}
+
+.impact-tag {
+    background:#ffffff20;
+    border-radius:20px;
+    padding:4px 8px;
+    font-size:9px;
+    white-space:nowrap;
+}
+
+/* HUMAN REVIEW */
+
+.human-box {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:35px;
+    align-items:center;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:30px;
+    margin-top:25px;
+}
+
+.human-box h3 {
+    font:700 17px Manrope,sans-serif;
+    margin:10px 0;
+}
+
+.human-box p {
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.8;
+}
+
+.human-points {
+    display:grid;
+    gap:10px;
+}
+
+.human-points div {
+    font-size:11px;
+    font-weight:600;
+    display:flex;
+    gap:9px;
+    align-items:center;
+}
+
+.human-points span {
+    color:var(--green);
+    font-weight:800;
+}
+
+/* FAQ */
+
+.faq-list {
+    max-width:800px;
+    margin:auto;
+}
+
+.faq-item {
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    margin-bottom:10px;
+    overflow:hidden;
+}
+
+.faq-question {
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    text-align:left;
+    padding:18px 20px;
+    border:0;
+    background:#fff;
+    color:var(--ink);
+    font-size:12px;
+    font-weight:700;
+}
+
+.faq-question span {
+    font-size:20px;
+    color:var(--green);
+    transition:.25s;
+}
+
+.faq-answer {
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .35s ease;
+}
+
+.faq-answer p {
+    padding:0 20px 18px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.85;
+}
+
+.faq-item.active .faq-answer {
+    max-height:220px;
+}
+
+.faq-item.active .faq-question span {
+    transform:rotate(45deg);
+}
+
+/* CTA AND FOOTER */
+
+.cta {
+    background:#eaf3ed;
+    text-align:center;
+    padding:82px 20px;
+}
+
+.cta h2 {
+    font-size:clamp(31px,4vw,44px);
+    max-width:680px;
+    margin:17px auto;
+}
+
+.cta p {
+    font-size:13px;
+    color:var(--muted);
+    max-width:590px;
+    margin:0 auto 25px;
+    line-height:1.8;
+}
+
+footer {
+    background:#112e26;
+    color:#fff;
+    padding:58px 0 23px;
+}
+
+.footer-grid {
+    display:grid;
+    grid-template-columns:1.5fr 1fr 1fr 1fr;
+    gap:35px;
+    padding-bottom:38px;
+}
+
+.footer-brand p {
+    font-size:11px;
+    color:#b0c5b9;
+    max-width:290px;
+    line-height:1.9;
+    margin-top:15px;
+}
+
+.footer-col h4 {
+    font-size:12px;
+    margin-bottom:15px;
+}
+
+.footer-col a {
+    display:block;
+    color:#b0c5b9;
+    font-size:11px;
+    margin:10px 0;
+    transition:.2s;
+}
+
+.footer-col a:hover {
+    color:#fff;
+}
+
+.footer-bottom {
+    border-top:1px solid #ffffff20;
+    padding-top:18px;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+    color:#a6b9af;
+    font-size:10px;
+}
+
+/* SCROLL REVEAL */
+
+.reveal {
+    opacity:0;
+    transform:translateY(22px);
+    transition:opacity .7s ease,transform .7s ease;
+}
+
+.reveal.visible {
+    opacity:1;
+    transform:translateY(0);
+}
+
+.delay-1 { transition-delay:.1s; }
+.delay-2 { transition-delay:.2s; }
+.delay-3 { transition-delay:.3s; }
+
+/* READABILITY */
+
+body {
+    font-size:16px;
+}
+
+.section {
+    padding:82px 0;
+}
+
+.heading {
+    margin-bottom:38px;
+}
+
+.heading p {
+    font-size:16px;
+    line-height:1.8;
+}
+
+.label {
+    font-size:12px;
+    padding:8px 14px;
+}
+
+.nav-links a,
+.login {
+    font-size:13px;
+}
+
+.hero-copy {
+    font-size:17px;
+    line-height:1.85;
+}
+
+.hero-note {
+    font-size:13px;
+}
+
+.authority-intro {
+    font-size:11px;
+}
+
+.authority {
+    font-size:19px;
+}
+
+.problem-band {
+    padding:54px 0;
+}
+
+.problem-grid {
+    gap:42px;
+}
+
+.problem-grid>div>p {
+    font-size:17px;
+    line-height:1.85;
+}
+
+.problem-list {
+    gap:12px;
+}
+
+.problem-item {
+    padding:19px;
+    font-size:15px;
+    line-height:1.5;
+}
+
+.problem-item span {
+    font-size:14px;
+    line-height:1.7;
+}
+
+.info-card {
+    padding:30px;
+}
+
+.info-card h3 {
+    font-size:18px;
+}
+
+.info-card p {
+    font-size:14px;
+    line-height:1.85;
+}
+
+.ctd-card {
+    padding:22px 19px;
+}
+
+.ctd-card h3 {
+    font-size:15px;
+}
+
+.ctd-card p {
+    font-size:13px;
+    line-height:1.75;
+    min-height:105px;
+}
+
+.ctd-card li {
+    font-size:12px;
+    line-height:1.6;
+}
+
+.ctd-note {
+    font-size:12px;
+    line-height:1.8;
+}
+
+.feature-copy>p {
+    font-size:16px;
+    line-height:1.85;
+}
+
+.feature-point {
+    font-size:14px;
+    line-height:1.65;
+}
+
+.module-panel {
+    padding:25px;
+}
+
+.panel-head strong {
+    font-size:14px;
+}
+
+.panel-head span {
+    font-size:11px;
+}
+
+.module {
+    padding:15px;
+}
+
+.module-info strong {
+    font-size:13px;
+}
+
+.module-info small {
+    font-size:11px;
+}
+
+.module-status {
+    font-size:10px;
+}
+
+.workflow-card {
+    padding:28px;
+}
+
+.workflow-card h3 {
+    font-size:17px;
+}
+
+.workflow-card p {
+    font-size:14px;
+    line-height:1.8;
+}
+
+.workflow-card small {
+    font-size:11px;
+}
+
+.source-card {
+    padding:25px 20px;
+}
+
+.source-card h3 {
+    font-size:16px;
+}
+
+.source-card p {
+    font-size:13px;
+    line-height:1.75;
+}
+
+.source-footnote {
+    font-size:12px;
+    line-height:1.8;
+}
+
+.ai-copy p {
+    font-size:15px;
+    line-height:1.85;
+}
+
+.impact-panel {
+    padding:25px;
+}
+
+.impact-panel h3 {
+    font-size:14px;
+}
+
+.impact-row {
+    font-size:12px;
+    padding:13px 0;
+}
+
+.impact-tag {
+    font-size:10px;
+}
+
+.human-box {
+    padding:34px;
+    gap:30px;
+}
+
+.human-box h3 {
+    font-size:19px;
+}
+
+.human-box p {
+    font-size:14px;
+    line-height:1.85;
+}
+
+.human-points div {
+    font-size:13px;
+}
+
+.faq-question {
+    font-size:14px;
+    padding:20px 22px;
+}
+
+.faq-answer p {
+    font-size:14px;
+    line-height:1.8;
+    padding:0 22px 20px;
+}
+
+.cta {
+    padding:72px 20px;
+}
+
+.cta p {
+    font-size:15px;
+    line-height:1.8;
+}
+
+.footer-brand p {
+    font-size:13px;
+}
+
+.footer-col h4 {
+    font-size:14px;
+}
+
+.footer-col a {
+    font-size:13px;
+}
+
+.footer-bottom {
+    font-size:12px;
+}
+
+.dash-head strong {
+    font-size:15px;
+}
+
+.dash-head small {
+    font-size:11px;
+}
+
+.stat small {
+    font-size:10px;
+}
+
+.chart-title {
+    font-size:12px;
+}
+
+.chart-title small {
+    font-size:11px;
+}
+
+.activity-title {
+    font-size:12px;
+}
+
+.activity {
+    font-size:11px;
+}
+
+.activity small {
+    font-size:10px;
+}
+
+.pill {
+    font-size:10px;
+}
+
+.float-note strong {
+    font-size:12px;
+}
+
+.float-note small {
+    font-size:10px;
+}
+
+/* AUTHENTICATION POPUP */
+
+.auth-modal {
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    display:grid;
+    place-items:center;
+    padding:22px;
+
+    background:rgba(8,28,19,.42);
+
+    -webkit-backdrop-filter:blur(13px) saturate(.82);
+    backdrop-filter:blur(13px) saturate(.82);
+
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:opacity .32s ease,visibility .32s ease;
+}
+
+.auth-modal.open {
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+.auth-dialog {
+    position:relative;
+    width:min(940px,100%);
+    height:min(680px,calc(100vh - 44px));
+
+    background:#fff;
+    border:1px solid rgba(228,238,231,.95);
+    border-radius:24px;
+    overflow:hidden;
+
+    box-shadow:0 32px 110px rgba(8,35,23,.34);
+
+    opacity:0;
+    transform:translateY(25px) scale(.965);
+
+    transition:
+        opacity .32s ease,
+        transform .42s cubic-bezier(.2,.8,.2,1);
+}
+
+.auth-modal.open .auth-dialog {
+    opacity:1;
+    transform:translateY(0) scale(1);
+}
+
+.auth-frame {
+    width:100%;
+    height:100%;
+    border:0;
+    display:block;
+    background:#fff;
+}
+
+.auth-close {
+    position:absolute;
+    z-index:5;
+    right:14px;
+    top:14px;
+
+    width:38px;
+    height:38px;
+
+    border:1px solid #e7eee9;
+    border-radius:50%;
+
+    background:rgba(255,255,255,.97);
+    color:#53665c;
+
+    font-size:23px;
+    line-height:1;
+
+    display:grid;
+    place-items:center;
+
+    box-shadow:0 3px 12px rgba(20,50,35,.08);
+    transition:background .2s,color .2s,transform .2s;
+}
+
+.auth-close:hover {
+    background:#176b57;
+    color:#fff;
+    transform:rotate(90deg);
+}
+
+body.auth-lock {
+    overflow:hidden;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1000px) {
+    .hero-grid {
+        grid-template-columns:1fr;
+        gap:55px;
+    }
+
+    .hero-content {
+        max-width:700px;
+    }
+
+    .dashboard-wrap {
+        max-width:620px;
+        width:100%;
+        margin:auto;
+    }
+
+    .ctd-grid {
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .feature-layout,
+    .problem-grid {
+        grid-template-columns:1fr;
+        gap:38px;
+    }
+
+    .ai-card {
+        grid-template-columns:1fr;
+        padding:42px;
+    }
+
+    .footer-grid {
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:720px) {
+    .container {
+        width:calc(100% - 34px);
+    }
+
+    .section {
+        padding:66px 0;
+    }
+
+    .nav-inner {
+        height:68px;
+    }
+
+    .menu-toggle {
+        display:block;
+    }
+
+    .nav-links {
+        display:none;
+        position:absolute;
+        top:68px;
+        left:0;
+        right:0;
+        background:#fff;
+        padding:20px 25px;
+        border-bottom:1px solid var(--line);
+        box-shadow:var(--shadow);
+        flex-direction:column;
+        align-items:flex-start;
+        gap:17px;
+    }
+
+    .nav-links.open {
+        display:flex;
+    }
+
+    .nav-actions .login {
+        display:none;
+    }
+
+    .nav-actions .btn {
+        padding:10px 12px;
+        font-size:11px;
+    }
+
+    .hero {
+        padding:125px 0 75px;
+    }
+
+    .hero h1 {
+        letter-spacing:-2px;
+    }
+
+    .float-note {
+        left:-4px;
+        bottom:-22px;
+    }
+
+    .authority-row {
+        justify-content:center;
+        text-align:center;
+    }
+
+    .authority-intro {
+        width:100%;
+    }
+
+    .problem-list {
+        grid-template-columns:1fr 1fr;
+    }
+
+    .platform-grid,
+    .workflow-grid {
+        grid-template-columns:1fr;
+    }
+
+    .ctd-grid {
+        grid-template-columns:1fr 1fr;
+    }
+
+    .ctd-card p {
+        min-height:0;
+    }
+
+    .source-grid {
+        grid-template-columns:1fr 1fr;
+    }
+
+    .ai-card {
+        padding:30px 22px;
+    }
+
+    .human-box {
+        grid-template-columns:1fr;
+        padding:22px;
+    }
+
+    .footer-grid {
+        grid-template-columns:1fr 1fr;
+        gap:25px 18px;
+    }
+
+    .footer-brand {
+        grid-column:1/-1;
+    }
+
+    .heading {
+        margin-bottom:30px;
+    }
+
+    .hero-copy {
+        font-size:16px;
+    }
+
+    .problem-band {
+        padding:45px 0;
+    }
+
+    .problem-grid {
+        gap:28px;
+    }
+
+    .problem-grid>div>p {
+        font-size:16px;
+    }
+
+    .problem-item {
+        padding:15px;
+        font-size:14px;
+    }
+
+    .problem-item span {
+        font-size:13px;
+    }
+
+    .info-card {
+        padding:24px;
+    }
+
+    .info-card p {
+        font-size:14px;
+    }
+
+    .ctd-card {
+        padding:18px 15px;
+    }
+
+    .ctd-card p {
+        min-height:0;
+        font-size:13px;
+    }
+
+    .workflow-card p {
+        font-size:14px;
+    }
+
+    .source-card p {
+        font-size:12px;
+    }
+
+    .human-box {
+        padding:24px;
+    }
+
+    .faq-question {
+        font-size:13px;
+    }
+
+    .faq-answer p {
+        font-size:13px;
+    }
+
+    .footer-brand p,
+    .footer-col a {
+        font-size:12px;
+    }
+
+    .auth-modal {
+        padding:10px;
+    }
+
+    .auth-dialog {
+        height:min(760px,calc(100vh - 20px));
+        border-radius:18px;
+    }
+
+    .auth-close {
+        right:10px;
+        top:10px;
+        width:34px;
+        height:34px;
+    }
+}
+
+@media(max-width:420px) {
+    .logo {
+        font-size:19px;
+    }
+
+    .logo-mark {
+        height:34px;
+        width:34px;
+    }
+
+    .nav-actions .btn {
+        padding:9px;
+    }
+
+    .hero-buttons .btn {
+        width:100%;
+    }
+
+    .stats {
+        gap:5px;
+    }
+
+    .stat {
+        padding:9px 6px;
+    }
+
+    .stat strong {
+        font-size:17px;
+    }
+
+    .ctd-grid {
+        grid-template-columns:1fr;
+    }
+
+    .source-grid {
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    *,
+    *:before,
+    *:after {
+        scroll-behavior:auto!important;
+        animation-duration:.01ms!important;
+        animation-iteration-count:1!important;
+        transition-duration:.01ms!important;
+    }
+
+    .reveal {
+        opacity:1;
+        transform:none;
+    }
+
+    .auth-modal,
+    .auth-dialog,
+    .auth-close {
+        transition:none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+
+<nav class="navbar" id="navbar">
+    <div class="container nav-inner">
+
+        <a href="#home" class="logo">
+            <span class="logo-mark">R</span>
+            <span class="logo-name">Regu<span>Track</span></span>
+        </a>
+
+        <div class="nav-links" id="navLinks">
+            <a href="#platform">Platform</a>
+            <a href="#ctd">CTD Dossiers</a>
+            <a href="#features">Capabilities</a>
+            <a href="#workflow">How it works</a>
+            <a href="#sources">Regulatory sources</a>
+        </div>
+
+        <div class="nav-actions">
+            <a class="login" href="#login" data-auth="login">Log in</a>
+
+            <a class="btn btn-primary" href="#signup" data-auth="signup">
+                Get started →
+            </a>
+
+            <button class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="Toggle menu"
+                    aria-expanded="false">
+                ☰
+            </button>
+        </div>
+
+    </div>
+</nav>
+
+<main>
+
+<!-- HERO -->
+
+<section class="hero" id="home">
+    <div class="container hero-grid">
+
+        <div class="hero-content">
+
+            <div class="hero-badge">
+                <span class="pulse"></span>
+                Pharmaceutical Regulatory Intelligence Platform
+            </div>
+
+            <h1>
+                Make regulatory complexity
+                <span class="green">easier to navigate.</span>
+            </h1>
+
+            <p class="hero-copy">
+                ReguTrack connects pharmaceutical product information,
+                CTD dossier documentation and regulatory intelligence
+                in one structured workspace. Understand regulatory
+                updates, identify potentially affected documents and
+                support informed review with AI-assisted impact assessment.
+            </p>
+
+            <div class="hero-buttons">
+                <a class="btn btn-primary"
+                   href="#signup"
+                   data-auth="signup">
+                    Explore ReguTrack →
+                </a>
+
+                <a class="btn btn-outline" href="#platform">
+                    Discover the platform ↓
+                </a>
+            </div>
+
+            <p class="hero-note">
+                Built to support regulatory teams — with human review
+                at the centre of every decision.
+            </p>
+
+        </div>
+
+        <div class="dashboard-wrap reveal">
+
+            <div class="dashboard">
+
+                <div class="dash-head">
+                    <div>
+                        <strong>Regulatory overview</strong>
+                        <small>Illustrative platform preview</small>
+                    </div>
+                    <div class="avatar">RA</div>
+                </div>
+
+                <div class="stats">
+                    <div class="stat">
+                        <small>Products</small>
+                        <strong>24</strong>
+                    </div>
+
+                    <div class="stat">
+                        <small>CTD dossiers</small>
+                        <strong class="green">18</strong>
+                    </div>
+
+                    <div class="stat">
+                        <small>Updates</small>
+                        <strong>12</strong>
+                    </div>
+                </div>
+
+                <div class="chart-title">
+                    Regulatory activity
+                    <small>Sample trend</small>
+                </div>
+
+                <div class="chart">
+                    <i class="bar" style="height:38%"></i>
+                    <i class="bar" style="height:57%"></i>
+                    <i class="bar" style="height:43%"></i>
+                    <i class="bar" style="height:75%"></i>
+                    <i class="bar" style="height:62%"></i>
+                    <i class="bar" style="height:90%"></i>
+                    <i class="bar" style="height:73%"></i>
+                    <i class="bar" style="height:100%"></i>
+                </div>
+
+                <div class="activity-title">Recent workspace activity</div>
+
+                <div class="activity">
+                    <div>
+                        <b>Guideline update recorded</b>
+                        <small>Regulatory intelligence</small>
+                    </div>
+                    <span class="pill">Logged</span>
+                </div>
+
+                <div class="activity">
+                    <div>
+                        <b>Product dossier review</b>
+                        <small>CTD documentation</small>
+                    </div>
+                    <span class="pill amber">In review</span>
+                </div>
+
+                <div class="activity">
+                    <div>
+                        <b>Potential document impact</b>
+                        <small>AI-assisted assessment</small>
+                    </div>
+                    <span class="pill">Review queue</span>
+                </div>
+
+            </div>
+
+            <div class="float-note">
+                <span class="float-icon">✦</span>
+                <div>
+                    <strong>Human-led verification</strong>
+                    <small>AI supports the review process</small>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- AUTHORITIES -->
+
+<section class="authorities">
+    <div class="container authority-row">
+        <span class="authority-intro">
+            Designed around major regulatory frameworks and authorities
+        </span>
+        <span class="authority">CDSCO</span>
+        <span class="authority">ICH</span>
+        <span class="authority">USFDA</span>
+        <span class="authority">EMA</span>
+    </div>
+</section>
+
+<!-- REGULATORY CHALLENGE -->
+
+<section class="problem-band">
+    <div class="container problem-grid reveal">
+
+        <div>
+            <span class="label">The regulatory challenge</span>
+
+            <h2>
+                Important information is often spread across
+                disconnected workflows.
+            </h2>
+
+            <p>
+                Regulatory teams work with evolving guidelines,
+                product registrations and extensive technical
+                documentation. Keeping these elements aligned
+                can make it difficult to understand which products
+                or dossier sections may need attention after a
+                regulatory change.
+            </p>
+        </div>
+
+        <div class="problem-list">
+
+            <div class="problem-item">
+                Scattered regulatory updates
+                <span>
+                    Guidelines and notifications can be difficult
+                    to monitor consistently.
+                </span>
+            </div>
+
+            <div class="problem-item">
+                Complex product records
+                <span>
+                    Registration details and supporting information
+                    need clear organization.
+                </span>
+            </div>
+
+            <div class="problem-item">
+                Extensive CTD documentation
+                <span>
+                    Large dossier structures require traceable
+                    document management.
+                </span>
+            </div>
+
+            <div class="problem-item">
+                Unclear change impact
+                <span>
+                    Teams need to assess whether a new requirement
+                    affects existing products or documents.
+                </span>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- PLATFORM -->
+
+<section class="section" id="platform">
+    <div class="container">
+
+        <div class="heading reveal">
+            <span class="label">The ReguTrack ecosystem</span>
+
+            <h2>
+                One connected workspace for
+                <span class="green">regulatory operations.</span>
+            </h2>
+
+            <p>
+                Bring product records, technical documentation and
+                regulatory updates together so teams can move from
+                information gathering to structured assessment.
+            </p>
+        </div>
+
+        <div class="platform-grid">
+
+            <article class="info-card reveal">
+                <div class="icon-box">⌕</div>
+                <h3>Regulatory intelligence</h3>
+                <p>
+                    Capture and organize guidelines, notifications,
+                    amendments and regulatory updates. Record source
+                    authority, publication date, effective date,
+                    topic and relevant references for easier review.
+                </p>
+            </article>
+
+            <article class="info-card reveal delay-1">
+                <div class="icon-box">▤</div>
+                <h3>Product registration</h3>
+                <p>
+                    Maintain a structured product register with
+                    product identity, dosage form, strength, market,
+                    registration details, lifecycle status and links
+                    to its supporting dossier.
+                </p>
+            </article>
+
+            <article class="info-card reveal delay-2">
+                <div class="icon-box">✧</div>
+                <h3>AI-assisted impact assessment</h3>
+                <p>
+                    Compare the content and subject of a regulatory
+                    update with product and dossier information to
+                    surface potentially relevant products and
+                    documents for human assessment.
+                </p>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+<!-- CTD MODULES -->
+
+<section class="section ctd-section" id="ctd">
+    <div class="container">
+
+        <div class="heading reveal">
+            <span class="label">Structured technical documentation</span>
+
+            <h2>
+                Understand the five modules of a
+                <span class="green">CTD dossier.</span>
+            </h2>
+
+            <p>
+                ReguTrack organizes technical submission content
+                around the Common Technical Document structure,
+                helping teams locate and manage information consistently.
+            </p>
+        </div>
+
+        <div class="ctd-grid">
+
+            <article class="ctd-card reveal">
+                <div class="ctd-top">
+                    <span class="ctd-number">01</span>
+                    <span class="ctd-tag">Regional</span>
+                </div>
+                <h3>Administrative Information</h3>
+                <p>
+                    Region-specific administrative and prescribing
+                    information for a regulatory submission.
+                </p>
+                <ul>
+                    <li>Application forms</li>
+                    <li>Product information</li>
+                    <li>Regional requirements</li>
+                    <li>Administrative documents</li>
+                </ul>
+            </article>
+
+            <article class="ctd-card reveal delay-1">
+                <div class="ctd-top">
+                    <span class="ctd-number">02</span>
+                    <span class="ctd-tag">Summaries</span>
+                </div>
+                <h3>CTD Summaries</h3>
+                <p>
+                    High-level summaries and overviews of the
+                    quality, nonclinical and clinical data.
+                </p>
+                <ul>
+                    <li>Quality overall summary</li>
+                    <li>Nonclinical overview</li>
+                    <li>Clinical overview</li>
+                    <li>Summary documents</li>
+                </ul>
+            </article>
+
+            <article class="ctd-card reveal delay-2">
+                <div class="ctd-top">
+                    <span class="ctd-number">03</span>
+                    <span class="ctd-tag">Quality</span>
+                </div>
+                <h3>Quality Documentation</h3>
+                <p>
+                    Detailed information about the drug substance,
+                    drug product, manufacturing and quality controls.
+                </p>
+                <ul>
+                    <li>Manufacturing process</li>
+                    <li>Specifications and methods</li>
+                    <li>Stability data</li>
+                    <li>Quality controls</li>
+                </ul>
+            </article>
+
+            <article class="ctd-card reveal delay-1">
+                <div class="ctd-top">
+                    <span class="ctd-number">04</span>
+                    <span class="ctd-tag">Nonclinical</span>
+                </div>
+                <h3>Nonclinical Study Reports</h3>
+                <p>
+                    Nonclinical pharmacology, pharmacokinetic
+                    and toxicology study reports.
+                </p>
+                <ul>
+                    <li>Pharmacology studies</li>
+                    <li>Pharmacokinetics</li>
+                    <li>Toxicology reports</li>
+                    <li>Study documentation</li>
+                </ul>
+            </article>
+
+            <article class="ctd-card reveal delay-2">
+                <div class="ctd-top">
+                    <span class="ctd-number">05</span>
+                    <span class="ctd-tag">Clinical</span>
+                </div>
+                <h3>Clinical Study Reports</h3>
+                <p>
+                    Clinical study information supporting the
+                    safety and efficacy evaluation of the product.
+                </p>
+                <ul>
+                    <li>Clinical study reports</li>
+                    <li>Clinical summaries</li>
+                    <li>Safety information</li>
+                    <li>Efficacy information</li>
+                </ul>
+            </article>
+
+        </div>
+
+        <p class="ctd-note">
+            CTD structure and document examples are presented for
+            orientation. Exact content and regional requirements
+            depend on the applicable submission pathway and authority.
+        </p>
+
+    </div>
+</section>
+
+<!-- FEATURES -->
+
+<section class="section features" id="features">
+    <div class="container feature-layout">
+
+        <div class="feature-copy reveal">
+            <span class="label">Platform capabilities</span>
+
+            <h2>
+                From product records to
+                <span class="green">document-level visibility.</span>
+            </h2>
+
+            <p>
+                ReguTrack is designed to connect the information
+                that regulatory teams already work with. Each
+                capability contributes to a traceable workflow
+                rather than functioning as an isolated tool.
+            </p>
+
+            <div class="feature-points">
+                <div class="feature-point">
+                    <span class="check">✓</span>
+                    <span>Centralized pharmaceutical product and registration records</span>
+                </div>
+
+                <div class="feature-point">
+                    <span class="check">✓</span>
+                    <span>Five-module CTD dossier organization and document tracking</span>
+                </div>
+
+                <div class="feature-point">
+                    <span class="check">✓</span>
+                    <span>Regulatory update records with source and date information</span>
+                </div>
+
+                <div class="feature-point">
+                    <span class="check">✓</span>
+                    <span>AI-assisted matching of updates to potentially relevant documents</span>
+                </div>
+
+                <div class="feature-point">
+                    <span class="check">✓</span>
+                    <span>Human review, assessment notes and decision tracking</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="module-panel reveal">
+
+            <div class="panel-head">
+                <strong>Connected platform modules</strong>
+                <span>● Workspace overview</span>
+            </div>
+
+            <div class="module">
+                <div class="module-icon">01</div>
+                <div class="module-info">
+                    <strong>Product registration</strong>
+                    <small>Product identity, markets and registration details</small>
+                </div>
+                <span class="module-status">Core</span>
+            </div>
+
+            <div class="module">
+                <div class="module-icon">02</div>
+                <div class="module-info">
+                    <strong>CTD dossier management</strong>
+                    <small>Structured Modules 1–5 document repository</small>
+                </div>
+                <span class="module-status">Core</span>
+            </div>
+
+            <div class="module">
+                <div class="module-icon">03</div>
+                <div class="module-info">
+                    <strong>Regulatory intelligence</strong>
+                    <small>Guideline, notification and amendment records</small>
+                </div>
+                <span class="module-status">Core</span>
+            </div>
+
+            <div class="module">
+                <div class="module-icon">04</div>
+                <div class="module-info">
+                    <strong>AI-assisted gap analysis</strong>
+                    <small>Potential missing or affected dossier information</small>
+                </div>
+                <span class="module-status">Assist</span>
+            </div>
+
+            <div class="module">
+                <div class="module-icon">05</div>
+                <div class="module-info">
+                    <strong>Impact assessment</strong>
+                    <small>Product-wise review and assessment workflow</small>
+                </div>
+                <span class="module-status">Assist</span>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- WORKFLOW -->
+
+<section class="section" id="workflow">
+    <div class="container">
+
+        <div class="heading reveal">
+            <span class="label">How it works</span>
+
+            <h2>
+                From regulatory change to
+                <span class="green">informed review.</span>
+            </h2>
+
+            <p>
+                A connected workflow helps teams organize an update,
+                understand where it may matter and document the review outcome.
+            </p>
+        </div>
+
+        <div class="workflow-grid">
+
+            <article class="workflow-card reveal">
+                <div class="step">01</div>
+                <h3>Capture the regulatory change</h3>
+                <p>
+                    Record the authority, source reference, publication
+                    date, effective date and relevant content of a
+                    guideline, notification or amendment.
+                </p>
+                <small>INPUT · REGULATORY INTELLIGENCE</small>
+            </article>
+
+            <article class="workflow-card reveal delay-1">
+                <div class="step">02</div>
+                <h3>Identify potentially affected records</h3>
+                <p>
+                    AI-assisted analysis compares the update with
+                    available product attributes and linked CTD
+                    documentation to surface possible relationships.
+                </p>
+                <small>ANALYSIS · PRODUCT + DOSSIER MAPPING</small>
+            </article>
+
+            <article class="workflow-card reveal delay-2">
+                <div class="step">03</div>
+                <h3>Verify, assess and document</h3>
+                <p>
+                    Regulatory professionals review the suggested
+                    matches, determine applicability, record rationale
+                    and identify any required follow-up.
+                </p>
+                <small>OUTPUT · HUMAN-VERIFIED ASSESSMENT</small>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+<!-- REGULATORY SOURCES -->
+
+<section class="section sources" id="sources">
+    <div class="container">
+
+        <div class="heading reveal">
+            <span class="label">Regulatory ecosystem</span>
+
+            <h2>
+                Designed around key
+                <span class="green">regulatory sources.</span>
+            </h2>
+
+            <p>
+                Organize information from major organizations and
+                authorities relevant to pharmaceutical development,
+                quality and registration.
+            </p>
+        </div>
+
+        <div class="source-grid">
+
+            <article class="source-card reveal">
+                <div class="source-mark">IN</div>
+                <h3>CDSCO</h3>
+                <p>
+                    India's national regulatory authority for drugs,
+                    cosmetics and related regulatory matters.
+                </p>
+            </article>
+
+            <article class="source-card reveal delay-1">
+                <div class="source-mark">ICH</div>
+                <h3>ICH</h3>
+                <p>
+                    International harmonisation guidelines covering
+                    quality, safety, efficacy and multidisciplinary topics.
+                </p>
+            </article>
+
+            <article class="source-card reveal delay-2">
+                <div class="source-mark">FDA</div>
+                <h3>USFDA</h3>
+                <p>
+                    United States authority responsible for regulating
+                    medicines and providing guidance for industry.
+                </p>
+            </article>
+
+            <article class="source-card reveal delay-3">
+                <div class="source-mark">EU</div>
+                <h3>EMA</h3>
+                <p>
+                    European Medicines Agency, supporting scientific
+                    evaluation and supervision of medicines in the EU.
+                </p>
+            </article>
+
+        </div>
+
+        <p class="source-footnote">
+            ReguTrack is an independent project and is not affiliated
+            with or endorsed by these authorities. Actual data coverage
+            depends on implemented source integrations and verified records.
+        </p>
+
+    </div>
+</section>
+
+<!-- AI IMPACT ASSESSMENT -->
+
+<section class="ai-section">
+    <div class="container">
+
+        <div class="ai-card reveal">
+
+            <div class="ai-copy">
+                <span class="label">Core innovation</span>
+
+                <h2>
+                    See which products and documents may need a closer look.
+                </h2>
+
+                <p>
+                    The AI-assisted Regulatory Impact Assessment Engine
+                    is designed to connect regulatory updates with
+                    product records and related CTD documents. It helps
+                    surface potential relationships so regulatory
+                    professionals can focus their review where it may be needed.
+                </p>
+
+                <a class="btn" href="#signup" data-auth="signup">
+                    Explore the platform →
+                </a>
+            </div>
+
+            <div class="impact-panel">
+                <h3>Illustrative impact assessment</h3>
+
+                <div class="impact-row">
+                    <span>Regulatory update</span>
+                    <span class="impact-tag">ICH guideline</span>
+                </div>
+
+                <div class="impact-row">
+                    <span>Potentially affected product</span>
+                    <span class="impact-tag">Product A</span>
+                </div>
+
+                <div class="impact-row">
+                    <span>Related dossier section</span>
+                    <span class="impact-tag">CTD Module 3</span>
+                </div>
+
+                <div class="impact-row">
+                    <span>Suggested next step</span>
+                    <span class="impact-tag">RA review</span>
+                </div>
+
+                <div class="impact-row">
+                    <span>Assessment outcome</span>
+                    <span class="impact-tag">Pending verification</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="human-box reveal">
+
+            <div>
+                <span class="label">Responsible AI workflow</span>
+                <h3>AI assistance. Professional judgement.</h3>
+
+                <p>
+                    Automated analysis can help identify possible links
+                    and prioritize review, but it does not independently
+                    determine regulatory applicability or replace
+                    qualified regulatory assessment.
+                </p>
+            </div>
+
+            <div class="human-points">
+                <div><span>✓</span> Review suggested product and document matches</div>
+                <div><span>✓</span> Confirm applicability against the source requirement</div>
+                <div><span>✓</span> Record rationale, decision and follow-up actions</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+
+<section class="section" id="faq">
+    <div class="container">
+
+        <div class="heading reveal">
+            <span class="label">Frequently asked questions</span>
+
+            <h2>
+                Learn more about <span class="green">ReguTrack.</span>
+            </h2>
+
+            <p>
+                Understand the platform, its documentation model
+                and the role of AI-assisted regulatory assessment.
+            </p>
+        </div>
+
+        <div class="faq-list reveal">
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    What is ReguTrack?<span>+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>
+                        ReguTrack is a pharmaceutical regulatory affairs
+                        platform concept that connects regulatory
+                        intelligence, product registration records,
+                        CTD dossier management and AI-assisted regulatory
+                        impact assessment in one workspace.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    What is the Common Technical Document (CTD)?<span>+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>
+                        The CTD is a harmonized format for organizing
+                        information in regulatory submissions. It contains
+                        five modules covering regional administrative
+                        information, summaries, quality, nonclinical
+                        study reports and clinical study reports.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    How does regulatory impact assessment work?<span>+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>
+                        A regulatory update is recorded and analyzed
+                        against available product and dossier information.
+                        The system can surface potentially related
+                        products and documents for review. Final
+                        applicability and actions must be determined
+                        by a regulatory professional.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    Does AI replace regulatory affairs professionals?<span>+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>
+                        No. AI is intended to assist with information
+                        analysis, matching and prioritization.
+                        Regulatory professionals remain responsible
+                        for interpreting requirements, confirming
+                        applicability and approving decisions.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    Which regulatory authorities are considered?<span>+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>
+                        The platform is designed around information
+                        from CDSCO, ICH, USFDA and EMA. The exact
+                        availability, freshness and scope of records
+                        depend on the data sources and integrations
+                        implemented in the application.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    Does ReguTrack guarantee regulatory compliance?<span>+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>
+                        No. ReguTrack is a workflow and information-support
+                        platform. It does not provide legal or regulatory
+                        approval, guarantee compliance or replace official
+                        authority guidance and qualified professional review.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+
+<section class="cta">
+    <div class="container reveal">
+        <span class="label">Explore ReguTrack</span>
+
+        <h2>
+            Bring clarity and connection to your regulatory workflow.
+        </h2>
+
+        <p>
+            Explore a structured approach to pharmaceutical product
+            information, CTD documentation and regulatory intelligence.
+        </p>
+
+        <a class="btn btn-primary" href="#signup" data-auth="signup">
+            Get started with ReguTrack →
+        </a>
+    </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+
+<footer>
+    <div class="container">
+
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+                <a href="#home" class="logo">
+                    <span class="logo-mark">R</span>
+                    <span class="logo-name">
+                        Regu<span style="color:#80c5a4">Track</span>
+                    </span>
+                </a>
+
+                <p>
+                    A pharmaceutical regulatory affairs platform concept
+                    connecting regulatory intelligence, product records
+                    and CTD documentation with AI-assisted impact assessment.
+                </p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Platform</h4>
+                <a href="#platform">Overview</a>
+                <a href="#ctd">CTD dossiers</a>
+                <a href="#features">Capabilities</a>
+                <a href="#workflow">How it works</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Explore</h4>
+                <a href="#sources">Regulatory sources</a>
+                <a href="#faq">FAQs</a>
+                <a href="#home">Back to top</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Account</h4>
+                <a href="#login" data-auth="login">Log in</a>
+                <a href="#signup" data-auth="signup">Create account</a>
+                <a href="mailto:contact@yourdomain.com">Contact</a>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <span>© <span id="year"></span> ReguTrack. All rights reserved.</span>
+            <span>Independent academic project · Not affiliated with regulatory authorities.</span>
+        </div>
+
+    </div>
+</footer>
+
+<!-- AUTHENTICATION POPUP -->
+
+<div class="auth-modal"
+     id="authModal"
+     aria-hidden="true"
+     role="dialog"
+     aria-modal="true"
+     aria-label="ReguTrack account access">
+
+    <div class="auth-dialog">
+
+        <button class="auth-close"
+                id="authClose"
+                type="button"
+                aria-label="Close authentication">
+            ×
+        </button>
+
+        <iframe
+            class="auth-frame"
+            id="authFrame"
+            title="ReguTrack sign in and sign up"
+            src="about:blank">
+        </iframe>
+
+    </div>
+</div>
+
+<script>
+
+/* AUTHENTICATION POPUP */
+
+const authModal = document.getElementById("authModal");
+const authFrame = document.getElementById("authFrame");
+const authClose = document.getElementById("authClose");
+
+let authReturnFocus = null;
+
+function openAuth(mode = "login") {
+
+    authReturnFocus = document.activeElement;
+
+    authFrame.src = "auth.html?mode=" + encodeURIComponent(mode);
+
+    authModal.classList.add("open");
+    authModal.setAttribute("aria-hidden", "false");
+
+    document.body.classList.add("auth-lock");
+
+    authClose.focus();
+}
+
+function closeAuth() {
+
+    authModal.classList.remove("open");
+    authModal.setAttribute("aria-hidden", "true");
+
+    document.body.classList.remove("auth-lock");
+
+    if (authReturnFocus && typeof authReturnFocus.focus === "function") {
+        authReturnFocus.focus();
+    }
+
+    window.setTimeout(() => {
+
+        if (!authModal.classList.contains("open")) {
+            authFrame.src = "about:blank";
+        }
+
+    }, 360);
+}
+
+/* Open login/signup buttons */
+
+document.querySelectorAll("[data-auth]").forEach(link => {
+
+    link.addEventListener("click", event => {
+
+        event.preventDefault();
+
+        openAuth(link.dataset.auth || "login");
+
+    });
+
+});
+
+/* Close button */
+
+authClose.addEventListener("click", closeAuth);
+
+/* Click outside the popup */
+
+authModal.addEventListener("click", event => {
+
+    if (event.target === authModal) {
+        closeAuth();
+    }
+
+});
+
+/* Escape key */
+
+document.addEventListener("keydown", event => {
+
+    if (
+        event.key === "Escape" &&
+        authModal.classList.contains("open")
+    ) {
+        closeAuth();
+    }
+
+});
+
+/* Messages from auth.html */
+
+window.addEventListener("message", event => {
+
+    if (event.origin !== window.location.origin) return;
+
+    if (event.data?.type === "regutrack-auth-close") {
+        closeAuth();
+    }
+
+    if (
+        event.data?.type === "regutrack-auth-mode" &&
+        ["login", "signup"].includes(event.data.mode)
+    ) {
+        openAuth(event.data.mode);
+    }
+
+});
+
+/* MOBILE NAVIGATION */
+
+const menuButton = document.getElementById("menuToggle");
+const navLinks = document.getElementById("navLinks");
+
+menuButton.addEventListener("click", () => {
+
+    const isOpen = navLinks.classList.toggle("open");
+
+    menuButton.textContent = isOpen ? "×" : "☰";
+
+    menuButton.setAttribute(
+        "aria-expanded",
+        String(isOpen)
+    );
+
+});
+
+document.querySelectorAll(".nav-links a").forEach(link => {
+
+    link.addEventListener("click", () => {
+
+        navLinks.classList.remove("open");
+
+        menuButton.textContent = "☰";
+
+        menuButton.setAttribute("aria-expanded", "false");
+
+    });
+
+});
+
+/* SCROLL REVEAL */
+
+const revealObserver = new IntersectionObserver((entries, observer) => {
+
+    entries.forEach(entry => {
+
+        if (entry.isIntersecting) {
+
+            entry.target.classList.add("visible");
+
+            observer.unobserve(entry.target);
+
+        }
+
+    });
+
+}, {
+    threshold: .12,
+    rootMargin: "0px 0px -25px 0px"
+});
+
+document.querySelectorAll(".reveal").forEach(element => {
+    revealObserver.observe(element);
+});
+
+/* FAQ ACCORDION */
+
+document.querySelectorAll(".faq-question").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const item = button.closest(".faq-item");
+
+        const wasOpen = item.classList.contains("active");
+
+        document.querySelectorAll(".faq-item").forEach(row => {
+
+            row.classList.remove("active");
+
+            row.querySelector(".faq-question")
+                .setAttribute("aria-expanded", "false");
+
+        });
+
+        if (!wasOpen) {
+
+            item.classList.add("active");
+
+            button.setAttribute("aria-expanded", "true");
+
+        }
+
+    });
+
+});
+
+/* NAVBAR SCROLL SHADOW */
+
+const navbar = document.getElementById("navbar");
+
+window.addEventListener("scroll", () => {
+
+    navbar.style.boxShadow =
+        window.scrollY > 25
+        ? "0 6px 24px rgba(20,50,35,.06)"
+        : "none";
+
+}, { passive: true });
+
+/* CURRENT YEAR */
+
+document.getElementById("year").textContent =
+    new Date().getFullYear();
+
+</script>
+
+</body>
+</html>
