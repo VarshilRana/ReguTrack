@@ -74,5 +74,33 @@ $('period').addEventListener('change',()=>toast('Date range selector will apply 
   });
 })();
 </script>
-<script type="module" src="js/auth-guard.js"></script>
+
+<script>
+(() => {
+  const sidebar = document.getElementById("sidebar");
+  const menuButton = document.getElementById("menuToggle");
+  if (!sidebar || !menuButton) return;
+
+  menuButton.setAttribute("aria-expanded", "false");
+  menuButton.addEventListener("click", () => {
+    const isOpen = sidebar.classList.toggle("open");
+    menuButton.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  document.addEventListener("click", event => {
+    if (window.innerWidth <= 900 && sidebar.classList.contains("open") &&
+        !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
+      sidebar.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  sidebar.querySelectorAll(".nav-link[href]").forEach(link => {
+    link.addEventListener("click", () => {
+      sidebar.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+    });
+  });
+})();
+</script><script type="module" src="js/auth-guard.js"></script>
 </body></html>
