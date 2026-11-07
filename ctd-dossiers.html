@@ -2037,13 +2037,16 @@ button{line-height:1.4}
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script type="module">
 /* ==========================================
    CTD DOSSIER MANAGEMENT
-   Frontend demo using browser localStorage
+   Product selection is loaded from Supabase.
+   Dossier documents/checklists remain legacy-only
+   until their dedicated backend step is implemented.
 ========================================== */
 
-const PRODUCT_KEY = "regutrack_products_v1";
+import { supabase } from "./js/supabaseClient.js";
+
 const DOSSIER_KEY = "regutrack_ctd_documents_v1";
 const PAGE_SIZE = 8;
 
@@ -2167,20 +2170,57 @@ function escapeHTML(value) {
     })[ch]);
 }
 
-/* STORAGE */
-function loadProducts() {
-    try {
-        const saved = localStorage.getItem(PRODUCT_KEY);
-        if (saved === null) {
-            products = [];
-            return;
-        }
-        const parsed = JSON.parse(saved);
-        products = Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-        console.error(error);
+/* PRODUCT DATA — authenticated Supabase query, protected by products RLS */
+async function loadProducts() {
+    const selector = $("productSelector");
+    selector.disabled = true;
+    selector.innerHTML = "";
+    selector.add(new Option("Loading products from workspace…", ""));
+
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !sessionData?.session) {
         products = [];
+        populateProductSelectors();
+        selector.innerHTML = "";
+        selector.add(new Option("Sign in to load products", ""));
+        selector.disabled = true;
+        $("selectedProductStatus").textContent = "Authentication required";
+        return;
     }
+
+    const { data, error } = await supabase
+        .from("products")
+        .select("id, product_code, product_name, generic_name, brand_name, dosage_form, strength, manufacturer, target_market, regulatory_authority, registration_number, registration_status")
+        .order("product_name", { ascending: true });
+
+    if (error) {
+        console.error("Supabase products query failed:", error);
+        products = [];
+        populateProductSelectors();
+        selector.innerHTML = "";
+        selector.add(new Option("Unable to load products — check access", ""));
+        selector.disabled = true;
+        $("selectedProductStatus").textContent = "Products unavailable";
+        showToast("Could not load products from Supabase: " + error.message);
+        return;
+    }
+
+    products = (data || []).map(row => ({
+        id: row.id,
+        code: row.product_code,
+        name: row.product_name,
+        genericName: row.generic_name,
+        brandName: row.brand_name,
+        dosageForm: row.dosage_form,
+        strength: row.strength,
+        manufacturer: row.manufacturer,
+        market: row.target_market,
+        authority: row.regulatory_authority,
+        registrationNumber: row.registration_number,
+        status: row.registration_status
+    }));
+
+    populateProductSelectors();
 }
 
 function loadDocuments() {
@@ -3021,11 +3061,10 @@ $("notificationButton").addEventListener("click", () => {
 });
 
 /* INITIALIZE */
-function initialize() {
-    loadProducts();
-    loadDocuments();
-    populateProductSelectors();
+async function initialize() {
     populateSections(activeModule);
+    await loadProducts();
+    loadDocuments();
 
     if (activeProductId) {
         $("uploadProduct").value = activeProductId;
@@ -3034,7 +3073,11 @@ function initialize() {
     selectModule("1");
 }
 
-initialize();
+initialize().catch(error => {
+    console.error("CTD page initialization failed:", error);
+    $("selectedProductStatus").textContent = "Initialization error";
+    showToast("CTD page could not finish loading. Check the browser console.");
+});
 </script>
 <script type="module" src="js/auth-guard.js"></script>
 </body>
