@@ -109,7 +109,24 @@ $("passwordBtn").addEventListener("click", async () => {
   toast(error ? error.message : "Password reset email sent.");
 });
 $("sessionsBtn").addEventListener("click", () => toast("Detailed active-session management is not included in Phase 1."));
-$("menu").addEventListener("click", () => $("sidebar").classList.toggle("open"));
+const settingsMenu = $("menu");
+const settingsSidebar = $("sidebar");
+settingsMenu?.setAttribute("aria-expanded", "false");
+settingsMenu?.addEventListener("click", () => {
+  const isOpen = settingsSidebar?.classList.toggle("open") || false;
+  settingsMenu.setAttribute("aria-expanded", String(isOpen));
+});
+document.addEventListener("click", event => {
+  if (window.innerWidth <= 900 && settingsSidebar?.classList.contains("open") &&
+      !settingsSidebar.contains(event.target) && !settingsMenu?.contains(event.target)) {
+    settingsSidebar.classList.remove("open");
+    settingsMenu?.setAttribute("aria-expanded", "false");
+  }
+});
+settingsSidebar?.querySelectorAll("a[href]").forEach(link => link.addEventListener("click", () => {
+  settingsSidebar.classList.remove("open");
+  settingsMenu?.setAttribute("aria-expanded", "false");
+}));
 document.querySelectorAll(".tab").forEach(button => button.addEventListener("click", () => {
   document.querySelectorAll(".tab").forEach(item => item.classList.toggle("active", item === button));
   document.getElementById(button.dataset.target).scrollIntoView({behavior:"smooth",block:"start"});
