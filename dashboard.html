@@ -924,6 +924,8 @@ tbody tr:last-child td { border-bottom: none; }
     to { opacity: 1; transform: translateY(0); }
 }
 
+.nav-link { transform: none; }
+.nav-link:hover { transform: translateX(2px); }
 /* RESPONSIVE */
 @media (max-width: 1150px) {
     .content { padding: 25px; }
@@ -2455,31 +2457,37 @@ button{line-height:1.4}
 <script>
 // SIDEBAR
 const sidebar = document.getElementById('sidebar');
-document.getElementById('menuToggle').addEventListener('click', () => {
-    sidebar.classList.toggle('open');
-});
+const menuToggle = document.getElementById('menuToggle');
+menuToggle?.addEventListener('click', () => sidebar?.classList.toggle('open'));
 
 document.addEventListener('click', (event) => {
-    if (window.innerWidth <= 900 &&
-        sidebar.classList.contains('open') &&
-        !sidebar.contains(event.target) &&
-        !event.target.closest('#menuToggle')) {
+    if (window.innerWidth <= 900 && sidebar?.classList.contains('open') &&
+        !sidebar.contains(event.target) && !event.target.closest('#menuToggle')) {
         sidebar.classList.remove('open');
     }
+});
+
+
+// Close the mobile navigation after selecting a destination and mark the current page.
+const currentPage = window.location.pathname.split('/').pop();
+document.querySelectorAll('.sidebar .nav-link[href]').forEach(link => {
+    const target = new URL(link.href, window.location.href).pathname.split('/').pop();
+    link.classList.toggle('active', target === currentPage);
+    link.addEventListener('click', () => sidebar?.classList.remove('open'));
 });
 
 // PROFILE DROPDOWN
 const profileButton = document.getElementById('profileButton');
 const profileDropdown = document.getElementById('profileDropdown');
 
-profileButton.addEventListener('click', (event) => {
+profileButton?.addEventListener('click', (event) => {
     event.stopPropagation();
-    profileDropdown.classList.toggle('show');
+    profileDropdown?.classList.toggle('show');
 });
 
 document.addEventListener('click', (event) => {
-    if (!profileButton.contains(event.target)) {
-        profileDropdown.classList.remove('show');
+    if (profileButton && !profileButton.contains(event.target)) {
+        profileDropdown?.classList.remove('show');
     }
 });
 
@@ -2546,193 +2554,101 @@ function showToast(message) {
     toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// PRODUCT TABLE SEARCH AND FILTER
+// OPTIONAL DASHBOARD INTERACTIONS
 const productSearch = document.getElementById('productSearch');
 const statusFilter = document.getElementById('statusFilter');
 const productTable = document.getElementById('productTable');
 const noProducts = document.getElementById('noProducts');
 
 function filterProducts() {
+    if (!productSearch || !statusFilter || !productTable) return;
     const query = productSearch.value.toLowerCase().trim();
     const status = statusFilter.value;
     const rows = productTable.querySelectorAll('tbody tr');
     let visible = 0;
-
     rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        const rowStatus = row.cells[4].textContent.trim();
-        const matchesQuery = text.includes(query);
-        const matchesStatus = !status || rowStatus === status;
-
-        row.style.display = matchesQuery && matchesStatus ? '' : 'none';
-
-        if (matchesQuery && matchesStatus) visible++;
+        const rowStatus = row.cells[4]?.textContent.trim() || '';
+        const matches = row.textContent.toLowerCase().includes(query) && (!status || rowStatus === status);
+        row.style.display = matches ? '' : 'none';
+        if (matches) visible++;
     });
-
-    noProducts.style.display = visible === 0 ? 'block' : 'none';
+    if (noProducts) noProducts.style.display = visible === 0 ? 'block' : 'none';
     productTable.style.display = visible === 0 ? 'none' : 'table';
 }
+productSearch?.addEventListener('input', filterProducts);
+statusFilter?.addEventListener('change', filterProducts);
 
-productSearch.addEventListener('input', filterProducts);
-statusFilter.addEventListener('change', filterProducts);
-
-// ADD PRODUCT - FRONTEND DEMO
-document.getElementById('productForm').addEventListener('submit', (event) => {
+document.getElementById('productForm')?.addEventListener('submit', (event) => {
     event.preventDefault();
-
-    const name = document.getElementById('newProductName').value.trim();
-    const code = document.getElementById('newProductCode').value.trim();
-    const dosage = document.getElementById('newProductForm').value;
-    const market = document.getElementById('newProductMarket').value;
-
-    if (!name || !code) {
-        showToast('Please complete the required fields.');
-        return;
-    }
-
-    const tbody = productTable.querySelector('tbody');
+    const name = document.getElementById('newProductName')?.value.trim();
+    const code = document.getElementById('newProductCode')?.value.trim();
+    const dosage = document.getElementById('newProductForm')?.value || '';
+    const market = document.getElementById('newProductMarket')?.value || '';
+    if (!name || !code || !productTable) { showToast('Complete the required product fields.'); return; }
     const row = document.createElement('tr');
-
-    const values = [
-        { text: name, className: 'product-name' },
-        { text: code },
-        { text: dosage },
-        { text: market }
-    ];
-
-    values.forEach((item, index) => {
+    [name, code, dosage, market].forEach((value, index) => {
         const cell = document.createElement('td');
-
         if (index === 0) {
             const title = document.createElement('span');
             title.className = 'product-name';
-            title.textContent = item.text;
-
+            title.textContent = value;
             const sub = document.createElement('span');
             sub.className = 'subtext';
             sub.textContent = 'New product';
-
             cell.append(title, sub);
-        } else {
-            cell.textContent = item.text;
-        }
-
+        } else cell.textContent = value;
         row.appendChild(cell);
     });
-
     const statusCell = document.createElement('td');
     const statusTag = document.createElement('span');
     statusTag.className = 'tag tag-grey';
     statusTag.textContent = 'Pending';
     statusCell.appendChild(statusTag);
     row.appendChild(statusCell);
-
     const progressCell = document.createElement('td');
     progressCell.className = 'progress-cell';
     progressCell.innerHTML = '<span class="progress-line"><span class="progress-fill" style="width:0%"></span></span><span class="progress-number">0%</span>';
     row.appendChild(progressCell);
-
     const actionCell = document.createElement('td');
     const viewButton = document.createElement('button');
+    viewButton.type = 'button';
     viewButton.className = 'icon-btn view-product';
     viewButton.innerHTML = '<i class="fa-regular fa-eye"></i>';
     viewButton.addEventListener('click', () => showToast('Product details will open in Product Management.'));
     actionCell.appendChild(viewButton);
     row.appendChild(actionCell);
-
-    tbody.prepend(row);
-
-    document.getElementById('productForm').reset();
+    productTable.querySelector('tbody')?.prepend(row);
+    document.getElementById('productForm')?.reset();
     closeModal('productModal');
-    showToast('Product added to this demo table.');
-
+    showToast('Product added to this demo table only.');
     filterProducts();
 });
 
-// ADD REGULATORY UPDATE - FRONTEND DEMO
-document.getElementById('updateForm').addEventListener('submit', (event) => {
+document.getElementById('updateForm')?.addEventListener('submit', (event) => {
     event.preventDefault();
-
-    const title = document.getElementById('updateTitle').value.trim();
-    const authority = document.getElementById('updateAuthority').value;
-    const reference = document.getElementById('updateReference').value.trim();
-    const date = document.getElementById('updateDate').value;
-
-    if (!title) {
-        showToast('Please enter an update title.');
-        return;
-    }
-
-    const list = document.querySelector('.update-list');
-    const item = document.createElement('div');
-    item.className = 'update-item';
-
-    const authorityBox = document.createElement('div');
-    authorityBox.className = 'authority-icon ' + (
-        authority === 'CDSCO' ? 'authority-cdsco' :
-        authority === 'ICH' ? 'authority-ich' :
-        authority === 'USFDA' ? 'authority-fda' : 'authority-ema'
-    );
-    authorityBox.textContent = authority === 'USFDA' ? 'FDA' : authority;
-
-    const info = document.createElement('div');
-    info.className = 'update-info';
-
-    const heading = document.createElement('h4');
-    heading.textContent = title;
-
-    const description = document.createElement('p');
-    description.textContent = authority + ' · ' + (reference || 'No reference number');
-
-    const meta = document.createElement('div');
-    meta.className = 'update-meta';
-
-    const status = document.createElement('span');
-    status.className = 'tag tag-blue';
-    status.textContent = 'New';
-
-    const dateText = document.createElement('span');
-    dateText.style.cssText = 'font-size:9px;color:#9aa69e;';
-    dateText.textContent = date || 'Date not specified';
-
-    meta.append(status, dateText);
-    info.append(heading, description, meta);
-    item.append(authorityBox, info);
-    list.prepend(item);
-
-    document.getElementById('updateForm').reset();
+    const title = document.getElementById('updateTitle')?.value.trim();
+    if (!title) { showToast('Please enter an update title.'); return; }
+    showToast('Regulatory update entry is a local demo only; database saving is not connected yet.');
+    document.getElementById('updateForm')?.reset();
     closeModal('updateModal');
-    showToast('Regulatory update added to this demo view.');
 });
 
-// GLOBAL SEARCH
-document.getElementById('globalSearch').addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-        const query = event.target.value.trim();
-        if (query) {
-            document.getElementById('productSearch').value = query;
-            filterProducts();
-            document.getElementById('productTable').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }
+document.getElementById('globalSearch')?.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter') return;
+    const query = event.target.value.trim();
+    if (!query || !productSearch || !productTable) return;
+    productSearch.value = query;
+    filterProducts();
+    productTable.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
-
-// NOTIFICATIONS
-document.getElementById('notificationButton').addEventListener('click', () => {
-    showToast('You have 5 illustrative items awaiting review.');
-});
-
-// PRODUCT VIEW BUTTONS
-document.querySelectorAll('.view-product').forEach(button => {
-    button.addEventListener('click', () => {
-        showToast('Product details will open in Product Management.');
-    });
-});
+document.getElementById('notificationButton')?.addEventListener('click', () => showToast('Notifications are illustrative until the notification module is connected.'));
+document.querySelectorAll('.view-product').forEach(button => button.addEventListener('click', () => showToast('Open Product Management to view product details.')));
 
 // CURRENT DATE GREETING
 const hour = new Date().getHours();
 const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-document.querySelector('.welcome h1').innerHTML = `${greeting}, Varshil <span>👋</span>`;
+const welcomeHeading = document.querySelector('.welcome h1');
+if (welcomeHeading && welcomeHeading.textContent.trim() === 'Platform overview') welcomeHeading.innerHTML = `${greeting}, <span>👋</span>`;
 
 </script>
 <script type="module" src="js/auth-guard.js"></script>
