@@ -256,7 +256,7 @@ $('exportBtn').addEventListener('click',exportCSV);$('addUpdateBtn').addEventLis
 $('notificationButton').addEventListener('click',()=>showToast('You have '+updates.filter(x=>x.status==='Pending review').length+' updates awaiting RA review.'));
 $('profileButton').addEventListener('click',e=>{if(e.target.closest('button'))return;$('profileDropdown').classList.toggle('show')});
 document.addEventListener('click',e=>{if(!e.target.closest('#profileButton'))$('profileDropdown').classList.remove('show')});
-$('menuToggle').addEventListener('click',()=>$('sidebar').classList.toggle('open'));
+
 $('detailModal').addEventListener('click',e=>{if(e.target===$('detailModal'))$('detailModal').classList.remove('show')});
 loadData();
 
@@ -265,14 +265,11 @@ loadData();
   const sidebar = document.getElementById("sidebar");
   const menuButton = document.getElementById("menuToggle");
   if (!sidebar || !menuButton) return;
-
-  // Keep one predictable mobile sidebar state across dashboard modules.
   menuButton.setAttribute("aria-expanded", "false");
   menuButton.addEventListener("click", () => {
     const isOpen = sidebar.classList.toggle("open");
     menuButton.setAttribute("aria-expanded", String(isOpen));
   });
-
   document.addEventListener("click", event => {
     if (window.innerWidth <= 900 && sidebar.classList.contains("open") &&
         !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
@@ -280,7 +277,6 @@ loadData();
       menuButton.setAttribute("aria-expanded", "false");
     }
   });
-
   sidebar.querySelectorAll(".nav-link[href]").forEach(link => {
     link.addEventListener("click", () => {
       sidebar.classList.remove("open");
@@ -288,7 +284,6 @@ loadData();
     });
   });
 })();
-</script>
 </script>
 <script type="module" src="js/auth-guard.js"></script>
 </body>
