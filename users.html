@@ -63,22 +63,22 @@ button{line-height:1.4}
 <section class="content">
 <div class="content">
 <section class="welcome"><div><div class="eyebrow">WORKSPACE ACCESS CONTROL</div><h1>User Management</h1><p>Live directory of ReguTrack accounts and their assigned access roles.</p></div></section>
-<div class="role-banner"><i class="fa-solid fa-shield-halved"></i><div><strong>Administrator-only access</strong><p>This directory reads account profiles and assigned roles from Supabase. Account invitations and role changes remain disabled until a verified server-side admin operation is configured.</p></div></div>
+<div class="role-banner"><i class="fa-solid fa-shield-halved"></i><div><strong>Administrator-only access</strong><p>This directory reads live account profiles and the two supported roles from Supabase. Account access administration is reserved for Admin.</p></div></div>
 <section class="stat-grid">
 <article class="stat-card"><div class="stat-top"><div class="stat-icon green"><i class="fa-solid fa-users"></i></div></div><div class="stat-value" id="userTotal">—</div><div class="stat-label">Registered accounts</div><div class="stat-foot">Live role directory</div></article>
 <article class="stat-card"><div class="stat-top"><div class="stat-icon blue"><i class="fa-solid fa-user-check"></i></div></div><div class="stat-value" id="activeTotal">—</div><div class="stat-label">Assigned roles</div><div class="stat-foot">Role assignments</div></article>
 <article class="stat-card"><div class="stat-top"><div class="stat-icon orange"><i class="fa-solid fa-user-shield"></i></div></div><div class="stat-value" id="adminTotal">—</div><div class="stat-label">Administrators</div><div class="stat-foot">Admin role assignments</div></article>
-<article class="stat-card"><div class="stat-top"><div class="stat-icon red"><i class="fa-solid fa-user-pen"></i></div></div><div class="stat-value" id="raTotal">—</div><div class="stat-label">Regulatory Affairs users</div><div class="stat-foot">RA role assignments</div></article>
+<article class="stat-card"><div class="stat-top"><div class="stat-icon red"><i class="fa-solid fa-user-pen"></i></div></div><div class="stat-value" id="userRoleTotal">—</div><div class="stat-label">Standard users</div><div class="stat-foot">RA role assignments</div></article>
 </section>
 <section class="panel"><div class="panel-heading"><div><h2>Registered workspace members</h2><p>Identity information and roles currently stored by the backend.</p></div><span class="tag tag-blue" id="memberCount">Loading…</span></div>
-<div class="user-toolbar" style="margin-bottom:15px"><input id="userSearch" type="search" placeholder="Search name or email…"><select id="roleFilter"><option value="all">All roles</option><option value="admin">Administrator</option><option value="regulatory_affairs">Regulatory Affairs</option><option value="reviewer">Reviewer</option></select></div>
+<div class="user-toolbar" style="margin-bottom:15px"><input id="userSearch" type="search" placeholder="Search name or email…"><select id="roleFilter"><option value="all">All roles</option><option value="admin">Admin</option><option value="user">User</option></select></div>
 <div style="overflow:auto"><table class="user-table"><thead><tr><th>Member</th><th>Assigned role</th><th>Department</th><th>Account created</th></tr></thead><tbody id="usersBody"><tr><td colspan="4">Loading Supabase accounts…</td></tr></tbody></table></div><div class="empty" id="emptyUsers" hidden>No matching members found.</div>
 <div id="directoryStatus" class="warning-note" role="status">Loading live user directory…</div>
 </section>
 <section class="panel" style="margin-top:18px"><div class="panel-heading"><div><h2>Access boundaries</h2><p>Current ReguTrack workspace roles.</p></div></div><div class="permission-grid">
-<article class="permission-card"><h3><i class="fa-solid fa-user-shield"></i> Administrator</h3><p>Platform-level oversight and access administration.</p><ul><li>Separate Admin dashboard and navigation</li><li>View platform-wide records and audit activity</li><li>Access the user directory</li><li>Manage regulatory sources under database policy</li></ul></article>
-<article class="permission-card"><h3><i class="fa-solid fa-user"></i> Regulatory Affairs</h3><p>Operational regulatory workspace.</p><ul><li>Manage product and CTD dossier work</li><li>Prepare gap and impact assessments</li><li>Track regulatory updates and deadlines</li><li>No access to User Management</li></ul></article>
-</div><div class="warning-note"><strong>Account administration is read-only here.</strong> The browser never receives a Supabase service/secret key. Role assignment requires an authenticated server-side operation that verifies the caller's Admin role.</div></section>
+<article class="permission-card"><h3><i class="fa-solid fa-user-shield"></i> Admin</h3><p>Platform-wide oversight and access administration.</p><ul><li>Separate Admin dashboard and navigation</li><li>View platform-wide records and audit activity</li><li>Access the user directory</li><li>Manage regulatory sources under database policy</li></ul></article>
+<article class="permission-card"><h3><i class="fa-solid fa-user"></i> User</h3><p>Standard workspace access for regular account holders.</p><ul><li>Work with own product records and CTD dossiers</li><li>Prepare gap and impact assessments</li><li>View regulatory intelligence and deadlines</li><li>Cannot approve assessments or manage accounts</li></ul></article>
+</div><div class="warning-note"><strong>Account administration and role changes are Admin-only.</strong> The browser never receives a Supabase service/secret key. Role assignment requires an authenticated server-side operation that verifies the caller's Admin role.</div></section>
 </div></section></main></div>
 <div class="modal-backdrop" id="userModal"><div class="modal"><div class="modal-head"><div><h3 id="modalTitle">Add workspace member</h3><p>Enter member details and assign a workspace role.</p></div><button class="close-btn" data-close><i class="fa-solid fa-xmark"></i></button></div><form id="userForm"><div class="form-grid"><div class="field full"><label for="fullName">Full name *</label><input id="fullName" required maxlength="100" placeholder="Enter full name"></div><div class="field full"><label for="email">Email address *</label><input id="email" type="email" required placeholder="name@example.com"></div><div class="field"><label for="role">Role *</label><select id="role"><option value="user">User</option><option value="admin">Admin</option></select></div><div class="field"><label for="memberStatus">Account status</label><select id="memberStatus"><option>Invited</option><option>Active</option><option>Inactive</option></select></div><div class="field full"><label for="area">Assigned area / team</label><input id="area" placeholder="e.g. Quality and Regulatory Affairs"><div class="field-hint">Assignment is descriptive only in this frontend prototype.</div></div></div><div class="modal-actions"><button type="button" class="btn" data-close>Cancel</button><button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save member</button></div></form></div></div><div class="toast" id="toast"></div>
 
@@ -93,38 +93,38 @@ document.addEventListener('click',event=>{if(window.innerWidth<=760&&adminSideba
 import { supabase } from "./js/supabaseClient.js";
 const $=id=>document.getElementById(id);
 let members=[];
-const roleNames={admin:"Administrator",regulatory_affairs:"Regulatory Affairs",reviewer:"Reviewer"};
-const escapeHTML=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const roleNames={admin:"Admin",user:"User"};
 const date=value=>value?new Date(value).toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"}):"—";
 function render(){
  const q=$("userSearch").value.trim().toLowerCase(),role=$("roleFilter").value;
- const list=members.filter(x=>(role==="all"||x.role===role)&&(!q||[x.name,x.email,x.department,x.role].join(" ").toLowerCase().includes(q)));
+ const list=members.filter(x=>(role==="all"||x.role===role)&&(!q||[x.name,x.department,x.role].join(" ").toLowerCase().includes(q)));
  const unique=new Map(members.map(x=>[x.id,x]));
- $("userTotal").textContent=unique.size;
- $("activeTotal").textContent=members.length;
+ $("userTotal").textContent=unique.size;$("activeTotal").textContent=members.length;
  $("adminTotal").textContent=members.filter(x=>x.role==="admin").length;
- $("raTotal").textContent=members.filter(x=>x.role==="regulatory_affairs").length;
+ $("userRoleTotal").textContent=members.filter(x=>x.role==="user").length;
  $("memberCount").textContent=unique.size+" accounts · "+members.length+" role assignments";
  $("emptyUsers").hidden=list.length>0;
  const body=$("usersBody");body.replaceChildren();
- if(!list.length){const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=4;td.textContent="No matching accounts.";tr.append(td);body.append(tr);return}
- list.forEach(x=>{const tr=document.createElement("tr");const td1=document.createElement("td");const person=document.createElement("div");person.className="person";const avatar=document.createElement("div");avatar.className="person-avatar";avatar.textContent=(x.name||x.email||"U").split(/\s+/).slice(0,2).map(v=>v[0]||"").join("").toUpperCase();const info=document.createElement("div");const strong=document.createElement("strong");strong.textContent=x.name||"Unnamed account";const span=document.createElement("span");span.textContent=x.email||"Email unavailable";info.append(strong,span);person.append(avatar,info);td1.append(person);
- const td2=document.createElement("td");const pill=document.createElement("span");pill.className="role-pill "+(x.role==="admin"?"admin":"");pill.textContent=roleNames[x.role]||x.role;td2.append(pill);
- const td3=document.createElement("td");td3.textContent=x.department||"—";const td4=document.createElement("td");td4.textContent=date(x.created_at);tr.append(td1,td2,td3,td4);body.append(tr)});
+ if(!list.length){const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=4;td.textContent="No matching accounts.";tr.append(td);body.append(tr);return;}
+ list.forEach(x=>{
+  const tr=document.createElement("tr"),td1=document.createElement("td"),person=document.createElement("div");person.className="person";
+  const avatar=document.createElement("div");avatar.className="person-avatar";avatar.textContent=(x.name||"U").split(/\s+/).slice(0,2).map(v=>v[0]||"").join("").toUpperCase();
+  const info=document.createElement("div"),strong=document.createElement("strong"),span=document.createElement("span");
+  strong.textContent=x.name||"Workspace member";span.textContent=x.email||"Email unavailable through browser profile access";info.append(strong,span);person.append(avatar,info);td1.append(person);
+  const td2=document.createElement("td"),pill=document.createElement("span");pill.className="role-pill "+(x.role==="admin"?"admin":"");pill.textContent=roleNames[x.role]||"Unknown role";td2.append(pill);
+  const td3=document.createElement("td");td3.textContent=x.department||"—";const td4=document.createElement("td");td4.textContent=date(x.created_at);
+  tr.append(td1,td2,td3,td4);body.append(tr);
+ });
 }
 async function load(){
- const {data:roleRows,error:roleError}=await supabase.from("user_roles").select("user_id,role").order("created_at",{ascending:true});
- if(roleError)throw roleError;
- const ids=[...new Set((roleRows||[]).map(x=>x.user_id))];
- let profiles=[];
- if(ids.length){const {data,error}=await supabase.from("profiles").select("id,full_name,department,created_at").in("id",ids);if(error)throw error;profiles=data||[]}
- // Auth email addresses are intentionally not exposed through public profile tables; use profile identifiers only.
+ const {data:roleRows,error:roleError}=await supabase.from("user_roles").select("user_id,role").order("created_at",{ascending:true});if(roleError)throw roleError;
+ const ids=[...new Set((roleRows||[]).map(x=>x.user_id))];let profiles=[];
+ if(ids.length){const {data,error}=await supabase.from("profiles").select("id,full_name,department,created_at").in("id",ids);if(error)throw error;profiles=data||[];}
  const profileMap=new Map(profiles.map(x=>[x.id,x]));
- members=(roleRows||[]).map(r=>{const p=profileMap.get(r.user_id)||{};return{id:r.user_id,role:r.role,name:p.full_name||"ReguTrack member",email:"",department:p.department,created_at:p.created_at}});
- render();
- $("directoryStatus").textContent="Live directory loaded from Supabase profiles and user_roles. Auth email addresses are not exposed to browser queries.";
+ members=(roleRows||[]).map(r=>{const p=profileMap.get(r.user_id)||{};return{id:r.user_id,role:r.role,name:p.full_name||"Workspace member",email:"",department:p.department,created_at:p.created_at};});
+ render();$("directoryStatus").textContent="Live Admin/User directory loaded from Supabase. Browser access does not expose Auth email addresses.";
 }
 $("userSearch").addEventListener("input",render);$("roleFilter").addEventListener("change",render);
-load().catch(error=>{$("directoryStatus").textContent="Unable to load the directory. Check the Admin role and database access, then refresh.";console.error("User directory load failed:",error)});
+load().catch(error=>{$("directoryStatus").textContent="Unable to load the directory. Check Admin access and refresh.";console.error("User directory load failed:",error);});
 </script>
 <script type="module" src="js/auth-guard.js"></script></body></html>
