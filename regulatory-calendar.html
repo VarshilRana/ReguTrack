@@ -150,5 +150,6 @@ document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click'
 document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')}));
 events=read(STORAGE_KEY,[]);if(!Array.isArray(events))events=[];if(events.length===0)events=sampleEvents();seedFromAssessments();render();
 </script>
+<script type="module" src="js/auth-guard.js"></script>
 </body>
 </html>
