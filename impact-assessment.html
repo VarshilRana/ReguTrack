@@ -167,5 +167,6 @@ $('assessmentForm').addEventListener('submit',saveAssessment);$('resetFormBtn').
 $('profileButton').addEventListener('click',e=>{if(e.target.closest('button'))return;$('profileDropdown').classList.toggle('show')});document.addEventListener('click',e=>{if(!e.target.closest('#profileButton'))$('profileDropdown').classList.remove('show');const b=e.target.closest('[data-action]');if(b){const id=b.dataset.id;if(b.dataset.action==='view')viewDetails(id);if(b.dataset.action==='review')openReview(id)}if(e.target.closest('[data-close]'))e.target.closest('.modal-backdrop').classList.remove('show')});document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')}));
 render();setHandoff();
 </script>
+<script type="module" src="js/auth-guard.js"></script>
 </body>
 </html>
