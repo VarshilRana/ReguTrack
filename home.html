@@ -2957,7 +2957,7 @@ window.addEventListener("message", event => {
 
     if (event.data?.type === "regutrack-auth-success") {
         closeAuth();
-        window.location.href = "dashboard.html";
+        window.location.href = (event.data && ["admin-dashboard.html","dashboard.html","access-pending.html"].includes(event.data.destination)) ? event.data.destination : "dashboard.html";
     }
 
     if (event.data?.type === "regutrack-auth-close") {
