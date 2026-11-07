@@ -38,6 +38,49 @@ button{line-height:1.4}
 
 
 @media(max-width:760px){.user-toolbar{width:100%}.user-toolbar input{min-width:0;flex:1}.user-toolbar select{flex:1}.panel{padding:16px}.permission-grid{grid-template-columns:1fr}}
+
+/* User management layout components */
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin:0 0 20px}
+.stat-card{min-width:0;background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 3px 12px rgba(30,70,45,.035);transition:transform .2s ease,box-shadow .2s ease}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.stat-top{display:flex;align-items:center;justify-content:space-between}
+.stat-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:16px}
+.stat-icon.green{background:#eaf6f0;color:#16845b}.stat-icon.blue{background:#edf4fc;color:#4e7eb6}.stat-icon.orange{background:#fff4e7;color:#c18435}.stat-icon.red{background:#fff0ef;color:#c46c62}
+.stat-value{font:800 28px/1.2 Manrope,sans-serif;color:var(--ink);margin-top:14px;font-variant-numeric:tabular-nums}
+.stat-label{font-size:12px!important;font-weight:700;color:#53665b;margin-top:5px}
+.stat-foot{font-size:11px!important;color:#94a198;margin-top:5px}
+.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:17px}
+.panel-heading h2{font:800 16px Manrope,sans-serif;color:var(--ink)}
+.panel-heading p{font-size:12px!important;color:var(--muted);margin-top:4px}
+.tag{display:inline-flex;align-items:center;white-space:nowrap;border-radius:20px;padding:7px 10px;font-size:11px!important;font-weight:800}
+.tag-blue{background:#edf4fc;color:#4e7eb6}
+.user-table-wrap{width:100%;overflow:auto;border:1px solid #edf1ee;border-radius:10px}
+.user-table{min-width:680px}
+.user-table th{white-space:nowrap}
+.user-table td{overflow-wrap:anywhere}
+.role-banner{align-items:center}
+.role-banner p{font-size:12px!important}
+.permission-grid{align-items:stretch}
+.permission-card{min-width:0;background:#fff}
+.permission-card h3 i{color:var(--primary)}
+.warning-note strong{color:#6f582c}
+.empty{padding:24px 12px}
+#directoryStatus{margin-top:14px}
+@media(max-width:1150px){.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){
+ .stat-grid{gap:10px}
+ .stat-card{padding:14px}
+ .stat-value{font-size:24px}
+ .welcome{margin-bottom:18px}
+ .role-banner{padding:12px;align-items:flex-start}
+ .panel-heading{align-items:flex-start;flex-direction:column}
+ .user-toolbar{display:grid;grid-template-columns:1fr;width:100%}
+ .user-toolbar input,.user-toolbar select{width:100%;min-width:0}
+ .user-table{min-width:620px}
+ .permission-grid{grid-template-columns:1fr}
+ .content>.content{padding:0}
+}
+@media(max-width:420px){.stat-grid{grid-template-columns:1fr 1fr}.stat-card{padding:12px}.stat-value{font-size:22px}.stat-label{font-size:11px!important}.stat-foot{font-size:10px!important}}
 </style></head><body><div class="app">
 <aside class="sidebar" id="sidebar">
 <div class="brand"><div class="brand-mark"><i class="fa-solid fa-shield-halved"></i></div><div><div class="brand-name">Regu<span>Track</span></div><div class="brand-subtitle">ADMINISTRATION</div></div></div>
@@ -61,17 +104,16 @@ button{line-height:1.4}
 <main class="main">
 <header class="topbar"><div class="top-right"><button class="mobile-menu" id="menu" aria-label="Open navigation"><i class="fa-solid fa-bars"></i></button><span class="crumb">Workspace / <strong>User Management</strong></span></div><div class="top-right"><div class="profile"><div class="avatar" data-user-avatar>RT</div><div class="profile-info"><strong data-user-name>Administrator</strong><span data-user-role>Administrator</span></div></div><button class="signout" data-regutrack-signout type="button">Sign out</button></div></header>
 <section class="content">
-<div class="content">
 <section class="welcome"><div><div class="eyebrow">WORKSPACE ACCESS CONTROL</div><h1>User Management</h1><p>Live directory of ReguTrack accounts and their assigned access roles.</p></div></section>
-<div class="role-banner"><i class="fa-solid fa-shield-halved"></i><div><strong>Administrator-only access</strong><p>This directory reads live account profiles and the two supported roles from Supabase. Account access administration is reserved for Admin.</p></div></div>
+<div class="role-banner"><i class="fa-solid fa-shield-halved"></i><div><strong>Administrator-only access</strong><p>This directory reads live account profiles and the two supported roles from Supabase. Only Admin can manage platform access, assignments and approvals.</p></div></div>
 <section class="stat-grid">
 <article class="stat-card"><div class="stat-top"><div class="stat-icon green"><i class="fa-solid fa-users"></i></div></div><div class="stat-value" id="userTotal">—</div><div class="stat-label">Registered accounts</div><div class="stat-foot">Live role directory</div></article>
 <article class="stat-card"><div class="stat-top"><div class="stat-icon blue"><i class="fa-solid fa-user-check"></i></div></div><div class="stat-value" id="activeTotal">—</div><div class="stat-label">Assigned roles</div><div class="stat-foot">Role assignments</div></article>
 <article class="stat-card"><div class="stat-top"><div class="stat-icon orange"><i class="fa-solid fa-user-shield"></i></div></div><div class="stat-value" id="adminTotal">—</div><div class="stat-label">Administrators</div><div class="stat-foot">Admin role assignments</div></article>
-<article class="stat-card"><div class="stat-top"><div class="stat-icon red"><i class="fa-solid fa-user-pen"></i></div></div><div class="stat-value" id="userRoleTotal">—</div><div class="stat-label">Standard users</div><div class="stat-foot">RA role assignments</div></article>
+<article class="stat-card"><div class="stat-top"><div class="stat-icon red"><i class="fa-solid fa-user-pen"></i></div></div><div class="stat-value" id="userRoleTotal">—</div><div class="stat-label">Standard users</div><div class="stat-foot">User role assignments</div></article>
 </section>
-<section class="panel"><div class="panel-heading"><div><h2>Registered workspace members</h2><p>Identity information and roles currently stored by the backend.</p></div><span class="tag tag-blue" id="memberCount">Loading…</span></div>
-<div class="user-toolbar" style="margin-bottom:15px"><input id="userSearch" type="search" placeholder="Search name or email…"><select id="roleFilter"><option value="all">All roles</option><option value="admin">Admin</option><option value="user">User</option></select></div>
+<section class="panel"><div class="panel-heading"><div><h2>Registered workspace members</h2><p>Account profiles and the Admin/User roles currently stored in Supabase.</p></div><span class="tag tag-blue" id="memberCount">Loading…</span></div>
+<div class="user-toolbar" style="margin-bottom:15px"><input id="userSearch" type="search" placeholder="Search name or department…"><select id="roleFilter"><option value="all">All roles</option><option value="admin">Admin</option><option value="user">User</option></select></div>
 <div style="overflow:auto"><table class="user-table"><thead><tr><th>Member</th><th>Assigned role</th><th>Department</th><th>Account created</th></tr></thead><tbody id="usersBody"><tr><td colspan="4">Loading Supabase accounts…</td></tr></tbody></table></div><div class="empty" id="emptyUsers" hidden>No matching members found.</div>
 <div id="directoryStatus" class="warning-note" role="status">Loading live user directory…</div>
 </section>
@@ -79,8 +121,8 @@ button{line-height:1.4}
 <article class="permission-card"><h3><i class="fa-solid fa-user-shield"></i> Admin</h3><p>Platform-wide oversight and access administration.</p><ul><li>Separate Admin dashboard and navigation</li><li>View platform-wide records and audit activity</li><li>Access the user directory</li><li>Manage regulatory sources under database policy</li></ul></article>
 <article class="permission-card"><h3><i class="fa-solid fa-user"></i> User</h3><p>Standard workspace access for regular account holders.</p><ul><li>Work with own product records and CTD dossiers</li><li>Prepare gap and impact assessments</li><li>View regulatory intelligence and deadlines</li><li>Cannot approve assessments or manage accounts</li></ul></article>
 </div><div class="warning-note"><strong>Account administration and role changes are Admin-only.</strong> The browser never receives a Supabase service/secret key. Role assignment requires an authenticated server-side operation that verifies the caller's Admin role.</div></section>
-</div></section></main></div>
-<div class="modal-backdrop" id="userModal"><div class="modal"><div class="modal-head"><div><h3 id="modalTitle">Add workspace member</h3><p>Enter member details and assign a workspace role.</p></div><button class="close-btn" data-close><i class="fa-solid fa-xmark"></i></button></div><form id="userForm"><div class="form-grid"><div class="field full"><label for="fullName">Full name *</label><input id="fullName" required maxlength="100" placeholder="Enter full name"></div><div class="field full"><label for="email">Email address *</label><input id="email" type="email" required placeholder="name@example.com"></div><div class="field"><label for="role">Role *</label><select id="role"><option value="user">User</option><option value="admin">Admin</option></select></div><div class="field"><label for="memberStatus">Account status</label><select id="memberStatus"><option>Invited</option><option>Active</option><option>Inactive</option></select></div><div class="field full"><label for="area">Assigned area / team</label><input id="area" placeholder="e.g. Quality and Regulatory Affairs"><div class="field-hint">Assignment is descriptive only in this frontend prototype.</div></div></div><div class="modal-actions"><button type="button" class="btn" data-close>Cancel</button><button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save member</button></div></form></div></div><div class="toast" id="toast"></div>
+</section></main></div>
+<div class="modal-backdrop" id="userModal" hidden><div class="modal"><div class="modal-head"><div><h3 id="modalTitle">Add workspace member</h3><p>Enter member details and assign a workspace role.</p></div><button class="close-btn" data-close><i class="fa-solid fa-xmark"></i></button></div><form id="userForm"><div class="form-grid"><div class="field full"><label for="fullName">Full name *</label><input id="fullName" required maxlength="100" placeholder="Enter full name"></div><div class="field full"><label for="email">Email address *</label><input id="email" type="email" required placeholder="name@example.com"></div><div class="field"><label for="role">Role *</label><select id="role"><option value="user">User</option><option value="admin">Admin</option></select></div><div class="field"><label for="memberStatus">Account status</label><select id="memberStatus"><option>Invited</option><option>Active</option><option>Inactive</option></select></div><div class="field full"><label for="area">Assigned area / team</label><input id="area" placeholder="e.g. Quality and Regulatory Affairs"><div class="field-hint">Assignment is descriptive only in this frontend prototype.</div></div></div><div class="modal-actions"><button type="button" class="btn" data-close>Cancel</button><button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save member</button></div></form></div></div><div class="toast" id="toast"></div>
 
 <script>
 const adminSidebar=document.getElementById('sidebar'),adminMenu=document.getElementById('menu');
