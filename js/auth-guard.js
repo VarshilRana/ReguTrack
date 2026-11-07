@@ -20,10 +20,10 @@ function renderRoleNavigation(roles) {
   const sidebar = document.querySelector(".sidebar");
   if (!sidebar) return;
 
-  const brandSubtitle = sidebar.querySelector(".brand-subtitle");
+  const brandSubtitle = sidebar.querySelector(".brand-subtitle, .brand small");
   if (brandSubtitle) brandSubtitle.textContent = isAdmin ? "ADMINISTRATION" : "REGULATORY INTELLIGENCE";
 
-  const nav = sidebar.querySelector(".sidebar-scroll");
+  const nav = sidebar.querySelector(".sidebar-scroll, .nav");
   if (!nav) return;
 
   const groups = isAdmin
