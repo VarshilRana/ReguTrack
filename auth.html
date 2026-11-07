@@ -757,8 +757,7 @@ body{font-size:15px;line-height:1.7}
             <p class="switch-copy" id="switchCopy">
                 New to ReguTrack?
                 <a href="#signup"
-                   class="text-link"
-                   id="switchLink">
+                   class="text-link">
                     Create an account
                 </a>
             </p>
@@ -829,8 +828,8 @@ function setMode(next) {
         : 'Log in to workspace <span aria-hidden="true">→</span>';
 
     $("switchCopy").innerHTML = signup
-        ? 'Already have an account? <a href="#login" class="text-link" id="switchLink">Log in</a>'
-        : 'New to ReguTrack? <a href="#signup" class="text-link" id="switchLink">Create an account</a>';
+        ? 'Already have an account? <a href="#login" class="text-link">Log in</a>'
+        : 'New to ReguTrack? <a href="#signup" class="text-link">Create an account</a>';
 
     $("password").autocomplete = signup
         ? "new-password"
