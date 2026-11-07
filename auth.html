@@ -720,7 +720,7 @@ body{font-size:15px;line-height:1.7}
                         Remember me
                     </label>
 
-                    <a class="text-link"
+                    <a class="text-link switch-link"
                        href="#"
                        id="forgotLink">
                         Forgot password?
@@ -735,7 +735,7 @@ body{font-size:15px;line-height:1.7}
                     <label class="remember">
                         <input type="checkbox" id="agree">
                         I agree to the
-                        <a class="text-link" href="#terms">terms</a>
+                        <a class="text-link switch-link" href="#terms">terms</a>
                     </label>
 
                 </div>
@@ -757,7 +757,7 @@ body{font-size:15px;line-height:1.7}
             <p class="switch-copy" id="switchCopy">
                 New to ReguTrack?
                 <a href="#signup"
-                   class="text-link">
+                   class="text-link switch-link">
                     Create an account
                 </a>
             </p>
@@ -828,8 +828,8 @@ function setMode(next) {
         : 'Log in to workspace <span aria-hidden="true">→</span>';
 
     $("switchCopy").innerHTML = signup
-        ? 'Already have an account? <a href="#login" class="text-link">Log in</a>'
-        : 'New to ReguTrack? <a href="#signup" class="text-link">Create an account</a>';
+        ? 'Already have an account? <a href="#login" class="text-link switch-link">Log in</a>'
+        : 'New to ReguTrack? <a href="#signup" class="text-link switch-link">Create an account</a>';
 
     $("password").autocomplete = signup
         ? "new-password"
@@ -856,7 +856,7 @@ $("signupTab").addEventListener("click", () => {
 
 $("switchCopy").addEventListener("click", event => {
 
-    if (event.target.closest("#switchLink")) {
+    if (event.target.closest(".switch-link")) {
 
         event.preventDefault();
 
