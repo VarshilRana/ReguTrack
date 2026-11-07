@@ -1831,7 +1831,7 @@ function toDatabase(data) {
     submission_date: data.submissionDate || null,
     approval_date: data.approvalDate || null,
     expiry_date: data.expiryDate || null,
-    product_owner: currentUser.id,
+    product_owner: (editingId && products.find(p => p.id === editingId)?.ownerId) || currentUser.id,
     notes: data.notes || null,
     updated_by: currentUser.id
   };
@@ -1905,8 +1905,7 @@ function renderProducts() {
       + '<td>'+escapeHTML(product.manufacturer || "—")+'</td>'
       + '<td><span class="status '+statusClass(product.status)+'">'+escapeHTML(product.status)+'</span></td>'
       + '<td><div class="action-group"><button class="action-btn" data-action="view" data-id="'+escapeHTML(product.id)+'" title="View details" aria-label="View product"><i class="fa-regular fa-eye"></i></button>'
-      + '<button class="action-btn" data-action="edit" data-id="'+escapeHTML(product.id)+'" title="Edit product" aria-label="Edit product"><i class="fa-solid fa-pen"></i></button>'
-      + '<button class="action-btn delete" data-action="delete" data-id="'+escapeHTML(product.id)+'" title="Delete product" aria-label="Delete product"><i class="fa-regular fa-trash-can"></i></button></div></td>';
+      + (currentRole === "reviewer" ? "" : '<button class="action-btn" data-action="edit" data-id="'+escapeHTML(product.id)+'" title="Edit product" aria-label="Edit product"><i class="fa-solid fa-pen"></i></button><button class="action-btn delete" data-action="delete" data-id="'+escapeHTML(product.id)+'" title="Delete product" aria-label="Delete product"><i class="fa-regular fa-trash-can"></i></button>') + '</div></td>';
     tbody.appendChild(row);
   });
   $("emptyState").hidden = filtered.length !== 0;
@@ -1990,6 +1989,7 @@ function validateProduct(data) {
 $("productForm").addEventListener("submit", async event => {
   event.preventDefault();
   if (loading) return;
+  const wasEditing = Boolean(editingId);
   const data = formToProduct();
   const validation = validateProduct(data);
   if (validation) { showToast(validation); return; }
@@ -2016,7 +2016,7 @@ $("productForm").addEventListener("submit", async event => {
   closeModal("productModal");
   resetForm();
   await loadProducts();
-  showToast(editingId ? "Product updated in Supabase." : "Product saved to Supabase.");
+  showToast(wasEditing ? "Product updated in Supabase." : "Product saved to Supabase.");
 });
 function openViewModal(id) {
   const product = products.find(p => p.id === id);
