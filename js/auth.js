@@ -72,6 +72,8 @@ function setMode(next) {
       : 'New to ReguTrack? <a href="#signup" class="text-link switch-link">Create an account</a>';
 
   $("password").autocomplete = signup || recovery ? "new-password" : "current-password";
+  $("password").type = "password";
+  $("togglePass").textContent = "SHOW";
   $("password").placeholder = recovery ? "Enter your new password" : "Enter your password";
   $("confirmPassword").autocomplete = "new-password";
   clearNotice();
@@ -183,15 +185,11 @@ $("authForm").addEventListener("submit", async event => {
     showNotice(error?.message || "Authentication failed. Please try again.", "error");
   } finally {
     submit.disabled = false;
-    if (mode !== "recovery" || !submit.textContent.includes("Sign in")) {
-      submit.innerHTML = mode === "signup"
-        ? 'Create account <span aria-hidden="true">→</span>'
-        : mode === "recovery"
-          ? 'Update password <span aria-hidden="true">→</span>'
-          : 'Log in to workspace <span aria-hidden="true">→</span>';
-    } else {
-      submit.innerHTML = original;
-    }
+    submit.innerHTML = mode === "signup"
+      ? 'Create account <span aria-hidden="true">→</span>'
+      : mode === "recovery"
+        ? 'Update password <span aria-hidden="true">→</span>'
+        : 'Log in to workspace <span aria-hidden="true">→</span>';
   }
 });
 
