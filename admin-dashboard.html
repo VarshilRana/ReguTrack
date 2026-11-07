@@ -43,25 +43,25 @@
 <div class="nav-label">ACCOUNT</div>
 <a class="nav-link" href="settings.html"><i class="fa-solid fa-gear"></i> My Settings</a>
 </div>
-<div class="sidebar-bottom"><div class="help-card"><i class="fa-regular fa-circle-question"></i><h4>Administration workspace</h4><p>Manage access and monitor regulatory operations. Administrative data actions require database-level permissions.</p></div><a class="nav-link" href="home.html"><i class="fa-solid fa-arrow-left"></i> Back to website</a></div>
+<div class="sidebar-bottom"><div class="help-card"><i class="fa-regular fa-circle-question"></i><h4>Administration workspace</h4><p>Admin-only controls for user access, assignments, approvals and platform governance.</p></div><a class="nav-link" href="home.html"><i class="fa-solid fa-arrow-left"></i> Back to website</a></div>
 </aside>
 <main class="main">
 <header class="topbar"><div class="top-right"><button class="mobile-menu" id="menu" aria-label="Open navigation"><i class="fa-solid fa-bars"></i></button><span class="crumb">Workspace / <strong>Admin overview</strong></span></div><div class="top-right"><div class="profile"><div class="avatar" data-user-avatar>RT</div><div class="profile-info"><strong data-user-name>Administrator</strong><span data-user-role>Administrator</span></div></div><button class="signout" data-regutrack-signout type="button">Sign out</button></div></header>
 <section class="content">
-<div class="welcome"><div><div class="eyebrow">REGUTRACK ADMINISTRATION</div><h1>Platform overview</h1><p>Monitor the workspace, manage access and oversee regulatory operations from one place.</p></div><span class="pill"><i class="fa-solid fa-shield-halved"></i> Administrator access</span></div>
+<div class="welcome"><div><div class="eyebrow">REGUTRACK ADMINISTRATION</div><h1>Platform overview</h1><p>Control workspace access, assignments, approvals and platform-wide regulatory operations.</p></div><span class="pill"><i class="fa-solid fa-shield-halved"></i> Administrator access</span></div>
 <div class="kpis">
 <article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-users"></i></div><strong id="adminUsersTotal">—</strong><span>Registered workspace users</span><small>Distinct users with an assigned ReguTrack role.</small></article>
-<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-capsules"></i></div><strong id="adminProductsTotal">—</strong><span>Product records</span><small>Platform-wide registered products.</small></article>
-<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-folder-tree"></i></div><strong id="adminDossiersTotal">—</strong><span>CTD dossiers</span><small>All regulatory dossiers in the database.</small></article>
-<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-bullseye"></i></div><strong id="adminAssessmentsTotal">—</strong><span>Impact assessments</span><small>Platform-wide assessment records.</small></article>
+<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-capsules"></i></div><strong id="adminProductsTotal">—</strong><span>Product records</span><small>All registered products across the platform.</small></article>
+<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-folder-tree"></i></div><strong id="adminDossiersTotal">—</strong><span>CTD dossiers</span><small>All dossiers, including user-submitted records.</small></article>
+<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-bullseye"></i></div><strong id="adminAssessmentsTotal">—</strong><span>Impact assessments</span><small>All assessments and approval decisions.</small></article>
 </div>
 <div class="columns">
-<section class="panel"><div class="panel-head"><div><h2>Platform administration</h2><p>Administrative control centre</p></div></div><div class="list">
-<a class="row-item" href="users.html"><span class="row-icon"><i class="fa-solid fa-users-gear"></i></span><span><strong>User access directory</strong><span>Review accounts and assigned roles</span></span><span class="meta"><b>Open</b></span></a>
+<section class="panel"><div class="panel-head"><div><h2>Platform administration</h2><p>Admin control centre</p></div></div><div class="list">
+<a class="row-item" href="users.html"><span class="row-icon"><i class="fa-solid fa-users-gear"></i></span><span><strong>User access directory</strong><span>Manage users, access and assignments</span></span><span class="meta"><b>Open</b></span></a>
 <a class="row-item" href="reports.html"><span class="row-icon"><i class="fa-solid fa-chart-line"></i></span><span><strong>Platform reports</strong><span>Open platform-wide reports</span></span><span class="meta"><b>Open</b></span></a>
 <a class="row-item" href="regulatory-intelligence.html"><span class="row-icon"><i class="fa-solid fa-globe"></i></span><span><strong>Regulatory source oversight</strong><span>Review regulatory changes</span></span><span class="meta"><b id="adminUpdatesTotal">—</b></span></a>
 </div></section>
-<section class="panel"><div class="panel-head"><div><h2>Latest regulatory updates</h2><p>Recent records from Supabase</p></div><span class="meta"><b id="adminAuditTotal">—</b><small>Audit events</small></span></div><div class="list" id="adminUpdatesBody"><div class="row-item">Loading regulatory records…</div></div><p id="adminDataStatus" class="notice" aria-live="polite">Live platform metrics load from the connected database.</p></section>
+<section class="panel"><div class="panel-head"><div><h2>Pending approvals & regulatory updates</h2><p>Items requiring Admin attention and recent regulatory changes</p></div><span class="meta"><b id="adminAuditTotal">—</b><small>Audit events</small></span></div><div class="list" id="adminUpdatesBody"><div class="row-item">Loading regulatory records…</div></div><p id="adminDataStatus" class="notice" aria-live="polite">Live platform metrics load from the connected database.</p></section>
 </div></section>
 </main></div>
 <script type="module" src="js/auth-guard.js"></script>
