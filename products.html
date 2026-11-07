@@ -1831,8 +1831,9 @@ function toDatabase(data) {
     submission_date: data.submissionDate || null,
     approval_date: data.approvalDate || null,
     expiry_date: data.expiryDate || null,
-    product_owner: (editingId && products.find(p => p.id === editingId)?.ownerId) || currentUser.id,
+    product_owner: currentRole === "admin" ? ((editingId && products.find(p => p.id === editingId)?.ownerId) || currentUser.id) : currentUser.id,
     notes: data.notes || null,
+    created_by: editingId ? undefined : currentUser.id,
     updated_by: currentUser.id
   };
 }
@@ -1905,7 +1906,7 @@ function renderProducts() {
       + '<td>'+escapeHTML(product.manufacturer || "—")+'</td>'
       + '<td><span class="status '+statusClass(product.status)+'">'+escapeHTML(product.status)+'</span></td>'
       + '<td><div class="action-group"><button class="action-btn" data-action="view" data-id="'+escapeHTML(product.id)+'" title="View details" aria-label="View product"><i class="fa-regular fa-eye"></i></button>'
-      + (currentRole === "reviewer" ? "" : '<button class="action-btn" data-action="edit" data-id="'+escapeHTML(product.id)+'" title="Edit product" aria-label="Edit product"><i class="fa-solid fa-pen"></i></button><button class="action-btn delete" data-action="delete" data-id="'+escapeHTML(product.id)+'" title="Delete product" aria-label="Delete product"><i class="fa-regular fa-trash-can"></i></button>') + '</div></td>';
+      + (currentRole === "user" ? "" : '<button class="action-btn" data-action="edit" data-id="'+escapeHTML(product.id)+'" title="Edit product" aria-label="Edit product"><i class="fa-solid fa-pen"></i></button><button class="action-btn delete" data-action="delete" data-id="'+escapeHTML(product.id)+'" title="Delete product" aria-label="Delete product"><i class="fa-regular fa-trash-can"></i></button>') + '</div></td>';
     tbody.appendChild(row);
   });
   $("emptyState").hidden = filtered.length !== 0;
@@ -2105,7 +2106,7 @@ async function initialize() {
   const roles=(roleRows||[]).map(row=>row.role);
   currentRole=roles.includes("admin") ? "admin" : roles.includes("regulatory_affairs") ? "regulatory_affairs" : roles.includes("reviewer") ? "reviewer" : null;
   if(!currentRole){showToast("Your account has no active ReguTrack role.");return;}
-  if(currentRole==="reviewer"){
+  if(currentRole==="user"){
     $("addProductButton").hidden=true;
     $("emptyAddButton").hidden=true;
     document.querySelectorAll('[data-action="edit"],[data-action="delete"]').forEach(el=>el.remove());
