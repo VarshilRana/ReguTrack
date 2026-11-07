@@ -32,11 +32,13 @@ async function getWorkspaceDestination() {
 async function completeAuthentication() {
   try {
     const destination = await getWorkspaceDestination();
+    const allowedDestinations = new Set(["admin-dashboard.html", "dashboard.html", "access-pending.html"]);
+    const safeDestination = allowedDestinations.has(destination) ? destination : "access-pending.html";
     if (window.parent && window.parent !== window) {
-      window.parent.postMessage({ type: "regutrack-auth-success", destination }, window.location.origin);
+      window.parent.postMessage({ type: "regutrack-auth-success", destination: safeDestination }, window.location.origin);
       return;
     }
-    window.location.replace(destination);
+    window.location.replace(new URL(safeDestination, window.location.href).href);
   } catch (error) {
     showNotice(error.message || "Unable to verify your workspace role.", "error");
   }
