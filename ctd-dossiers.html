@@ -1470,6 +1470,22 @@ button{line-height:1.4}
  .ctd-checklist-row.level-1 .ctd-section-item,.ctd-checklist-row.level-2 .ctd-section-item,.ctd-checklist-row.level-3 .ctd-section-item,.ctd-checklist-row.level-4 .ctd-section-item{padding-left:12px!important}
 }
 
+
+
+/* MOBILE CTD CHECKLIST — full-width tree cards, no side-by-side squeezing */
+@media screen and (max-width:560px){
+ .section-workspace{display:block!important;width:100%!important;min-width:0!important}
+ .section-sidebar{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;padding:14px!important}
+ .ctd-section-list{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:10px!important;width:100%!important;max-width:100%!important;max-height:65vh!important;overflow-y:auto!important;overflow-x:hidden!important;box-sizing:border-box!important}
+ .ctd-section-list .ctd-checklist-row{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important;width:100%!important;max-width:100%!important;min-width:0!important;padding:10px 0 12px 12px!important;margin:0!important;box-sizing:border-box!important;border-left:2px solid #d7eadf!important;border-bottom:1px solid #edf2ee!important}
+ .ctd-section-list .ctd-checklist-row.level-1,.ctd-section-list .ctd-checklist-row.level-2,.ctd-section-list .ctd-checklist-row.level-3,.ctd-section-list .ctd-checklist-row.level-4{padding-left:12px!important;margin-left:0!important}
+ .ctd-section-list .ctd-section-item{display:grid!important;grid-template-columns:1fr!important;grid-template-rows:auto auto!important;align-items:start!important;justify-items:start!important;gap:4px!important;width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;min-height:0!important;padding:8px 10px!important;margin:0!important;box-sizing:border-box!important;white-space:normal!important;text-align:left!important;writing-mode:horizontal-tb!important;overflow:visible!important}
+ .ctd-section-list .ctd-section-code{display:block!important;grid-column:1!important;grid-row:1!important;width:auto!important;min-width:0!important;max-width:100%!important;font-size:12px!important;line-height:1.3!important;white-space:nowrap!important;writing-mode:horizontal-tb!important}
+ .ctd-section-list .ctd-section-name{display:block!important;grid-column:1!important;grid-row:2!important;flex:none!important;width:100%!important;min-width:0!important;max-width:100%!important;font-size:15px!important;line-height:1.45!important;font-weight:700!important;white-space:normal!important;word-break:normal!important;overflow-wrap:break-word!important;writing-mode:horizontal-tb!important}
+ .ctd-section-list .ctd-section-count{display:none!important}
+ .ctd-section-list .ctd-check-status{display:block!important;position:static!important;float:none!important;width:100%!important;max-width:100%!important;min-width:0!important;height:42px!important;margin:0!important;box-sizing:border-box!important;font-size:14px!important;line-height:1.3!important}
+}
+
 </style>
 </head>
 
