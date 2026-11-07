@@ -92,46 +92,67 @@ function renderRoleNavigation(roles) {
     });
   });
 
-  // Every page gets the same fixed sidebar and a single, accessible menu button.
+  // Shared, deterministic page shell. Each page keeps its own content and module logic.
+  const shellStyle = document.getElementById("regutrack-shell-style") || document.createElement("style");
+  shellStyle.id = "regutrack-shell-style";
+  shellStyle.textContent = `
+    :root { --regutrack-sidebar-width: 255px; }
+    .sidebar { width:var(--regutrack-sidebar-width)!important; height:100dvh!important; position:fixed!important; inset:0 auto 0 0!important; z-index:1000!important; display:flex!important; flex-direction:column!important; background:#fff!important; border-right:1px solid #e8eee9!important; box-sizing:border-box!important; transition:transform .25s ease!important; }
+    .sidebar .sidebar-scroll { flex:1 1 auto!important; min-height:0!important; overflow-y:auto!important; overscroll-behavior:contain; }
+    .sidebar .sidebar-bottom { flex:0 0 auto!important; }
+    .main { margin-left:var(--regutrack-sidebar-width)!important; min-width:0!important; min-height:100vh; }
+    .main > .content, .main > section.content { width:100%; min-width:0; }
+    .topbar { position:sticky; top:0; z-index:900!important; }
+    .regutrack-menu-toggle { display:none!important; }
+    @media(max-width:900px) {
+      .sidebar { transform:translateX(-105%)!important; box-shadow:none!important; }
+      .sidebar.open { transform:translateX(0)!important; box-shadow:16px 0 40px rgba(16,45,30,.18)!important; }
+      .main { margin-left:0!important; width:100%!important; }
+      .regutrack-menu-toggle { display:grid!important; place-items:center; flex:0 0 40px; width:40px; height:40px; border:1px solid #e8eee9; border-radius:10px; background:#fff; color:#16845b; cursor:pointer; }
+    }
+  `;
+  if (!shellStyle.isConnected) document.head.appendChild(shellStyle);
+
   const topbar = document.querySelector(".topbar");
   const topLeft = topbar?.querySelector(".top-left") || topbar?.firstElementChild;
-  let menuButton = topbar?.querySelector("#menuToggle, #menu");
-  if (topbar && !menuButton) {
+  let menuButton = topbar?.querySelector("#menuToggle, #menu, #regutrackMenuToggle");
+  if (topbar && !menuButton && topLeft) {
     menuButton = document.createElement("button");
-    menuButton.type = "button";
-    topLeft?.prepend(menuButton);
+    topLeft.prepend(menuButton);
   }
   if (menuButton) {
     menuButton.id = "regutrackMenuToggle";
-    menuButton.classList.add("mobile-menu");
-    menuButton.setAttribute("type", "button");
+    menuButton.className = "regutrack-menu-toggle";
+    menuButton.type = "button";
     menuButton.setAttribute("aria-label", "Toggle navigation");
     menuButton.setAttribute("aria-controls", "sidebar");
     menuButton.setAttribute("aria-expanded", "false");
     menuButton.innerHTML = '<i class="fa-solid fa-bars" aria-hidden="true"></i>';
-    menuButton.addEventListener("click", event => {
-      event.preventDefault();
-      event.stopPropagation();
-      const opened = sidebar.classList.toggle("open");
-      menuButton.setAttribute("aria-expanded", String(opened));
-    });
   }
 
-  // Remove legacy per-page toggle listeners' visual side effects by relying on
-  // this one overlay/outside-click controller. Capture phase closes old handlers safely.
+  // Capture-phase delegation prevents legacy page handlers from toggling the sidebar twice.
   if (!document.documentElement.dataset.regutrackSidebarController) {
     document.documentElement.dataset.regutrackSidebarController = "true";
     document.addEventListener("click", event => {
-      if (!sidebar.contains(event.target) && !event.target.closest("#regutrackMenuToggle")) {
+      const button = event.target.closest("#regutrackMenuToggle");
+      if (button) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const opened = !sidebar.classList.contains("open");
+        sidebar.classList.toggle("open", opened);
+        button.setAttribute("aria-expanded", String(opened));
+        return;
+      }
+      if (event.target.closest(".sidebar a[href]")) {
+        sidebar.classList.remove("open");
+        document.getElementById("regutrackMenuToggle")?.setAttribute("aria-expanded", "false");
+        return;
+      }
+      if (!sidebar.contains(event.target)) {
         sidebar.classList.remove("open");
         document.getElementById("regutrackMenuToggle")?.setAttribute("aria-expanded", "false");
       }
-      const navLink = event.target.closest(".sidebar a[href]");
-      if (navLink) {
-        sidebar.classList.remove("open");
-        document.getElementById("regutrackMenuToggle")?.setAttribute("aria-expanded", "false");
-      }
-    });
+    }, true);
     document.addEventListener("keydown", event => {
       if (event.key === "Escape") {
         sidebar.classList.remove("open");
