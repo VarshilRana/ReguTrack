@@ -46,6 +46,7 @@ if (sessionError || !sessionData.session) {
     }
 
     const roles = (roleRows || []).map(row => row.role);
+    const isAdmin = roles.includes("admin");
     const landingPage = getLandingPage(roles);
     if (!roles.length) {
       window.location.replace("access-pending.html");
@@ -57,6 +58,11 @@ if (sessionError || !sessionData.session) {
       window.location.replace(landingPage);
     } else {
       document.documentElement.dataset.authenticated = "true";
+      document.documentElement.dataset.userRole = isAdmin ? "admin" : "user";
+      if (!isAdmin) {
+        document.querySelectorAll('.sidebar a[href="users.html"], .nav a[href="users.html"], a[data-admin-only]').forEach(link => link.remove());
+        document.querySelectorAll("[data-admin-only]").forEach(element => element.remove());
+      }
       document.body.dataset.userId = user.id;
       document.body.dataset.userRoles = roles.join(",");
       document.body.dataset.currentRole = roles.includes("admin")
