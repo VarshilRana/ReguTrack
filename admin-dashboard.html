@@ -50,34 +50,19 @@
 <section class="content">
 <div class="welcome"><div><div class="eyebrow">REGUTRACK ADMINISTRATION</div><h1>Platform overview</h1><p>Monitor the workspace, manage access and oversee regulatory operations from one place.</p></div><span class="pill"><i class="fa-solid fa-shield-halved"></i> Administrator access</span></div>
 <div class="kpis">
-<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-users"></i></div><strong>—</strong><span>Registered accounts</span><small>Live account analytics will be shown after admin-safe user management integration.</small></article>
-<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-capsules"></i></div><strong>—</strong><span>Product records</span><small>Product database integration is a later phase.</small></article>
-<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-folder-tree"></i></div><strong>—</strong><span>CTD dossiers</span><small>Dossier storage integration is a later phase.</small></article>
-<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-bell"></i></div><strong>—</strong><span>Pending assessments</span><small>Assessment metrics will appear after module integration.</small></article>
+<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-users"></i></div><strong id="adminUsersTotal">—</strong><span>Registered workspace users</span><small>Distinct users with an assigned ReguTrack role.</small></article>
+<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-capsules"></i></div><strong id="adminProductsTotal">—</strong><span>Product records</span><small>Platform-wide registered products.</small></article>
+<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-folder-tree"></i></div><strong id="adminDossiersTotal">—</strong><span>CTD dossiers</span><small>All regulatory dossiers in the database.</small></article>
+<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-bullseye"></i></div><strong id="adminAssessmentsTotal">—</strong><span>Impact assessments</span><small>Platform-wide assessment records.</small></article>
 </div>
 <div class="columns">
-<section class="panel"><div class="panel-head"><div><h2>Administration tasks</h2><p>Core actions for the platform administrator</p></div></div><div class="list">
-<a class="row-item" href="users.html"><span class="row-icon"><i class="fa-solid fa-user-shield"></i></span><span><strong>Review user access</strong><span>Open the user management workspace</span></span><span class="meta"><b>Open</b></span></a>
-<a class="row-item" href="reports.html"><span class="row-icon"><i class="fa-solid fa-chart-line"></i></span><span><strong>Review platform reports</strong><span>Inspect reports and available exports</span></span><span class="meta"><b>Open</b></span></a>
-<a class="row-item" href="settings.html"><span class="row-icon"><i class="fa-solid fa-sliders"></i></span><span><strong>Account settings</strong><span>Manage your own profile and preferences</span></span><span class="meta"><b>Open</b></span></a>
+<section class="panel"><div class="panel-head"><div><h2>Platform administration</h2><p>Administrative control centre</p></div></div><div class="list">
+<a class="row-item" href="users.html"><span class="row-icon"><i class="fa-solid fa-users-gear"></i></span><span><strong>User access directory</strong><span>Review accounts and assigned roles</span></span><span class="meta"><b>Open</b></span></a>
+<a class="row-item" href="reports.html"><span class="row-icon"><i class="fa-solid fa-chart-line"></i></span><span><strong>Platform reports</strong><span>Open platform-wide reports</span></span><span class="meta"><b>Open</b></span></a>
+<a class="row-item" href="regulatory-intelligence.html"><span class="row-icon"><i class="fa-solid fa-globe"></i></span><span><strong>Regulatory source oversight</strong><span>Review regulatory changes</span></span><span class="meta"><b id="adminUpdatesTotal">—</b></span></a>
 </div></section>
-<section class="panel"><div class="panel-head"><div><h2>Platform status</h2><p>Current implementation scope</p></div></div><div class="list">
-<div class="row-item"><span class="row-icon"><i class="fa-solid fa-lock"></i></span><span><strong>Authentication</strong><span>Supabase Auth session and role lookup</span></span><span class="meta"><b>Connected</b></span></div>
-<div class="row-item"><span class="row-icon"><i class="fa-solid fa-database"></i></span><span><strong>Account profiles and roles</strong><span>Database-backed with row-level security</span></span><span class="meta"><b>Connected</b></span></div>
-<div class="row-item"><span class="row-icon"><i class="fa-solid fa-cubes"></i></span><span><strong>Business modules</strong><span>Database integration is planned next</span></span><span class="meta"><b>In progress</b></span></div>
+<section class="panel"><div class="panel-head"><div><h2>Latest regulatory updates</h2><p>Recent records from Supabase</p></div><span class="meta"><b id="adminAuditTotal">—</b><small>Audit events</small></span></div><div class="list" id="adminUpdatesBody"><div class="row-item">Loading regulatory records…</div></div><p id="adminDataStatus" class="notice" aria-live="polite">Live platform metrics load from the connected database.</p></section>
 </div></section>
-</div>
-<div class="panel-head"><div><h2>Platform modules</h2><p>Administration and regulatory workspaces remain distinct</p></div></div>
-<div class="modules">
-<article class="module"><i class="fa-solid fa-users-gear"></i><h3>User & Role Management</h3><p>Open account access. Role changes remain restricted to trusted database-side administrator workflows.</p><a href="users.html">Open user management <i class="fa-solid fa-arrow-right"></i></a></article>
-<article class="module"><i class="fa-solid fa-capsules"></i><h3>Product Oversight</h3><p>Open the product module. Database-backed oversight will be enabled after product records are integrated.</p><a href="products.html">Open products <i class="fa-solid fa-arrow-right"></i></a></article>
-<article class="module"><i class="fa-solid fa-folder-tree"></i><h3>CTD Dossier Oversight</h3><p>Review the CTD dossier workspace and its current implementation status.</p><a href="ctd-dossiers.html">Open dossiers <i class="fa-solid fa-arrow-right"></i></a></article>
-<article class="module"><i class="fa-solid fa-globe"></i><h3>Regulatory Intelligence</h3><p>Review regulatory source records and intelligence workflows.</p><a href="regulatory-intelligence.html">Open intelligence <i class="fa-solid fa-arrow-right"></i></a></article>
-<article class="module"><i class="fa-solid fa-bullseye"></i><h3>Impact Assessment</h3><p>Review AI-assisted assessment activity and required human verification.</p><a href="impact-assessment.html">Open assessments <i class="fa-solid fa-arrow-right"></i></a></article>
-<article class="module"><i class="fa-solid fa-chart-column"></i><h3>Reports & Analytics</h3><p>Access platform reporting. Metrics remain placeholders until source modules are integrated.</p><a href="reports.html">Open reports <i class="fa-solid fa-arrow-right"></i></a></article>
-</div>
-<div class="notice"><strong>Access and data note:</strong> The admin dashboard is a separate interface. UI routing is role-aware; each future business table still needs RLS policies before privileged data operations are enabled. Metric placeholders are intentional and are not fabricated counts.</div>
-</section>
 </main></div>
 <script type="module" src="js/auth-guard.js"></script>
 <script>
@@ -97,4 +82,22 @@ document.querySelectorAll('.sidebar .nav-link[href]').forEach(link => {
   link.addEventListener('click', () => adminSidebar?.classList.remove('open'));
 });
 </script>
-</body></html>
+<script type="module">
+import { supabase } from "./js/supabaseClient.js";
+const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=String(value)};
+const count=async table=>{const {count,error}=await supabase.from(table).select("id",{count:"exact",head:true});if(error)throw error;return count??0};
+async function load(){
+ const [roles,products,dossiers,assessments,updates,audits]=await Promise.all([
+  supabase.from("user_roles").select("user_id,role"),count("products"),count("ctd_dossiers"),count("impact_assessments"),
+  supabase.from("regulatory_updates").select("id,review_status,publication_date,title").order("publication_date",{ascending:false}).limit(5),count("audit_logs")
+ ]);
+ if(roles.error)throw roles.error;if(updates.error)throw updates.error;
+ set("adminUsersTotal",new Set((roles.data||[]).map(x=>x.user_id)).size);
+ set("adminProductsTotal",products);set("adminDossiersTotal",dossiers);set("adminAssessmentsTotal",assessments);set("adminAuditTotal",audits);
+ set("adminUpdatesTotal",(updates.data||[]).length);
+ const list=document.getElementById("adminUpdatesBody");if(!list)return;list.replaceChildren();
+ if(!updates.data?.length){const empty=document.createElement("div");empty.className="row-item";empty.textContent="No regulatory updates have been recorded yet.";list.append(empty);return}
+ updates.data.forEach(item=>{const row=document.createElement("div");row.className="row-item";const title=document.createElement("strong");title.textContent=item.title||"Untitled update";const meta=document.createElement("span");meta.textContent=(item.review_status||"Unreviewed")+" · "+(item.publication_date||"No date");const wrap=document.createElement("span");wrap.append(title,meta);row.append(wrap);list.append(row)});
+}
+load().catch(error=>{console.error(error);const status=document.getElementById("adminDataStatus");if(status)status.textContent="Unable to load live metrics. Refresh or check access permissions."});
+</script></body></html>
