@@ -2038,6 +2038,7 @@ button{line-height:1.4}
 <div class="toast" id="toast"></div>
 
 <script type="module">
+
 import { supabase } from "./js/supabaseClient.js";
 
 const modules = {
@@ -2134,7 +2135,7 @@ async function ensureDossier(){
   const {data:created,error:createError}=await supabase.from("ctd_dossiers").insert({
    product_id:activeProductId,dossier_title:productName(p)+" — CTD Dossier",
    dossier_type:"initial",target_market:p.target_market||null,
-   regulatory_authority:p.regulatory_authority||null,owner_id:(currentRole==="admin"?(p.product_owner||p.created_by):currentUser.id),created_by:currentUser.id
+   regulatory_authority:p.regulatory_authority||null,owner_id:currentRole==="admin"?currentUser.id:(p.product_owner||currentUser.id),created_by:currentUser.id
   }).select("*").single();
   if(createError)throw createError;
   dossier=created;dossiers=[created];
@@ -2346,6 +2347,7 @@ async function initialize(){
  }catch(error){console.error("CTD initialization failed:",error);showToast("CTD workspace could not load: "+error.message);$("documentTableBody").innerHTML='<tr><td colspan="7">Unable to load CTD data. Check your connection and access permissions, then refresh.</td></tr>';}
 }
 initialize();
+
 </script>
 <script type="module" src="js/auth-guard.js"></script>
 </body>
