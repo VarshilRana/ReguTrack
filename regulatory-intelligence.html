@@ -119,6 +119,20 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;
 @media(max-width:900px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0);box-shadow:15px 0 40px #10241a20}.main{margin-left:0}.mobile-menu{display:grid}.topbar{padding:0 22px}}
 @media(max-width:650px){.topbar{height:65px;padding:0 15px}.content{padding:20px 15px 28px}.search-box{display:none}.profile-info,.profile>i{display:none}.welcome{align-items:flex-start;flex-direction:column}.welcome h1{font-size:27px}.welcome p{font-size:13px}.welcome-actions{width:100%}.welcome-actions .btn{flex:1}.stats-grid{grid-template-columns:repeat(2,1fr);gap:10px}.stat-card{padding:15px}.stat-value{font-size:27px}.stat-label{font-size:12px}.stat-foot{font-size:10px}.panel{padding:17px}.panel-heading h2{font-size:16px}.filters{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}.update-bottom{align-items:flex-start;flex-direction:column}.update-actions{width:100%}.update-actions .text-btn{flex:1}.footer{padding:15px;flex-direction:column}.modal{padding:19px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+
+/* REGUTRACK FRONTEND POLISH — shared readable typography baseline */
+body{font-size:15px;line-height:1.7}
+body :is(p,li,label,td,th,input,select,textarea,button){font-size:max(14px,1em)}
+body :is(small,.muted,.helper-text,.form-hint,.field-hint,.table-meta,.kpi-label,.stat-label,.nav-count){font-size:max(12px,1em)}
+.nav-link{font-size:14px;line-height:1.5}
+.nav-label{font-size:12px}
+.page-heading p,.welcome p{font-size:15px;line-height:1.7}
+.panel-heading p{font-size:13px;line-height:1.6}
+input,select,textarea{min-height:40px}
+button{line-height:1.4}
+@media(max-width:768px){body{font-size:15px}body :is(p,li,label,td,th,input,select,textarea,button){font-size:max(13px,1em)}}
+
 </style>
 </head>
 <body>
