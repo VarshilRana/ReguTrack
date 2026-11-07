@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard | ReguTrack</title>
+<title>User Dashboard | ReguTrack</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -924,6 +924,8 @@ tbody tr:last-child td { border-bottom: none; }
     to { opacity: 1; transform: translateY(0); }
 }
 
+.nav-link { transform: none; }
+.nav-link:hover { transform: translateX(2px); }
 /* RESPONSIVE */
 @media (max-width: 1150px) {
     .content { padding: 25px; }
@@ -1798,6 +1800,20 @@ input,select,textarea{min-height:40px}
 button{line-height:1.4}
 @media(max-width:768px){body{font-size:15px}body :is(p,li,label,td,th,input,select,textarea,button){font-size:max(13px,1em)}}
 
+
+/* User dashboard layout corrections */
+.kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch}
+.columns{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:18px;margin-bottom:19px;align-items:start}
+.columns>.panel{min-width:0}
+.row-list{display:grid;gap:10px;min-width:0}
+.row-item{display:flex;align-items:center;gap:12px;min-width:0;padding:12px 14px;border:1px solid #edf1ee;border-radius:10px;background:#fff;color:var(--text);text-decoration:none;transition:background .18s ease,border-color .18s ease,transform .18s ease}
+.row-item:hover{background:#f8fcf9;border-color:#d9eadf;transform:translateY(-1px)}
+.row-item>span{display:grid;gap:3px;min-width:0}
+.row-item strong{display:block;font-size:13px;font-weight:700;line-height:1.45;overflow-wrap:anywhere}
+.row-item span span{display:block;color:var(--muted);font-size:11px;line-height:1.5}
+.notice{margin-top:18px;padding:12px 14px;border:1px solid #dcefe3;border-radius:10px;background:#f0f8f3;color:#527363;font-size:12px;line-height:1.6}
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.columns{grid-template-columns:1fr}}
+@media(max-width:560px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.kpi-card{padding:14px}.columns{gap:14px}.row-item{padding:11px}}
 </style>
 </head>
 
@@ -1844,14 +1860,12 @@ button{line-height:1.4}
             <i class="fa-regular fa-calendar-days"></i> Regulatory Calendar
         </a>
 
-        <div class="nav-label">MANAGEMENT</div>
+        <div class="nav-label">MY WORKSPACE</div>
 
         <a href="reports.html" class="nav-link">
-            <i class="fa-solid fa-chart-pie"></i> Reports & Analytics
+            <i class="fa-solid fa-chart-pie"></i> My Reports
         </a>
-        <a href="users.html" class="nav-link">
-            <i class="fa-solid fa-users"></i> User Management
-        </a>
+
         <a href="settings.html" class="nav-link">
             <i class="fa-solid fa-gear"></i> Settings
         </a>
@@ -1913,829 +1927,40 @@ button{line-height:1.4}
     </header>
 
     <div class="content">
-
-        <!-- WELCOME -->
-        <section class="welcome">
-            <div>
-                <div class="eyebrow"><i class="fa-solid fa-circle" style="font-size:6px;"></i> REGULATORY WORKSPACE</div>
-                <h1>Good afternoon, Varshil <span>👋</span></h1>
-                <p>Here's what's happening across your regulatory workspace today.</p>
-            </div>
-
-            <div class="welcome-actions">
-                <button class="btn" onclick="openModal('updateModal')">
-                    <i class="fa-solid fa-plus"></i> Add Regulatory Update
-                </button>
-                <button class="btn btn-primary" onclick="openModal('productModal')">
-                    <i class="fa-solid fa-plus"></i> Add Product
-                </button>
-            </div>
-        </section>
-
-        <!-- KPI CARDS -->
-        <section class="kpi-grid">
-            <div class="kpi-card" style="--delay:.05s" onclick="location.href='products.html'">
-                <div class="kpi-top">
-                    <div class="kpi-icon green"><i class="fa-solid fa-capsules"></i></div>
-                    <span class="kpi-change">Portfolio</span>
-                </div>
-                <div class="kpi-value counter" data-target="24">0</div>
-                <div class="kpi-label">Total Products</div>
-                <div class="kpi-foot">Products registered in workspace</div>
-            </div>
-
-            <div class="kpi-card" style="--delay:.1s" onclick="location.href='products.html'">
-                <div class="kpi-top">
-                    <div class="kpi-icon blue"><i class="fa-solid fa-file-circle-check"></i></div>
-                    <span class="kpi-change">75% of total</span>
-                </div>
-                <div class="kpi-value counter" data-target="18">0</div>
-                <div class="kpi-label">Active Registrations</div>
-                <div class="kpi-foot">Registration status overview</div>
-            </div>
-
-            <div class="kpi-card" style="--delay:.15s" onclick="location.href='ctd-dossiers.html'">
-                <div class="kpi-top">
-                    <div class="kpi-icon purple"><i class="fa-solid fa-folder-open"></i></div>
-                    <span class="kpi-change">Dossier records</span>
-                </div>
-                <div class="kpi-value counter" data-target="12">0</div>
-                <div class="kpi-label">CTD Dossiers</div>
-                <div class="kpi-foot">Product-linked dossier records</div>
-            </div>
-
-            <div class="kpi-card" style="--delay:.2s" onclick="location.href='ctd-dossiers.html'">
-                <div class="kpi-top">
-                    <div class="kpi-icon green"><i class="fa-solid fa-chart-line"></i></div>
-                    <span class="kpi-change">Overall progress</span>
-                </div>
-                <div class="kpi-value"><span class="counter" data-target="78">0</span><small style="font-size:15px;">%</small></div>
-                <div class="kpi-label">Dossier Completion</div>
-                <div class="kpi-foot">Average illustrative completion</div>
-            </div>
-
-            <div class="kpi-card" style="--delay:.25s" onclick="location.href='regulatory-intelligence.html'">
-                <div class="kpi-top">
-                    <div class="kpi-icon orange"><i class="fa-solid fa-bullhorn"></i></div>
-                    <span class="kpi-change">Latest records</span>
-                </div>
-                <div class="kpi-value counter" data-target="9">0</div>
-                <div class="kpi-label">Regulatory Updates</div>
-                <div class="kpi-foot">Updates recorded in this workspace</div>
-            </div>
-
-            <div class="kpi-card" style="--delay:.3s" onclick="location.href='impact-assessment.html'">
-                <div class="kpi-top">
-                    <div class="kpi-icon red"><i class="fa-solid fa-clipboard-check"></i></div>
-                    <span class="tag tag-orange">Needs review</span>
-                </div>
-                <div class="kpi-value counter" data-target="5">0</div>
-                <div class="kpi-label">Pending Impact Assessments</div>
-                <div class="kpi-foot">Awaiting human RA verification</div>
-            </div>
-        </section>
-
-        <!-- REGULATORY UPDATES + IMPACT ASSESSMENT -->
-        <section class="grid-two">
-
-            <div class="panel">
-                <div class="panel-heading">
-                    <div>
-                        <h3><i class="fa-solid fa-earth-asia" style="color:var(--primary);margin-right:7px;"></i> Regulatory Intelligence</h3>
-                        <p>Recent regulatory updates from monitored authorities</p>
-                    </div>
-                    <a href="regulatory-intelligence.html" class="text-link">View all <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-
-                <div class="update-list">
-                    <div class="update-item">
-                        <div class="authority-icon authority-cdsco">CDS</div>
-                        <div class="update-info">
-                            <h4>Updated guidance on pharmaceutical product submissions</h4>
-                            <p>CDSCO · Illustrative reference: REG-2026-001</p>
-                            <div class="update-meta">
-                                <span class="tag tag-blue">Guideline</span>
-                                <span class="tag tag-orange">Under review</span>
-                                <span style="font-size:9px;color:#9aa69e;">06 Nov 2026</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="update-item">
-                        <div class="authority-icon authority-ich">ICH</div>
-                        <div class="update-info">
-                            <h4>Quality guideline revision – technical document review</h4>
-                            <p>ICH · Illustrative reference: Q-REV-2026</p>
-                            <div class="update-meta">
-                                <span class="tag tag-green">Quality</span>
-                                <span class="tag tag-blue">New</span>
-                                <span style="font-size:9px;color:#9aa69e;">04 Nov 2026</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="update-item">
-                        <div class="authority-icon authority-fda">FDA</div>
-                        <div class="update-info">
-                            <h4>Regulatory guidance update for electronic submissions</h4>
-                            <p>USFDA · Illustrative reference: FDA-2026-014</p>
-                            <div class="update-meta">
-                                <span class="tag tag-blue">Submission</span>
-                                <span class="tag tag-green">Recorded</span>
-                                <span style="font-size:9px;color:#9aa69e;">02 Nov 2026</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel impact-panel">
-                <div class="panel-heading">
-                    <div>
-                        <h3><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary);margin-right:7px;"></i> AI Regulatory Impact Assessment</h3>
-                        <p>Potential regulatory changes mapped to your product dossiers</p>
-                    </div>
-                    <span class="tag tag-green">AI-assisted</span>
-                </div>
-
-                <div class="impact-intro">
-                    <div class="impact-logo"><i class="fa-solid fa-diagram-project"></i></div>
-                    <div>
-                        <h4>Impact assessment overview</h4>
-                        <p>AI suggestions require human RA verification.</p>
-                    </div>
-                </div>
-
-                <div class="impact-stats">
-                    <div class="impact-stat">
-                        <strong>14</strong>
-                        <span>Assessments generated</span>
-                    </div>
-                    <div class="impact-stat">
-                        <strong>8</strong>
-                        <span>Potentially affected products</span>
-                    </div>
-                    <div class="impact-stat">
-                        <strong>21</strong>
-                        <span>Potentially affected documents</span>
-                    </div>
-                    <div class="impact-stat">
-                        <strong style="color:#d28b35;">5</strong>
-                        <span>Awaiting RA verification</span>
-                    </div>
-                </div>
-
-                <div class="impact-note">
-                    <i class="fa-solid fa-circle-info"></i>
-                    AI identifies potential relationships between regulatory updates and dossier content. Final applicability is determined by an authorized RA reviewer.
-                </div>
-
-                <div style="display:flex;justify-content:flex-end;margin-top:13px;">
-                    <a href="impact-assessment.html" class="btn btn-primary btn-small">Review Assessments <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </section>
-
-        <!-- PRODUCT PORTFOLIO -->
-        <section class="panel table-panel">
-            <div class="panel-heading">
-                <div>
-                    <h3><i class="fa-solid fa-boxes-stacked" style="color:var(--primary);margin-right:7px;"></i> Product Portfolio</h3>
-                    <p>Overview of registered and in-progress pharmaceutical products</p>
-                </div>
-                <div class="table-tools">
-                    <input class="table-search" type="search" id="productSearch" placeholder="Search products...">
-                    <select class="table-search" id="statusFilter" aria-label="Filter by status">
-                        <option value="">All statuses</option>
-                        <option value="Approved">Approved</option>
-                        <option value="Under Review">Under Review</option>
-                        <option value="Pending">Pending</option>
-                    </select>
-                    <a href="products.html" class="text-link">View all <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="table-wrap">
-                <table id="productTable">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Product Code</th>
-                            <th>Dosage Form</th>
-                            <th>Market</th>
-                            <th>Registration</th>
-                            <th>CTD Completion</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="product-name">Paracetamol 500 mg</span><span class="subtext">Analgesic</span></td>
-                            <td>PRD-001</td>
-                            <td>Tablet</td>
-                            <td>India</td>
-                            <td><span class="tag tag-green">Approved</span></td>
-                            <td class="progress-cell"><span class="progress-line"><span class="progress-fill" style="width:95%"></span></span><span class="progress-number">95%</span></td>
-                            <td><button class="icon-btn view-product" title="View product"><i class="fa-regular fa-eye"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td><span class="product-name">Amoxicillin 250 mg</span><span class="subtext">Antibiotic</span></td>
-                            <td>PRD-002</td>
-                            <td>Capsule</td>
-                            <td>India</td>
-                            <td><span class="tag tag-orange">Under Review</span></td>
-                            <td class="progress-cell"><span class="progress-line"><span class="progress-fill" style="width:72%"></span></span><span class="progress-number">72%</span></td>
-                            <td><button class="icon-btn view-product" title="View product"><i class="fa-regular fa-eye"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td><span class="product-name">Metformin 500 mg</span><span class="subtext">Antidiabetic</span></td>
-                            <td>PRD-003</td>
-                            <td>Tablet</td>
-                            <td>US</td>
-                            <td><span class="tag tag-green">Approved</span></td>
-                            <td class="progress-cell"><span class="progress-line"><span class="progress-fill" style="width:88%"></span></span><span class="progress-number">88%</span></td>
-                            <td><button class="icon-btn view-product" title="View product"><i class="fa-regular fa-eye"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td><span class="product-name">Cetirizine 10 mg</span><span class="subtext">Antihistamine</span></td>
-                            <td>PRD-004</td>
-                            <td>Tablet</td>
-                            <td>EU</td>
-                            <td><span class="tag tag-grey">Pending</span></td>
-                            <td class="progress-cell"><span class="progress-line"><span class="progress-fill" style="width:43%"></span></span><span class="progress-number">43%</span></td>
-                            <td><button class="icon-btn view-product" title="View product"><i class="fa-regular fa-eye"></i></button></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="empty-state" id="noProducts" style="display:none;">No matching products found.</div>
-            </div>
-        </section>
-
-        <!-- CTD PROGRESS + DEADLINES -->
-        <section class="grid-two">
-
-            <div class="panel">
-                <div class="panel-heading">
-                    <div>
-                        <h3><i class="fa-solid fa-folder-tree" style="color:var(--primary);margin-right:7px;"></i> CTD Dossier Progress</h3>
-                        <p>Illustrative completion by CTD module</p>
-                    </div>
-                    <a href="ctd-dossiers.html" class="text-link">View dossiers <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;">
-                    <div>
-                        <div style="font-size:25px;font-weight:800;font-family:Manrope;">78%</div>
-                        <div style="font-size:9px;color:var(--muted);">Overall completion</div>
-                    </div>
-                    <span class="tag tag-green">Across demo records</span>
-                </div>
-
-                <div class="ctd-grid">
-                    <div class="ctd-module">
-                        <div class="module-number">01</div>
-                        <h4>Administrative</h4>
-                        <p>Documents: 18 / 20</p>
-                        <div class="progress-line"><div class="progress-fill" style="width:90%"></div></div>
-                        <span class="module-percent">90%</span>
-                    </div>
-                    <div class="ctd-module">
-                        <div class="module-number">02</div>
-                        <h4>Summaries</h4>
-                        <p>Documents: 14 / 18</p>
-                        <div class="progress-line"><div class="progress-fill" style="width:78%"></div></div>
-                        <span class="module-percent">78%</span>
-                    </div>
-                    <div class="ctd-module">
-                        <div class="module-number">03</div>
-                        <h4>Quality</h4>
-                        <p>Documents: 22 / 30</p>
-                        <div class="progress-line"><div class="progress-fill" style="width:73%"></div></div>
-                        <span class="module-percent">73%</span>
-                    </div>
-                    <div class="ctd-module">
-                        <div class="module-number">04</div>
-                        <h4>Nonclinical</h4>
-                        <p>Documents: 10 / 12</p>
-                        <div class="progress-line"><div class="progress-fill" style="width:83%"></div></div>
-                        <span class="module-percent">83%</span>
-                    </div>
-                    <div class="ctd-module">
-                        <div class="module-number">05</div>
-                        <h4>Clinical</h4>
-                        <p>Documents: 15 / 25</p>
-                        <div class="progress-line"><div class="progress-fill" style="width:60%"></div></div>
-                        <span class="module-percent">60%</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-heading">
-                    <div>
-                        <h3><i class="fa-regular fa-calendar-check" style="color:var(--primary);margin-right:7px;"></i> Upcoming Deadlines</h3>
-                        <p>Important regulatory activities and due dates</p>
-                    </div>
-                    <a href="regulatory-calendar.html" class="text-link">View calendar <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-
-                <div class="deadline-list">
-                    <div class="deadline-item">
-                        <div class="date-box"><strong>12</strong><span>Nov</span></div>
-                        <div class="deadline-info">
-                            <h4>Registration renewal review</h4>
-                            <p>Paracetamol 500 mg · India</p>
-                        </div>
-                        <span class="tag tag-red">Urgent</span>
-                    </div>
-                    <div class="deadline-item">
-                        <div class="date-box"><strong>18</strong><span>Nov</span></div>
-                        <div class="deadline-info">
-                            <h4>CTD Module 3 document review</h4>
-                            <p>Amoxicillin 250 mg · Quality</p>
-                        </div>
-                        <span class="tag tag-orange">Upcoming</span>
-                    </div>
-                    <div class="deadline-item">
-                        <div class="date-box"><strong>24</strong><span>Nov</span></div>
-                        <div class="deadline-info">
-                            <h4>Regulatory response preparation</h4>
-                            <p>Metformin 500 mg · US</p>
-                        </div>
-                        <span class="tag tag-blue">Scheduled</span>
-                    </div>
-                    <div class="deadline-item">
-                        <div class="date-box"><strong>30</strong><span>Nov</span></div>
-                        <div class="deadline-info">
-                            <h4>Periodic document review</h4>
-                            <p>Cetirizine 10 mg · EU</p>
-                        </div>
-                        <span class="tag tag-grey">Planned</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- RECENT ACTIVITY + QUICK ACTIONS -->
-        <section class="grid-two">
-            <div class="panel">
-                <div class="panel-heading">
-                    <div>
-                        <h3><i class="fa-solid fa-clock-rotate-left" style="color:var(--primary);margin-right:7px;"></i> Recent Activity</h3>
-                        <p>Latest actions performed in the workspace</p>
-                    </div>
-                    <a href="#" class="text-link" onclick="showToast('Full activity history will be available in a future update.');return false;">View history</a>
-                </div>
-
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="activity-icon"><i class="fa-solid fa-file-arrow-up"></i></div>
-                        <div>
-                            <div class="activity-text"><strong>CTD document uploaded</strong> for Paracetamol 500 mg – Module 3.</div>
-                            <div class="activity-time">Workspace activity · Illustrative record · 2 hours ago</div>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon"><i class="fa-solid fa-bullhorn"></i></div>
-                        <div>
-                            <div class="activity-text"><strong>Regulatory update recorded</strong> from CDSCO.</div>
-                            <div class="activity-time">Workspace activity · Illustrative record · 5 hours ago</div>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon"><i class="fa-solid fa-diagram-project"></i></div>
-                        <div>
-                            <div class="activity-text"><strong>Impact assessment generated</strong> for a quality guideline update.</div>
-                            <div class="activity-time">Workspace activity · Illustrative record · Yesterday</div>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon"><i class="fa-solid fa-capsules"></i></div>
-                        <div>
-                            <div class="activity-text"><strong>Product record created</strong> for Cetirizine 10 mg.</div>
-                            <div class="activity-time">Workspace activity · Illustrative record · 2 days ago</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-heading">
-                    <div>
-                        <h3><i class="fa-solid fa-bolt" style="color:var(--primary);margin-right:7px;"></i> Quick Actions</h3>
-                        <p>Frequently used regulatory workspace operations</p>
-                    </div>
-                </div>
-
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
-                    <button class="btn" style="justify-content:flex-start;padding:16px 12px;" onclick="openModal('productModal')">
-                        <i class="fa-solid fa-capsules" style="color:var(--primary);font-size:15px;"></i>
-                        <span>Add Product</span>
-                    </button>
-                    <button class="btn" style="justify-content:flex-start;padding:16px 12px;" onclick="showToast('Open the CTD Dossier Management page to upload documents.')">
-                        <i class="fa-solid fa-file-arrow-up" style="color:#5485c1;font-size:15px;"></i>
-                        <span>Upload CTD</span>
-                    </button>
-                    <button class="btn" style="justify-content:flex-start;padding:16px 12px;" onclick="openModal('updateModal')">
-                        <i class="fa-solid fa-globe" style="color:#9a73c5;font-size:15px;"></i>
-                        <span>Add Update</span>
-                    </button>
-                    <button class="btn" style="justify-content:flex-start;padding:16px 12px;" onclick="location.href='impact-assessment.html'">
-                        <i class="fa-solid fa-wand-magic-sparkles" style="color:#d39439;font-size:15px;"></i>
-                        <span>Run Assessment</span>
-                    </button>
-                </div>
-
-                <div style="background:#f5faf7;border:1px solid #e8f2eb;border-radius:10px;padding:14px;margin-top:17px;">
-                    <div style="font-size:11px;font-weight:700;"><i class="fa-solid fa-lightbulb" style="color:#d99a32;margin-right:6px;"></i> RA Workspace Tip</div>
-                    <p style="font-size:10px;color:var(--muted);line-height:1.6;margin-top:6px;">Review regulatory updates regularly and verify AI-generated impact suggestions before making product or dossier decisions.</p>
-                </div>
-            </div>
-        </section>
-
+      <section class="welcome">
+        <div><div class="eyebrow">USER WORKSPACE</div><h1>My regulatory workspace</h1><p>Your products, dossier progress and regulatory follow-up in one place.</p></div>
+        <div class="welcome-actions"><a class="btn" href="products.html"><i class="fa-solid fa-capsules"></i> Products</a><a class="btn btn-primary" href="ctd-dossiers.html"><i class="fa-solid fa-folder-open"></i> CTD dossiers</a></div>
+      </section>
+      <section class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon green"><i class="fa-solid fa-capsules"></i></div><span class="kpi-change">My workspace</span></div><div class="kpi-value" id="raProductsCount">—</div><div class="kpi-label">Products</div><div class="kpi-foot">Available product records</div></div>
+        <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon blue"><i class="fa-solid fa-folder-tree"></i></div><span class="kpi-change">CTD</span></div><div class="kpi-value" id="raDossiersCount">—</div><div class="kpi-label">CTD dossiers</div><div class="kpi-foot">Dossiers accessible to your role</div></div>
+        <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon orange"><i class="fa-solid fa-file-circle-check"></i></div><span class="kpi-change">Documents</span></div><div class="kpi-value" id="raDocumentsCount">—</div><div class="kpi-label">Dossier documents</div><div class="kpi-foot">Documents recorded in CTD dossiers</div></div>
+        <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon red"><i class="fa-solid fa-bullseye"></i></div><span class="kpi-change">Review</span></div><div class="kpi-value" id="raAssessmentsCount">—</div><div class="kpi-label">Impact assessments</div><div class="kpi-foot">Assessments available to your role</div></div>
+      </section>
+      <div class="columns">
+        <section class="panel"><div class="panel-heading"><div><h2>My regulatory work</h2><p>Recent tasks and outstanding regulatory activity</p></div></div><div class="row-list" id="raWorkList"><div class="row-item">Loading your work queue…</div></div></section>
+        <section class="panel"><div class="panel-heading"><div><h2>Regulatory updates</h2><p>Latest intelligence recorded in the workspace</p></div><a href="regulatory-intelligence.html">View all</a></div><div class="row-list" id="raUpdatesList"><div class="row-item">Loading updates…</div></div></section>
+      </div>
+      <div class="notice" id="raDataStatus" role="status">Loading live data from ReguTrack…</div>
     </div>
-
-    <footer class="footer">
-        <span>© 2026 ReguTrack. Regulatory Affairs Workspace.</span>
-        <span>Independent academic project · Not affiliated with regulatory authorities.</span>
-    </footer>
-</main>
-</div>
-
-<!-- ADD PRODUCT MODAL -->
-<div class="modal-backdrop" id="productModal">
-    <div class="modal">
-        <div class="modal-header">
-            <div>
-                <h3>Add New Product</h3>
-                <p>Create a product record in your workspace.</p>
-            </div>
-            <button class="close-modal" onclick="closeModal('productModal')"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-
-        <form id="productForm">
-            <div class="form-group">
-                <label>Product Name *</label>
-                <input type="text" id="newProductName" placeholder="e.g. Paracetamol 500 mg" required>
-            </div>
-            <div class="form-group">
-                <label>Product Code *</label>
-                <input type="text" id="newProductCode" placeholder="e.g. PRD-005" required>
-            </div>
-            <div class="form-group">
-                <label>Dosage Form</label>
-                <select id="newProductForm">
-                    <option>Tablet</option>
-                    <option>Capsule</option>
-                    <option>Injection</option>
-                    <option>Oral Solution</option>
-                    <option>Cream</option>
-                    <option>Other</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Target Market</label>
-                <select id="newProductMarket">
-                    <option>India</option>
-                    <option>US</option>
-                    <option>EU</option>
-                    <option>UK</option>
-                    <option>Other</option>
-                </select>
-            </div>
-            <div class="modal-actions">
-                <button type="button" class="btn" onclick="closeModal('productModal')">Cancel</button>
-                <button type="submit" class="btn btn-primary">Create Product</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- ADD UPDATE MODAL -->
-<div class="modal-backdrop" id="updateModal">
-    <div class="modal">
-        <div class="modal-header">
-            <div>
-                <h3>Add Regulatory Update</h3>
-                <p>Record a regulatory intelligence item.</p>
-            </div>
-            <button class="close-modal" onclick="closeModal('updateModal')"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-
-        <form id="updateForm">
-            <div class="form-group">
-                <label>Update Title *</label>
-                <input type="text" id="updateTitle" placeholder="Enter regulatory update title" required>
-            </div>
-            <div class="form-group">
-                <label>Regulatory Authority *</label>
-                <select id="updateAuthority">
-                    <option>CDSCO</option>
-                    <option>ICH</option>
-                    <option>USFDA</option>
-                    <option>EMA</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Reference Number</label>
-                <input type="text" id="updateReference" placeholder="Enter reference number">
-            </div>
-            <div class="form-group">
-                <label>Publication Date</label>
-                <input type="date" id="updateDate">
-            </div>
-            <div class="modal-actions">
-                <button type="button" class="btn" onclick="closeModal('updateModal')">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save Update</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-// SIDEBAR
-const sidebar = document.getElementById('sidebar');
-document.getElementById('menuToggle').addEventListener('click', () => {
-    sidebar.classList.toggle('open');
-});
-
-document.addEventListener('click', (event) => {
-    if (window.innerWidth <= 900 &&
-        sidebar.classList.contains('open') &&
-        !sidebar.contains(event.target) &&
-        !event.target.closest('#menuToggle')) {
-        sidebar.classList.remove('open');
-    }
-});
-
-// PROFILE DROPDOWN
-const profileButton = document.getElementById('profileButton');
-const profileDropdown = document.getElementById('profileDropdown');
-
-profileButton.addEventListener('click', (event) => {
-    event.stopPropagation();
-    profileDropdown.classList.toggle('show');
-});
-
-document.addEventListener('click', (event) => {
-    if (!profileButton.contains(event.target)) {
-        profileDropdown.classList.remove('show');
-    }
-});
-
-// ANIMATED KPI COUNTERS
-const counters = document.querySelectorAll('.counter');
-
-const counterObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-
-        const counter = entry.target;
-        const target = Number(counter.dataset.target);
-        const duration = 1000;
-        const start = performance.now();
-
-        function updateCounter(now) {
-            const progress = Math.min((now - start) / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            counter.textContent = Math.floor(target * eased);
-
-            if (progress < 1) requestAnimationFrame(updateCounter);
-            else counter.textContent = target;
-        }
-
-        requestAnimationFrame(updateCounter);
-        observer.unobserve(counter);
-    });
-}, { threshold: .5 });
-
-counters.forEach(counter => counterObserver.observe(counter));
-
-// MODALS
-function openModal(id) {
-    document.getElementById(id).classList.add('show');
+<script type="module">
+import { supabase } from "./js/supabaseClient.js";
+const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=String(v)};
+const count=async(table)=>{const {count,error}=await supabase.from(table).select("id",{count:"exact",head:true});if(error)throw error;return count??0};
+const addRow=(container,title,detail,href)=>{const root=document.getElementById(container);if(!root)return;const row=document.createElement(href?"a":"div");row.className="row-item";if(href)row.href=href;const wrap=document.createElement("span");const strong=document.createElement("strong");strong.textContent=title;const small=document.createElement("span");small.textContent=detail;wrap.append(strong,small);row.append(wrap);root.append(row)};
+async function load(){
+ const [products,dossiers,documents,assessments,updates,calendar]=await Promise.all([count("products"),count("ctd_dossiers"),count("dossier_documents"),count("impact_assessments"),supabase.from("regulatory_updates").select("id,title,publication_date,review_status").order("publication_date",{ascending:false}).limit(4),supabase.from("regulatory_calendar_events").select("id,title,event_date,event_status").gte("event_date",new Date().toISOString().slice(0,10)).order("event_date").limit(4)]);
+ if(updates.error)throw updates.error;if(calendar.error)throw calendar.error;
+ set("raProductsCount",products);set("raDossiersCount",dossiers);set("raDocumentsCount",documents);set("raAssessmentsCount",assessments);
+ const work=document.getElementById("raWorkList");work?.replaceChildren();
+ if(!calendar.data?.length)addRow("raWorkList","No upcoming events","Your regulatory calendar currently has no future events.","regulatory-calendar.html");
+ else calendar.data.forEach(x=>addRow("raWorkList",x.title||"Regulatory event",(x.event_date||"Date not set")+" · "+(x.event_status||"Scheduled"),"regulatory-calendar.html"));
+ const list=document.getElementById("raUpdatesList");list?.replaceChildren();
+ if(!updates.data?.length)addRow("raUpdatesList","No updates recorded","New regulatory intelligence records appear here.","regulatory-intelligence.html");
+ else updates.data.forEach(x=>addRow("raUpdatesList",x.title||"Untitled update",(x.publication_date||"No publication date")+" · "+(x.review_status||"Unreviewed"),"regulatory-intelligence.html"));
+ set("raDataStatus","Live workspace data loaded from Supabase. Row visibility and actions are enforced by database policies.");
 }
-
-function closeModal(id) {
-    document.getElementById(id).classList.remove('show');
-}
-
-document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
-    backdrop.addEventListener('click', (event) => {
-        if (event.target === backdrop) backdrop.classList.remove('show');
-    });
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        document.querySelectorAll('.modal-backdrop.show').forEach(modal => {
-            modal.classList.remove('show');
-        });
-    }
-});
-
-// TOAST NOTIFICATION
-let toastTimer;
-
-function showToast(message) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('show');
-
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-// PRODUCT TABLE SEARCH AND FILTER
-const productSearch = document.getElementById('productSearch');
-const statusFilter = document.getElementById('statusFilter');
-const productTable = document.getElementById('productTable');
-const noProducts = document.getElementById('noProducts');
-
-function filterProducts() {
-    const query = productSearch.value.toLowerCase().trim();
-    const status = statusFilter.value;
-    const rows = productTable.querySelectorAll('tbody tr');
-    let visible = 0;
-
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        const rowStatus = row.cells[4].textContent.trim();
-        const matchesQuery = text.includes(query);
-        const matchesStatus = !status || rowStatus === status;
-
-        row.style.display = matchesQuery && matchesStatus ? '' : 'none';
-
-        if (matchesQuery && matchesStatus) visible++;
-    });
-
-    noProducts.style.display = visible === 0 ? 'block' : 'none';
-    productTable.style.display = visible === 0 ? 'none' : 'table';
-}
-
-productSearch.addEventListener('input', filterProducts);
-statusFilter.addEventListener('change', filterProducts);
-
-// ADD PRODUCT - FRONTEND DEMO
-document.getElementById('productForm').addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const name = document.getElementById('newProductName').value.trim();
-    const code = document.getElementById('newProductCode').value.trim();
-    const dosage = document.getElementById('newProductForm').value;
-    const market = document.getElementById('newProductMarket').value;
-
-    if (!name || !code) {
-        showToast('Please complete the required fields.');
-        return;
-    }
-
-    const tbody = productTable.querySelector('tbody');
-    const row = document.createElement('tr');
-
-    const values = [
-        { text: name, className: 'product-name' },
-        { text: code },
-        { text: dosage },
-        { text: market }
-    ];
-
-    values.forEach((item, index) => {
-        const cell = document.createElement('td');
-
-        if (index === 0) {
-            const title = document.createElement('span');
-            title.className = 'product-name';
-            title.textContent = item.text;
-
-            const sub = document.createElement('span');
-            sub.className = 'subtext';
-            sub.textContent = 'New product';
-
-            cell.append(title, sub);
-        } else {
-            cell.textContent = item.text;
-        }
-
-        row.appendChild(cell);
-    });
-
-    const statusCell = document.createElement('td');
-    const statusTag = document.createElement('span');
-    statusTag.className = 'tag tag-grey';
-    statusTag.textContent = 'Pending';
-    statusCell.appendChild(statusTag);
-    row.appendChild(statusCell);
-
-    const progressCell = document.createElement('td');
-    progressCell.className = 'progress-cell';
-    progressCell.innerHTML = '<span class="progress-line"><span class="progress-fill" style="width:0%"></span></span><span class="progress-number">0%</span>';
-    row.appendChild(progressCell);
-
-    const actionCell = document.createElement('td');
-    const viewButton = document.createElement('button');
-    viewButton.className = 'icon-btn view-product';
-    viewButton.innerHTML = '<i class="fa-regular fa-eye"></i>';
-    viewButton.addEventListener('click', () => showToast('Product details will open in Product Management.'));
-    actionCell.appendChild(viewButton);
-    row.appendChild(actionCell);
-
-    tbody.prepend(row);
-
-    document.getElementById('productForm').reset();
-    closeModal('productModal');
-    showToast('Product added to this demo table.');
-
-    filterProducts();
-});
-
-// ADD REGULATORY UPDATE - FRONTEND DEMO
-document.getElementById('updateForm').addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const title = document.getElementById('updateTitle').value.trim();
-    const authority = document.getElementById('updateAuthority').value;
-    const reference = document.getElementById('updateReference').value.trim();
-    const date = document.getElementById('updateDate').value;
-
-    if (!title) {
-        showToast('Please enter an update title.');
-        return;
-    }
-
-    const list = document.querySelector('.update-list');
-    const item = document.createElement('div');
-    item.className = 'update-item';
-
-    const authorityBox = document.createElement('div');
-    authorityBox.className = 'authority-icon ' + (
-        authority === 'CDSCO' ? 'authority-cdsco' :
-        authority === 'ICH' ? 'authority-ich' :
-        authority === 'USFDA' ? 'authority-fda' : 'authority-ema'
-    );
-    authorityBox.textContent = authority === 'USFDA' ? 'FDA' : authority;
-
-    const info = document.createElement('div');
-    info.className = 'update-info';
-
-    const heading = document.createElement('h4');
-    heading.textContent = title;
-
-    const description = document.createElement('p');
-    description.textContent = authority + ' · ' + (reference || 'No reference number');
-
-    const meta = document.createElement('div');
-    meta.className = 'update-meta';
-
-    const status = document.createElement('span');
-    status.className = 'tag tag-blue';
-    status.textContent = 'New';
-
-    const dateText = document.createElement('span');
-    dateText.style.cssText = 'font-size:9px;color:#9aa69e;';
-    dateText.textContent = date || 'Date not specified';
-
-    meta.append(status, dateText);
-    info.append(heading, description, meta);
-    item.append(authorityBox, info);
-    list.prepend(item);
-
-    document.getElementById('updateForm').reset();
-    closeModal('updateModal');
-    showToast('Regulatory update added to this demo view.');
-});
-
-// GLOBAL SEARCH
-document.getElementById('globalSearch').addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-        const query = event.target.value.trim();
-        if (query) {
-            document.getElementById('productSearch').value = query;
-            filterProducts();
-            document.getElementById('productTable').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }
-});
-
-// NOTIFICATIONS
-document.getElementById('notificationButton').addEventListener('click', () => {
-    showToast('You have 5 illustrative items awaiting review.');
-});
-
-// PRODUCT VIEW BUTTONS
-document.querySelectorAll('.view-product').forEach(button => {
-    button.addEventListener('click', () => {
-        showToast('Product details will open in Product Management.');
-    });
-});
-
-// CURRENT DATE GREETING
-const hour = new Date().getHours();
-const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-document.querySelector('.welcome h1').innerHTML = `${greeting}, Varshil <span>👋</span>`;
-
+load().catch(error=>{console.error("RA dashboard data load failed:",error);set("raDataStatus","Live data could not be loaded. Refresh the page or check your role permissions.")});
 </script>
 <script type="module" src="js/auth-guard.js"></script>
 </body>

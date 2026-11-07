@@ -1738,765 +1738,388 @@ button{line-height:1.4}
 
 <div class="toast" id="toast"></div>
 
-<script>
-/* ==========================================
-   REGUTRACK PRODUCT MANAGEMENT
-   Frontend demo with localStorage
-========================================== */
-
-const STORAGE_KEY = "regutrack_products_v1";
-const PAGE_SIZE = 8;
+<script type="module">
+import { supabase } from "./js/supabaseClient.js";
 
 const $ = (id) => document.getElementById(id);
-
+const PAGE_SIZE = 8;
 let products = [];
 let currentPage = 1;
 let editingId = null;
 let deletingId = null;
 let viewingId = null;
-let toastTimer;
+let currentUser = null;
+let currentRole = null;
+let toastTimer = null;
+let loading = false;
 
-/* SAMPLE DATA
-   These are clearly illustrative records.
-   Replace them with database records later.
-*/
+const statusToUi = {
+  draft: "Pending",
+  in_preparation: "Pending",
+  submitted: "Under Review",
+  under_review: "Under Review",
+  approved: "Approved",
+  rejected: "Pending",
+  withdrawn: "Pending",
+  expired: "Expired"
+};
+const statusToDb = {
+  "Pending": "draft",
+  "Under Review": "under_review",
+  "Approved": "approved",
+  "Expired": "expired"
+};
 
-const sampleProducts = [
-    {
-        id: "demo-001",
-        name: "Paracetamol 500 mg",
-        code: "PRD-001",
-        genericName: "Paracetamol",
-        brandName: "Acetaminophen",
-        dosageForm: "Tablet",
-        strength: "500 mg",
-        manufacturer: "Demo Pharma Ltd.",
-        market: "India",
-        authority: "CDSCO",
-        registrationNumber: "ILL-CDSCO-001",
-        status: "Approved",
-        submissionDate: "2026-01-10",
-        approvalDate: "2026-03-15",
-        expiryDate: "2027-03-15",
-        owner: "RA Team",
-        notes: "Illustrative product record."
-    },
-    {
-        id: "demo-002",
-        name: "Amoxicillin 250 mg",
-        code: "PRD-002",
-        genericName: "Amoxicillin",
-        brandName: "Amoxicillin",
-        dosageForm: "Capsule",
-        strength: "250 mg",
-        manufacturer: "Demo Pharma Ltd.",
-        market: "India",
-        authority: "CDSCO",
-        registrationNumber: "ILL-CDSCO-002",
-        status: "Under Review",
-        submissionDate: "2026-04-12",
-        approvalDate: "",
-        expiryDate: "",
-        owner: "RA Team",
-        notes: "Illustrative product record."
-    },
-    {
-        id: "demo-003",
-        name: "Metformin 500 mg",
-        code: "PRD-003",
-        genericName: "Metformin",
-        brandName: "Metformin",
-        dosageForm: "Tablet",
-        strength: "500 mg",
-        manufacturer: "Example Laboratories",
-        market: "US",
-        authority: "USFDA",
-        registrationNumber: "ILL-FDA-003",
-        status: "Approved",
-        submissionDate: "2026-02-01",
-        approvalDate: "2026-05-20",
-        expiryDate: "2027-05-20",
-        owner: "RA Team",
-        notes: "Illustrative product record."
-    },
-    {
-        id: "demo-004",
-        name: "Cetirizine 10 mg",
-        code: "PRD-004",
-        genericName: "Cetirizine",
-        brandName: "Cetirizine",
-        dosageForm: "Tablet",
-        strength: "10 mg",
-        manufacturer: "Example Laboratories",
-        market: "EU",
-        authority: "EMA",
-        registrationNumber: "",
-        status: "Pending",
-        submissionDate: "",
-        approvalDate: "",
-        expiryDate: "",
-        owner: "RA Team",
-        notes: "Illustrative product record."
-    },
-    {
-        id: "demo-005",
-        name: "Azithromycin 250 mg",
-        code: "PRD-005",
-        genericName: "Azithromycin",
-        brandName: "Azithromycin",
-        dosageForm: "Tablet",
-        strength: "250 mg",
-        manufacturer: "Demo Pharma Ltd.",
-        market: "India",
-        authority: "CDSCO",
-        registrationNumber: "ILL-CDSCO-005",
-        status: "Approved",
-        submissionDate: "2026-02-11",
-        approvalDate: "2026-04-15",
-        expiryDate: "2027-04-15",
-        owner: "RA Team",
-        notes: "Illustrative product record."
-    },
-    {
-        id: "demo-006",
-        name: "Omeprazole 20 mg",
-        code: "PRD-006",
-        genericName: "Omeprazole",
-        brandName: "Omeprazole",
-        dosageForm: "Capsule",
-        strength: "20 mg",
-        manufacturer: "Example Laboratories",
-        market: "UK",
-        authority: "MHRA",
-        registrationNumber: "",
-        status: "Under Review",
-        submissionDate: "2026-06-05",
-        approvalDate: "",
-        expiryDate: "",
-        owner: "RA Team",
-        notes: "Illustrative product record."
-    },
-    {
-        id: "demo-007",
-        name: "Ibuprofen 200 mg",
-        code: "PRD-007",
-        genericName: "Ibuprofen",
-        brandName: "Ibuprofen",
-        dosageForm: "Tablet",
-        strength: "200 mg",
-        manufacturer: "Demo Pharma Ltd.",
-        market: "India",
-        authority: "CDSCO",
-        registrationNumber: "",
-        status: "Pending",
-        submissionDate: "",
-        approvalDate: "",
-        expiryDate: "",
-        owner: "RA Team",
-        notes: "Illustrative product record."
-    },
-    {
-        id: "demo-008",
-        name: "Hydrocortisone Cream",
-        code: "PRD-008",
-        genericName: "Hydrocortisone",
-        brandName: "Hydrocortisone",
-        dosageForm: "Cream",
-        strength: "1%",
-        manufacturer: "Example Laboratories",
-        market: "US",
-        authority: "USFDA",
-        registrationNumber: "ILL-FDA-008",
-        status: "Expired",
-        submissionDate: "2024-01-12",
-        approvalDate: "2024-04-10",
-        expiryDate: "2026-04-10",
-        owner: "RA Team",
-        notes: "Illustrative expired product record."
-    }
-];
-
-function loadProducts() {
-    try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-
-        if (saved !== null) {
-            const parsed = JSON.parse(saved);
-            products = Array.isArray(parsed) ? parsed : sampleProducts;
-        } else {
-            products = [...sampleProducts];
-            saveProducts();
-        }
-    } catch (error) {
-        console.error("Unable to load products:", error);
-        products = [...sampleProducts];
-        showToast("Could not read saved records. Demo records loaded.");
-    }
-}
-
-function saveProducts() {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-        return true;
-    } catch (error) {
-        console.error("Unable to save products:", error);
-        showToast("Unable to save. Browser storage may be full or unavailable.");
-        return false;
-    }
-}
-
-/* TOAST */
 function showToast(message) {
-    const toast = $("toast");
-    toast.textContent = message;
-    toast.classList.add("show");
-
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+  const toast = $("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 3500);
 }
-
-/* ESCAPE HTML FOR SAFE TABLE OUTPUT */
 function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-    })[char]);
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[char]);
 }
-
 function statusClass(status) {
-    return {
-        "Approved": "status-approved",
-        "Under Review": "status-review",
-        "Pending": "status-pending",
-        "Expired": "status-expired"
-    }[status] || "status-pending";
+  return {"Approved":"status-approved","Under Review":"status-review","Pending":"status-pending","Expired":"status-expired"}[status] || "status-pending";
 }
-
 function productIcon(form) {
-    if (form === "Injection") return "fa-syringe";
-    if (form === "Cream") return "fa-prescription-bottle";
-    if (form === "Capsule") return "fa-capsules";
-    if (form === "Oral Solution" || form === "Syrup") return "fa-bottle-water";
-    return "fa-tablets";
+  if (form === "Injection") return "fa-syringe";
+  if (form === "Cream") return "fa-prescription-bottle";
+  if (form === "Capsule") return "fa-capsules";
+  if (form === "Oral Solution" || form === "Syrup") return "fa-bottle-water";
+  return "fa-tablets";
 }
-
-function avatarColor(index) {
-    return ["", "blue", "orange", "purple"][index % 4];
+function avatarColor(index) { return ["","blue","orange","purple"][index % 4]; }
+function fromDatabase(row) {
+  return {
+    id: row.id,
+    name: row.product_name || "",
+    code: row.product_code || "",
+    genericName: row.generic_name || "",
+    brandName: row.brand_name || "",
+    dosageForm: row.dosage_form || "",
+    strength: row.strength || "",
+    manufacturer: row.manufacturer || "",
+    market: row.target_market || "",
+    authority: row.regulatory_authority || "",
+    registrationNumber: row.registration_number || "",
+    status: statusToUi[row.registration_status] || "Pending",
+    submissionDate: row.submission_date || "",
+    approvalDate: row.approval_date || "",
+    expiryDate: row.expiry_date || "",
+    ownerId: row.product_owner || row.created_by || "",
+    notes: row.notes || "",
+    createdAt: row.created_at || ""
+  };
 }
-
-/* FILTER AND SORT */
-function getFilteredProducts() {
-    const query = $("productSearch").value.toLowerCase().trim();
-    const status = $("statusFilter").value;
-    const form = $("formFilter").value;
-    const market = $("marketFilter").value;
-    const sort = $("sortFilter").value;
-
-    let result = products.filter(product => {
-        const searchable = [
-            product.name,
-            product.code,
-            product.genericName,
-            product.brandName,
-            product.manufacturer,
-            product.registrationNumber
-        ].join(" ").toLowerCase();
-
-        return searchable.includes(query)
-            && (!status || product.status === status)
-            && (!form || product.dosageForm === form)
-            && (!market || product.market === market);
-    });
-
-    if (sort === "name-asc") {
-        result.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sort === "name-desc") {
-        result.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (sort === "code-asc") {
-        result.sort((a, b) => a.code.localeCompare(b.code));
-    } else {
-        result.reverse();
-    }
-
-    return result;
+function toDatabase(data) {
+  return {
+    product_name: data.name,
+    product_code: data.code,
+    generic_name: data.genericName || null,
+    brand_name: data.brandName || null,
+    dosage_form: data.dosageForm || null,
+    strength: data.strength || null,
+    manufacturer: data.manufacturer || null,
+    target_market: data.market || null,
+    regulatory_authority: data.authority || null,
+    registration_number: data.registrationNumber || null,
+    registration_status: statusToDb[data.status] || "draft",
+    submission_date: data.submissionDate || null,
+    approval_date: data.approvalDate || null,
+    expiry_date: data.expiryDate || null,
+    product_owner: editingId ? (products.find(p => p.id === editingId)?.ownerId || currentUser.id) : currentUser.id,
+    notes: data.notes || null,
+    ...(editingId ? {} : { created_by: currentUser.id }),
+    updated_by: currentUser.id
+  };
 }
-
-/* DASHBOARD COUNTS */
-function updateStats() {
-    $("totalCount").textContent = products.length;
-    $("approvedCount").textContent = products.filter(p => p.status === "Approved").length;
-    $("reviewCount").textContent = products.filter(p => p.status === "Under Review").length;
-    $("pendingCount").textContent = products.filter(p => p.status === "Pending").length;
+function setLoading(value) {
+  loading = value;
+  $("saveProduct").disabled = value;
+  $("saveProduct").innerHTML = value
+    ? '<i class="fa-solid fa-spinner fa-spin"></i> Saving...'
+    : (editingId ? '<i class="fa-solid fa-floppy-disk"></i> Update Product' : '<i class="fa-solid fa-floppy-disk"></i> Save Product');
 }
-
-/* RENDER TABLE */
-function renderProducts() {
-    const filtered = getFilteredProducts();
-    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-
-    currentPage = Math.min(currentPage, totalPages);
-
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const visible = filtered.slice(start, start + PAGE_SIZE);
-
-    const tbody = $("productTableBody");
+async function loadProducts() {
+  const tbody = $("productTableBody");
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:35px;">Loading products from secure workspace...</td></tr>';
+  const { data, error } = await supabase
+    .from("products")
+    .select("id,product_code,product_name,generic_name,brand_name,dosage_form,strength,manufacturer,target_market,regulatory_authority,registration_number,registration_status,submission_date,approval_date,expiry_date,product_owner,notes,created_by,created_at,updated_at")
+    .order("created_at", { ascending: false });
+  if (error) {
+    console.error("Product load failed:", error);
     tbody.innerHTML = "";
-
-    visible.forEach((product, index) => {
-        const row = document.createElement("tr");
-        const globalIndex = start + index;
-
-        row.innerHTML = `
-            <td>
-                <div class="product-cell">
-                    <div class="product-avatar ${avatarColor(globalIndex)}">
-                        <i class="fa-solid ${productIcon(product.dosageForm)}"></i>
-                    </div>
-                    <div>
-                        <span class="product-title">${escapeHTML(product.name)}</span>
-                        <span class="product-subtitle">${escapeHTML(product.genericName || "Generic name not entered")}</span>
-                    </div>
-                </div>
-            </td>
-            <td><span class="code-text">${escapeHTML(product.code)}</span></td>
-            <td>${escapeHTML(product.dosageForm || "—")}<span class="product-subtitle">${escapeHTML(product.strength || "")}</span></td>
-            <td><span class="market-chip">${escapeHTML(product.market || "—")}</span></td>
-            <td>${escapeHTML(product.manufacturer || "—")}</td>
-            <td><span class="status ${statusClass(product.status)}">${escapeHTML(product.status)}</span></td>
-            <td>
-                <div class="action-group">
-                    <button class="action-btn" data-action="view" data-id="${escapeHTML(product.id)}" title="View details" aria-label="View product">
-                        <i class="fa-regular fa-eye"></i>
-                    </button>
-                    <button class="action-btn" data-action="edit" data-id="${escapeHTML(product.id)}" title="Edit product" aria-label="Edit product">
-                        <i class="fa-solid fa-pen"></i>
-                    </button>
-                    <button class="action-btn delete" data-action="delete" data-id="${escapeHTML(product.id)}" title="Delete product" aria-label="Delete product">
-                        <i class="fa-regular fa-trash-can"></i>
-                    </button>
-                </div>
-            </td>
-        `;
-
-        tbody.appendChild(row);
-    });
-
-    $("emptyState").hidden = filtered.length !== 0;
-
-    $("showingText").textContent = filtered.length
-        ? `Showing ${start + 1}–${Math.min(start + PAGE_SIZE, filtered.length)} of ${filtered.length} products`
-        : "Showing 0 products";
-
-    renderPagination(totalPages);
-    updateStats();
+    showToast("Could not load products. Check your access and connection, then refresh.");
+    $("emptyState").hidden = false;
+    $("emptyState").querySelector("h3").textContent = "Unable to load products";
+    $("emptyState").querySelector("p").textContent = error.message || "Please try again.";
+    $("showingText").textContent = "Product records unavailable";
+    updateStats([]);
+    return;
+  }
+  products = (data || []).map(fromDatabase);
+  currentPage = 1;
+  renderProducts();
 }
-
+function getFilteredProducts() {
+  const query = $("productSearch").value.toLowerCase().trim();
+  const status = $("statusFilter").value;
+  const form = $("formFilter").value;
+  const market = $("marketFilter").value;
+  const sort = $("sortFilter").value;
+  const result = products.filter(product => {
+    const searchable = [product.name,product.code,product.genericName,product.brandName,product.manufacturer,product.registrationNumber].join(" ").toLowerCase();
+    return searchable.includes(query) && (!status || product.status === status) && (!form || product.dosageForm === form) && (!market || product.market === market);
+  });
+  if (sort === "name-asc") result.sort((a,b) => a.name.localeCompare(b.name));
+  else if (sort === "name-desc") result.sort((a,b) => b.name.localeCompare(a.name));
+  else if (sort === "code-asc") result.sort((a,b) => a.code.localeCompare(b.code));
+  else result.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  return result;
+}
+function updateStats(source) {
+  const list = source || products;
+  $("totalCount").textContent = list.length;
+  $("approvedCount").textContent = list.filter(p => p.status === "Approved").length;
+  $("reviewCount").textContent = list.filter(p => p.status === "Under Review").length;
+  $("pendingCount").textContent = list.filter(p => p.status === "Pending").length;
+}
+function renderProducts() {
+  const filtered = getFilteredProducts();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  currentPage = Math.min(currentPage, totalPages);
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const visible = filtered.slice(start, start + PAGE_SIZE);
+  const tbody = $("productTableBody");
+  tbody.innerHTML = "";
+  visible.forEach((product,index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = '<td><div class="product-cell"><div class="product-avatar '+avatarColor(start+index)+'"><i class="fa-solid '+productIcon(product.dosageForm)+'"></i></div><div><span class="product-title">'+escapeHTML(product.name)+'</span><span class="product-subtitle">'+escapeHTML(product.genericName || "Generic name not entered")+'</span></div></div></td>'
+      + '<td><span class="code-text">'+escapeHTML(product.code)+'</span></td>'
+      + '<td>'+escapeHTML(product.dosageForm || "—")+'<span class="product-subtitle">'+escapeHTML(product.strength || "")+'</span></td>'
+      + '<td><span class="market-chip">'+escapeHTML(product.market || "—")+'</span></td>'
+      + '<td>'+escapeHTML(product.manufacturer || "—")+'</td>'
+      + '<td><span class="status '+statusClass(product.status)+'">'+escapeHTML(product.status)+'</span></td>'
+      + '<td><div class="action-group"><button class="action-btn" data-action="view" data-id="'+escapeHTML(product.id)+'" title="View details" aria-label="View product"><i class="fa-regular fa-eye"></i></button>'
+      + ((currentRole === "user" && product.ownerId !== currentUser?.id) ? "" : '<button class="action-btn" data-action="edit" data-id="'+escapeHTML(product.id)+'" title="Edit product" aria-label="Edit product"><i class="fa-solid fa-pen"></i></button>') + (currentRole === "admin" ? '<button class="action-btn delete" data-action="delete" data-id="'+escapeHTML(product.id)+'" title="Delete product" aria-label="Delete product"><i class="fa-regular fa-trash-can"></i></button>' : "") + '</div></td>';
+    tbody.appendChild(row);
+  });
+  $("emptyState").hidden = filtered.length !== 0;
+  $("emptyState").querySelector("h3").textContent = "No products found";
+  $("emptyState").querySelector("p").textContent = products.length ? "Try changing your filters." : "No product records exist yet. Add your first pharmaceutical product.";
+  $("showingText").textContent = filtered.length ? "Showing "+(start+1)+"–"+Math.min(start+PAGE_SIZE,filtered.length)+" of "+filtered.length+" products" : "Showing 0 products";
+  renderPagination(totalPages);
+  updateStats(products);
+}
 function renderPagination(totalPages) {
-    const pagination = $("pagination");
-    pagination.innerHTML = "";
-
-    const previous = document.createElement("button");
-    previous.className = "page-btn";
-    previous.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
-    previous.disabled = currentPage === 1;
-    previous.addEventListener("click", () => {
-        if (currentPage > 1) {
-            currentPage--;
-            renderProducts();
-        }
-    });
-    pagination.appendChild(previous);
-
-    for (let page = 1; page <= totalPages; page++) {
-        const button = document.createElement("button");
-        button.className = "page-btn" + (page === currentPage ? " active" : "");
-        button.textContent = page;
-        button.addEventListener("click", () => {
-            currentPage = page;
-            renderProducts();
-        });
-        pagination.appendChild(button);
-    }
-
-    const next = document.createElement("button");
-    next.className = "page-btn";
-    next.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
-    next.disabled = currentPage === totalPages;
-    next.addEventListener("click", () => {
-        if (currentPage < totalPages) {
-            currentPage++;
-            renderProducts();
-        }
-    });
-    pagination.appendChild(next);
+  const pagination = $("pagination");
+  pagination.innerHTML = "";
+  const addPage = (label,page,disabled,active) => {
+    const button = document.createElement("button");
+    button.className = "page-btn"+(active ? " active" : "");
+    button.disabled = disabled;
+    button.textContent = label;
+    button.addEventListener("click",() => { currentPage=page; renderProducts(); });
+    pagination.appendChild(button);
+  };
+  addPage("‹",Math.max(1,currentPage-1),currentPage===1,false);
+  for(let page=1;page<=totalPages;page++) addPage(String(page),page,false,page===currentPage);
+  addPage("›",Math.min(totalPages,currentPage+1),currentPage===totalPages,false);
 }
-
-/* MODALS */
-function openModal(id) {
-    $(id).classList.add("show");
-}
-
-function closeModal(id) {
-    $(id).classList.remove("show");
-}
-
+function openModal(id) { $(id).classList.add("show"); }
+function closeModal(id) { $(id).classList.remove("show"); }
 function resetForm() {
-    $("productForm").reset();
-    editingId = null;
-    $("modalTitle").textContent = "Add New Product";
-    $("modalDescription").textContent = "Create a pharmaceutical product record.";
-    $("saveProduct").innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Product';
+  $("productForm").reset();
+  editingId = null;
+  $("modalTitle").textContent = "Add New Product";
+  $("modalDescription").textContent = "Create a pharmaceutical product record.";
+  $("productOwner").value = currentUser?.email || "Current signed-in user";
+  $("productOwner").readOnly = true;
+  setLoading(false);
 }
-
 function openAddModal() {
-    resetForm();
-    $("registrationStatus").value = "Pending";
-    openModal("productModal");
-    $("productName").focus();
+  resetForm();
+  $("registrationStatus").value = "Pending";
+  openModal("productModal");
+  $("productName").focus();
 }
-
 function openEditModal(id) {
-    const product = products.find(p => p.id === id);
-    if (!product) return;
-
-    editingId = id;
-    $("modalTitle").textContent = "Edit Product";
-    $("modalDescription").textContent = "Update pharmaceutical product and registration information.";
-    $("saveProduct").innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Product';
-
-    const mapping = {
-        productName: "name",
-        productCode: "code",
-        genericName: "genericName",
-        brandName: "brandName",
-        dosageForm: "dosageForm",
-        strength: "strength",
-        manufacturer: "manufacturer",
-        market: "market",
-        authority: "authority",
-        registrationNumber: "registrationNumber",
-        registrationStatus: "status",
-        submissionDate: "submissionDate",
-        approvalDate: "approvalDate",
-        expiryDate: "expiryDate",
-        productOwner: "owner",
-        productNotes: "notes"
-    };
-
-    Object.entries(mapping).forEach(([field, key]) => {
-        $(field).value = product[key] || "";
-    });
-
-    closeModal("viewModal");
-    openModal("productModal");
+  const product = products.find(p => p.id === id);
+  if (!product) return;
+  editingId = id;
+  $("modalTitle").textContent = "Edit Product";
+  $("modalDescription").textContent = "Update pharmaceutical product and registration information.";
+  const mapping = {productName:"name",productCode:"code",genericName:"genericName",brandName:"brandName",dosageForm:"dosageForm",strength:"strength",manufacturer:"manufacturer",market:"market",authority:"authority",registrationNumber:"registrationNumber",registrationStatus:"status",submissionDate:"submissionDate",approvalDate:"approvalDate",expiryDate:"expiryDate",productNotes:"notes"};
+  Object.entries(mapping).forEach(([field,key]) => { $(field).value = product[key] || ""; });
+  $("productOwner").value = currentUser?.email || "Current signed-in user";
+  $("productOwner").readOnly = true;
+  setLoading(false);
+  closeModal("viewModal");
+  openModal("productModal");
 }
-
 function formToProduct() {
-    return {
-        name: $("productName").value.trim(),
-        code: $("productCode").value.trim(),
-        genericName: $("genericName").value.trim(),
-        brandName: $("brandName").value.trim(),
-        dosageForm: $("dosageForm").value,
-        strength: $("strength").value.trim(),
-        manufacturer: $("manufacturer").value.trim(),
-        market: $("market").value,
-        authority: $("authority").value,
-        registrationNumber: $("registrationNumber").value.trim(),
-        status: $("registrationStatus").value,
-        submissionDate: $("submissionDate").value,
-        approvalDate: $("approvalDate").value,
-        expiryDate: $("expiryDate").value,
-        owner: $("productOwner").value.trim(),
-        notes: $("productNotes").value.trim()
-    };
+  return {
+    name:$("productName").value.trim(),
+    code:$("productCode").value.trim(),
+    genericName:$("genericName").value.trim(),
+    brandName:$("brandName").value.trim(),
+    dosageForm:$("dosageForm").value,
+    strength:$("strength").value.trim(),
+    manufacturer:$("manufacturer").value.trim(),
+    market:$("market").value,
+    authority:$("authority").value,
+    registrationNumber:$("registrationNumber").value.trim(),
+    status:$("registrationStatus").value,
+    submissionDate:$("submissionDate").value,
+    approvalDate:$("approvalDate").value,
+    expiryDate:$("expiryDate").value,
+    notes:$("productNotes").value.trim()
+  };
 }
-
-/* ADD OR UPDATE */
-$("productForm").addEventListener("submit", event => {
-    event.preventDefault();
-
-    const data = formToProduct();
-
-    const duplicate = products.find(p =>
-        p.code.toLowerCase() === data.code.toLowerCase() && p.id !== editingId
-    );
-
-    if (duplicate) {
-        showToast("This product code already exists. Please use a unique code.");
-        $("productCode").focus();
-        return;
+function validateProduct(data) {
+  if (!data.name || !data.code || !data.dosageForm || !data.market) return "Complete all required product fields.";
+  if (data.approvalDate && data.submissionDate && data.approvalDate < data.submissionDate) return "Approval date cannot be earlier than submission date.";
+  if (data.expiryDate && data.approvalDate && data.expiryDate < data.approvalDate) return "Expiry date cannot be earlier than approval date.";
+  return "";
+}
+$("productForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  if (loading) return;
+  const wasEditing = Boolean(editingId);
+  const data = formToProduct();
+  const validation = validateProduct(data);
+  if (validation) { showToast(validation); return; }
+  setLoading(true);
+  const payload = toDatabase(data);
+  let result;
+  if (editingId) {
+    const editable = products.find(product => product.id === editingId);
+    if (!editable || (currentRole !== "admin" && editable.ownerId !== currentUser.id)) {
+      setLoading(false);
+      showToast("You can only edit products assigned to your account.");
+      return;
     }
-
-    if (data.approvalDate && data.submissionDate && data.approvalDate < data.submissionDate) {
-        showToast("Approval date cannot be earlier than submission date.");
-        return;
-    }
-
-    if (data.expiryDate && data.approvalDate && data.expiryDate < data.approvalDate) {
-        showToast("Expiry date cannot be earlier than approval date.");
-        return;
-    }
-
-    if (editingId) {
-        const index = products.findIndex(p => p.id === editingId);
-        if (index === -1) return;
-
-        products[index] = { ...products[index], ...data };
-        if (!saveProducts()) return;
-
-        showToast("Product details updated successfully.");
-    } else {
-        const product = {
-            id: "prd-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7),
-            ...data,
-            createdAt: new Date().toISOString()
-        };
-
-        products.unshift(product);
-        if (!saveProducts()) {
-            products.shift();
-            return;
-        }
-
-        showToast("New product added successfully.");
-    }
-
-    closeModal("productModal");
-    resetForm();
-    currentPage = 1;
-    renderProducts();
+    result = await supabase.from("products").update(payload).eq("id",editingId).select("id").maybeSingle();
+  } else {
+    result = await supabase.from("products").insert(payload).select("id").single();
+  }
+  setLoading(false);
+  if (result.error) {
+    console.error("Product save failed:",result.error);
+    if (result.error.code === "23505") showToast("That product code is already in use. Choose a unique code.");
+    else if (result.error.code === "42501" || result.error.code === "PGRST301") showToast("Your role does not have permission to save products.");
+    else showToast(result.error.message || "Could not save product. Please try again.");
+    return;
+  }
+  if (editingId && !result.data) {
+    showToast("No product was updated. It may have been removed or you may not have edit access.");
+    return;
+  }
+  closeModal("productModal");
+  resetForm();
+  await loadProducts();
+  showToast(wasEditing ? "Product updated in Supabase." : "Product saved to Supabase.");
 });
-
-/* VIEW DETAILS */
 function openViewModal(id) {
-    const product = products.find(p => p.id === id);
-    if (!product) return;
-
-    viewingId = id;
-    $("viewTitle").textContent = product.name;
-
-    const details = [
-        ["Product Code", product.code],
-        ["Generic Name", product.genericName],
-        ["Brand Name", product.brandName],
-        ["Dosage Form", product.dosageForm],
-        ["Strength", product.strength],
-        ["Manufacturer", product.manufacturer],
-        ["Target Market", product.market],
-        ["Regulatory Authority", product.authority],
-        ["Registration Number", product.registrationNumber],
-        ["Registration Status", product.status],
-        ["Submission Date", product.submissionDate],
-        ["Approval Date", product.approvalDate],
-        ["Expiry Date", product.expiryDate],
-        ["Responsible Person", product.owner],
-        ["Notes", product.notes]
-    ];
-
-    $("viewDetails").innerHTML = details.map(([label, value]) => `
-        <div class="detail-item">
-            <span>${escapeHTML(label)}</span>
-            <strong>${escapeHTML(value || "Not provided")}</strong>
-        </div>
-    `).join("");
-
-    openModal("viewModal");
+  const product = products.find(p => p.id === id);
+  if (!product) return;
+  viewingId = id;
+  $("viewTitle").textContent = product.name;
+  const details = [
+    ["Product Code",product.code],["Generic Name",product.genericName],["Brand Name",product.brandName],
+    ["Dosage Form",product.dosageForm],["Strength",product.strength],["Manufacturer",product.manufacturer],
+    ["Target Market",product.market],["Regulatory Authority",product.authority],["Registration Number",product.registrationNumber],
+    ["Registration Status",product.status],["Submission Date",product.submissionDate],["Approval Date",product.approvalDate],
+    ["Expiry Date",product.expiryDate],["Responsible Person",product.ownerId === currentUser?.id ? (currentUser.email || "Current user") : "Assigned workspace user"],["Notes",product.notes]
+  ];
+  $("viewDetails").innerHTML = details.map(([label,value]) => '<div class="detail-item"><span>'+escapeHTML(label)+'</span><strong>'+escapeHTML(value || "Not provided")+'</strong></div>').join("");
+  openModal("viewModal");
 }
-
-/* DELETE */
 function openDeleteModal(id) {
-    const product = products.find(p => p.id === id);
-    if (!product) return;
-
-    deletingId = id;
-    $("deleteMessage").textContent =
-        `Are you sure you want to delete "${product.name}" (${product.code}) from this browser's product records?`;
-
-    openModal("deleteModal");
+  const product = products.find(p => p.id === id);
+  if (!product || currentRole !== "admin") return;
+  deletingId = id;
+  $("deleteMessage").textContent = 'Delete "'+product.name+'" ('+product.code+') permanently from the shared workspace?';
+  openModal("deleteModal");
 }
-
-$("confirmDelete").addEventListener("click", () => {
-    if (!deletingId) return;
-
-    const index = products.findIndex(p => p.id === deletingId);
-    if (index === -1) return;
-
-    const deletedProduct = products.splice(index, 1)[0];
-
-    if (!saveProducts()) {
-        products.splice(index, 0, deletedProduct);
-        return;
-    }
-
-    deletingId = null;
-    closeModal("deleteModal");
-    renderProducts();
-    showToast("Product deleted from local records.");
+$("confirmDelete").addEventListener("click", async () => {
+  if (!deletingId || currentRole !== "admin") return;
+  const id = deletingId;
+  $("confirmDelete").disabled = true;
+  const {error} = await supabase.from("products").delete().eq("id",id);
+  $("confirmDelete").disabled = false;
+  if (error) {
+    console.error("Product delete failed:",error);
+    showToast(error.code === "23503" ? "This product is linked to other records and cannot be deleted." : (error.message || "Could not delete product."));
+    return;
+  }
+  deletingId = null;
+  closeModal("deleteModal");
+  await loadProducts();
+  showToast("Product deleted from the shared workspace.");
 });
-
-/* TABLE ACTION EVENTS */
-$("productTableBody").addEventListener("click", event => {
-    const button = event.target.closest("button[data-action]");
-    if (!button) return;
-
-    const id = button.dataset.id;
-    const action = button.dataset.action;
-
-    if (action === "view") openViewModal(id);
-    if (action === "edit") openEditModal(id);
-    if (action === "delete") openDeleteModal(id);
+$("productTableBody").addEventListener("click",event => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+  const id = button.dataset.id;
+  if (button.dataset.action === "view") openViewModal(id);
+  if (button.dataset.action === "edit") openEditModal(id);
+  if (button.dataset.action === "delete") openDeleteModal(id);
 });
-
-/* FILTER EVENTS */
-["productSearch", "statusFilter", "formFilter", "marketFilter", "sortFilter"].forEach(id => {
-    $(id).addEventListener(id === "productSearch" ? "input" : "change", () => {
-        currentPage = 1;
-        renderProducts();
-    });
+["productSearch","statusFilter","formFilter","marketFilter","sortFilter"].forEach(id => {
+  $(id).addEventListener(id === "productSearch" ? "input" : "change",() => {currentPage=1;renderProducts();});
 });
-
-$("clearFilters").addEventListener("click", () => {
-    $("productSearch").value = "";
-    $("statusFilter").value = "";
-    $("formFilter").value = "";
-    $("marketFilter").value = "";
-    $("sortFilter").value = "newest";
-    currentPage = 1;
-    renderProducts();
+$("clearFilters").addEventListener("click",() => {
+  $("productSearch").value="";$("statusFilter").value="";$("formFilter").value="";$("marketFilter").value="";$("sortFilter").value="newest";currentPage=1;renderProducts();
 });
-
-$("topSearch").addEventListener("input", event => {
-    $("productSearch").value = event.target.value;
-    currentPage = 1;
-    renderProducts();
+$("topSearch").addEventListener("input",event => {$("productSearch").value=event.target.value;currentPage=1;renderProducts();});
+$("exportButton").addEventListener("click",() => {
+  const rows=getFilteredProducts();
+  if(!rows.length){showToast("There are no products to export.");return;}
+  const columns=[["Product Name","name"],["Product Code","code"],["Generic Name","genericName"],["Brand Name","brandName"],["Dosage Form","dosageForm"],["Strength","strength"],["Manufacturer","manufacturer"],["Market","market"],["Authority","authority"],["Registration Number","registrationNumber"],["Registration Status","status"],["Submission Date","submissionDate"],["Approval Date","approvalDate"],["Expiry Date","expiryDate"],["Notes","notes"]];
+  const cell=value=>'"'+String(value ?? "").replace(/"/g,'""')+'"';
+  const csv=[columns.map(c=>cell(c[0])).join(","),...rows.map(p=>columns.map(c=>cell(p[c[1]])).join(","))].join("\r\n");
+  const url=URL.createObjectURL(new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"}));
+  const link=document.createElement("a");link.href=url;link.download="regutrack-products.csv";document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);
+  showToast("Product portfolio exported as CSV.");
 });
+$("addProductButton").addEventListener("click",openAddModal);
+$("emptyAddButton").addEventListener("click",openAddModal);
+$("closeProductModal").addEventListener("click",()=>closeModal("productModal"));
+$("cancelProduct").addEventListener("click",()=>closeModal("productModal"));
+$("closeViewModal").addEventListener("click",()=>closeModal("viewModal"));
+$("closeViewButton").addEventListener("click",()=>closeModal("viewModal"));
+$("editFromView").addEventListener("click",()=>{if(viewingId)openEditModal(viewingId);});
+$("cancelDelete").addEventListener("click",()=>{deletingId=null;closeModal("deleteModal");});
+document.querySelectorAll(".modal-backdrop").forEach(backdrop=>backdrop.addEventListener("click",event=>{if(event.target===backdrop)backdrop.classList.remove("show");}));
+document.addEventListener("keydown",event=>{if(event.key==="Escape")document.querySelectorAll(".modal-backdrop.show").forEach(modal=>modal.classList.remove("show"));});
+$("notificationButton").addEventListener("click",()=>showToast("Product notifications will be available when the notification module is connected."));
+$("menuToggle")?.addEventListener("click",()=>{$("sidebar").classList.toggle("open");});
+$("profileButton").addEventListener("click",event=>{event.stopPropagation();$("profileDropdown").classList.toggle("show");});
+document.addEventListener("click",event=>{if(!$("profileButton").contains(event.target))$("profileDropdown").classList.remove("show");});
 
-/* CSV EXPORT */
-$("exportButton").addEventListener("click", () => {
-    const rows = getFilteredProducts();
-
-    if (!rows.length) {
-        showToast("There are no products to export.");
-        return;
-    }
-
-    const columns = [
-        ["Product Name", "name"],
-        ["Product Code", "code"],
-        ["Generic Name", "genericName"],
-        ["Brand Name", "brandName"],
-        ["Dosage Form", "dosageForm"],
-        ["Strength", "strength"],
-        ["Manufacturer", "manufacturer"],
-        ["Market", "market"],
-        ["Authority", "authority"],
-        ["Registration Number", "registrationNumber"],
-        ["Registration Status", "status"],
-        ["Submission Date", "submissionDate"],
-        ["Approval Date", "approvalDate"],
-        ["Expiry Date", "expiryDate"],
-        ["Responsible Person", "owner"],
-        ["Notes", "notes"]
-    ];
-
-    const csvCell = value => `"${String(value ?? "").replace(/"/g, '""')}"`;
-
-    const csv = [
-        columns.map(([label]) => csvCell(label)).join(","),
-        ...rows.map(product =>
-            columns.map(([, key]) => csvCell(product[key])).join(",")
-        )
-    ].join("\r\n");
-
-    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = "regutrack-products.csv";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-
-    showToast("Product portfolio exported as CSV.");
-});
-
-/* SIDEBAR */
-$("menuToggle").addEventListener("click", () => {
-    $("sidebar").classList.toggle("open");
-});
-
-document.addEventListener("click", event => {
-    if (
-        window.innerWidth <= 900 &&
-        $("sidebar").classList.contains("open") &&
-        !$("sidebar").contains(event.target) &&
-        !event.target.closest("#menuToggle")
-    ) {
-        $("sidebar").classList.remove("open");
-    }
-});
-
-/* PROFILE DROPDOWN */
-$("profileButton").addEventListener("click", event => {
-    event.stopPropagation();
-    $("profileDropdown").classList.toggle("show");
-});
-
-document.addEventListener("click", event => {
-    if (!$("profileButton").contains(event.target)) {
-        $("profileDropdown").classList.remove("show");
-    }
-});
-
-/* MODAL CONTROLS */
-$("addProductButton").addEventListener("click", openAddModal);
-$("emptyAddButton").addEventListener("click", openAddModal);
-
-$("closeProductModal").addEventListener("click", () => closeModal("productModal"));
-$("cancelProduct").addEventListener("click", () => closeModal("productModal"));
-
-$("closeViewModal").addEventListener("click", () => closeModal("viewModal"));
-$("closeViewButton").addEventListener("click", () => closeModal("viewModal"));
-
-$("editFromView").addEventListener("click", () => {
-    if (viewingId) openEditModal(viewingId);
-});
-
-$("cancelDelete").addEventListener("click", () => {
-    deletingId = null;
-    closeModal("deleteModal");
-});
-
-document.querySelectorAll(".modal-backdrop").forEach(backdrop => {
-    backdrop.addEventListener("click", event => {
-        if (event.target === backdrop) {
-            backdrop.classList.remove("show");
-        }
-    });
-});
-
-document.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
-        document.querySelectorAll(".modal-backdrop.show").forEach(modal => {
-            modal.classList.remove("show");
-        });
-    }
-});
-
-/* NOTIFICATIONS */
-$("notificationButton").addEventListener("click", () => {
-    showToast("Product notifications will be connected to your workspace.");
-});
-
-/* INITIALIZE */
-loadProducts();
-renderProducts();
+async function initialize() {
+  const {data:{user},error:userError}=await supabase.auth.getUser();
+  if(userError || !user){showToast("Your session has expired. Please sign in again.");return;}
+  currentUser=user;
+  const {data: roleRows, error: roleError}=await supabase.from("user_roles").select("role").eq("user_id",user.id);
+  if(roleError){console.error("Role lookup failed:",roleError);showToast("Could not verify your workspace permissions. Refresh and try again.");return;}
+  const roles=(roleRows||[]).map(row=>row.role);
+  if(roles.some(role=>!["admin","user"].includes(role))){showToast("Your account has an unsupported workspace role. Contact the administrator.");return;}
+  currentRole=roles.includes("admin") ? "admin" : roles.includes("user") ? "user" : null;
+  if(!currentRole){showToast("Your account has no active ReguTrack role.");return;}
+  $("addProductButton").hidden=false;
+  $("emptyAddButton").hidden=false;
+  $("productOwner").value=currentUser.email || "Current signed-in user";
+  $("productOwner").readOnly=true;
+  await loadProducts();
+}
+initialize();
 </script>
 <script type="module" src="js/auth-guard.js"></script>
 </body>

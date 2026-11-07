@@ -2956,8 +2956,10 @@ window.addEventListener("message", event => {
     if (event.origin !== window.location.origin) return;
 
     if (event.data?.type === "regutrack-auth-success") {
+        const allowedDestinations = new Set(["admin-dashboard.html", "dashboard.html", "access-pending.html"]);
+        const destination = allowedDestinations.has(event.data.destination) ? event.data.destination : "access-pending.html";
         closeAuth();
-        window.location.href = "dashboard.html";
+        window.location.replace(new URL(destination, window.location.href).href);
     }
 
     if (event.data?.type === "regutrack-auth-close") {

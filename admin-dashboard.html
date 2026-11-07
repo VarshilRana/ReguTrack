@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f6f9f7">
+<title>Admin Dashboard | ReguTrack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root{--primary:#16845b;--primary-dark:#106b49;--primary-light:#eaf6f0;--ink:#172c25;--muted:#7c8b84;--border:#e8eee9;--background:#f6f9f7;--sidebar-width:255px;--shadow:0 8px 28px rgba(28,62,45,.055)}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'DM Sans',sans-serif;background:var(--background);color:var(--ink);min-height:100vh;overflow-x:hidden}a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
+.sidebar{width:var(--sidebar-width);height:100vh;position:fixed;inset:0 auto 0 0;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:20;transition:transform .25s ease}
+.brand{height:83px;display:flex;align-items:center;gap:12px;padding:0 25px;border-bottom:1px solid var(--border)}.brand-mark{width:39px;height:39px;border-radius:12px;background:linear-gradient(145deg,#1b9a68,#087348);color:white;display:grid;place-items:center;box-shadow:0 5px 12px #16845b30}.brand-name{font:800 21px Manrope,sans-serif;letter-spacing:-.8px}.brand-name span{color:var(--primary)}.brand-subtitle{font-size:9px;color:#94a39a;letter-spacing:1.6px;margin-top:1px;font-weight:700}
+.sidebar-scroll{flex:1;overflow:auto;padding:22px 14px}.nav-label{padding:0 12px;margin:16px 0 10px;font-size:10px;font-weight:800;color:#a0ada5;letter-spacing:1.4px}.nav-link{display:flex;align-items:center;gap:13px;padding:11px 13px;border-radius:9px;color:#687b71;font-size:13px;font-weight:600;margin:3px 0;transition:.2s}.nav-link i{width:18px;text-align:center;font-size:15px}.nav-link:hover{background:#f3f8f5;color:var(--primary);transform:translateX(2px)}.nav-link.active{background:var(--primary-light);color:var(--primary-dark);font-weight:700}
+.sidebar-bottom{padding:14px;border-top:1px solid var(--border)}.help-card{background:linear-gradient(135deg,#edf8f2,#f7fbf8);border:1px solid #e0f0e6;border-radius:12px;padding:15px;margin-bottom:13px}.help-card i{color:var(--primary)}.help-card h4{font-size:12px;margin:9px 0 4px}.help-card p{font-size:10px;line-height:1.5;color:var(--muted)}
+.main{margin-left:var(--sidebar-width);min-height:100vh}.topbar{height:76px;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 35px;position:sticky;top:0;z-index:10}.crumb{font-size:12px;color:#9aa69e}.crumb strong{color:var(--ink)}.top-right,.profile{display:flex;align-items:center;gap:12px}.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#dff2e6;color:var(--primary-dark);font-size:12px;font-weight:800}.profile-info strong{display:block;font-size:11px}.profile-info span{font-size:10px;color:var(--muted)}.signout{border:1px solid var(--border);background:#fff;color:var(--primary-dark);border-radius:9px;padding:9px 12px;font-size:12px;font-weight:700}.mobile-menu{display:none;border:1px solid var(--border);background:white;border-radius:9px;padding:9px;color:var(--primary)}
+.content{max-width:1600px;margin:auto;padding:30px 35px 48px}.welcome{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:25px;animation:fadeUp .45s ease both}.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:1.6px;color:var(--primary);font-weight:800;margin-bottom:9px}.welcome h1{font:800 clamp(23px,2.5vw,30px) Manrope,sans-serif;letter-spacing:-.9px}.welcome p{font-size:12px;color:var(--muted);margin-top:7px;max-width:680px}.pill{display:inline-flex;align-items:center;gap:7px;background:#eaf6f0;color:var(--primary-dark);border:1px solid #d7eddf;padding:8px 11px;border-radius:20px;font-size:10px;font-weight:800}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:20px}.kpi,.panel,.module{background:#fff;border:1px solid var(--border);border-radius:13px;box-shadow:0 3px 12px rgba(30,70,45,.025)}.kpi{padding:18px;animation:fadeUp .5s ease both}.kpi-icon{width:39px;height:39px;border-radius:11px;display:grid;place-items:center;background:#e9f6ef;color:var(--primary);font-size:16px}.kpi strong{display:block;font:800 27px Manrope,sans-serif;margin-top:13px}.kpi span{font-size:11px;color:var(--muted)}.kpi small{display:block;font-size:9px;color:#9aa79f;margin-top:9px}.columns{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-bottom:19px}.panel{padding:20px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.panel h2{font:800 15px Manrope,sans-serif}.panel-head p{font-size:10px;color:var(--muted);margin-top:4px}.list{display:grid;gap:10px}.row-item{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #edf1ee;border-radius:10px}.row-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;background:#edf7f1;color:var(--primary)}.row-item strong{display:block;font-size:11px}.row-item span{font-size:10px;color:var(--muted)}.row-item .meta{margin-left:auto;text-align:right}.meta b{display:block;font-size:11px;color:var(--ink)}.modules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.module{padding:18px;transition:.2s}.module:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#cde7d6}.module i{font-size:18px;color:var(--primary)}.module h3{font:800 13px Manrope,sans-serif;margin:12px 0 5px}.module p{font-size:10px;line-height:1.6;color:var(--muted);min-height:33px}.module a{display:inline-flex;align-items:center;gap:7px;margin-top:13px;color:var(--primary-dark);font-size:10px;font-weight:800}.notice{margin-top:18px;padding:12px 14px;background:#fff8eb;border:1px solid #f1e3c8;color:#8d6629;border-radius:10px;font-size:10px;line-height:1.6}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.columns{grid-template-columns:1fr}.modules{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.topbar{padding:0 16px}.content{padding:22px 16px 35px}.mobile-menu{display:block}.welcome{align-items:flex-start;flex-direction:column}.modules{grid-template-columns:1fr}.profile-info{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="brand"><div class="brand-mark"><i class="fa-solid fa-shield-halved"></i></div><div><div class="brand-name">Regu<span>Track</span></div><div class="brand-subtitle">ADMINISTRATION</div></div></div>
+<div class="sidebar-scroll">
+<div class="nav-label">ADMIN WORKSPACE</div>
+<a class="nav-link active" href="admin-dashboard.html"><i class="fa-solid fa-gauge-high"></i> Admin Overview</a>
+<a class="nav-link" href="users.html"><i class="fa-solid fa-users-gear"></i> User Management</a>
+<div class="nav-label">PLATFORM OVERSIGHT</div>
+<a class="nav-link" href="products.html"><i class="fa-solid fa-capsules"></i> Product Records</a>
+<a class="nav-link" href="gap-analysis.html"><i class="fa-solid fa-wand-magic-sparkles"></i> Gap Analysis</a>
+<a class="nav-link" href="ctd-dossiers.html"><i class="fa-solid fa-folder-tree"></i> CTD Dossiers</a>
+<a class="nav-link" href="regulatory-calendar.html"><i class="fa-regular fa-calendar"></i> Regulatory Calendar</a>
+<a class="nav-link" href="regulatory-intelligence.html"><i class="fa-solid fa-globe"></i> Regulatory Intelligence</a>
+<a class="nav-link" href="impact-assessment.html"><i class="fa-solid fa-bullseye"></i> Impact Assessments</a>
+<a class="nav-link" href="reports.html"><i class="fa-solid fa-chart-column"></i> Platform Reports</a>
+<div class="nav-label">ACCOUNT</div>
+<a class="nav-link" href="settings.html"><i class="fa-solid fa-gear"></i> My Settings</a>
+</div>
+<div class="sidebar-bottom"><div class="help-card"><i class="fa-regular fa-circle-question"></i><h4>Administration workspace</h4><p>Admin-only controls for user access, assignments, approvals and platform governance.</p></div><a class="nav-link" href="home.html"><i class="fa-solid fa-arrow-left"></i> Back to website</a></div>
+</aside>
+<main class="main">
+<header class="topbar"><div class="top-right"><button class="mobile-menu" id="menu" aria-label="Open navigation"><i class="fa-solid fa-bars"></i></button><span class="crumb">Workspace / <strong>Admin overview</strong></span></div><div class="top-right"><div class="profile"><div class="avatar" data-user-avatar>RT</div><div class="profile-info"><strong data-user-name>Administrator</strong><span data-user-role>Administrator</span></div></div><button class="signout" data-regutrack-signout type="button">Sign out</button></div></header>
+<section class="content">
+<div class="welcome"><div><div class="eyebrow">REGUTRACK ADMINISTRATION</div><h1>Platform overview</h1><p>Control workspace access, assignments, approvals and platform-wide regulatory operations.</p></div><span class="pill"><i class="fa-solid fa-shield-halved"></i> Administrator access</span></div>
+<div class="kpis">
+<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-users"></i></div><strong id="adminUsersTotal">—</strong><span>Registered workspace users</span><small>Distinct users with an assigned ReguTrack role.</small></article>
+<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-capsules"></i></div><strong id="adminProductsTotal">—</strong><span>Product records</span><small>All registered products across the platform.</small></article>
+<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-folder-tree"></i></div><strong id="adminDossiersTotal">—</strong><span>CTD dossiers</span><small>All dossiers, including user-submitted records.</small></article>
+<article class="kpi"><div class="kpi-icon"><i class="fa-solid fa-bullseye"></i></div><strong id="adminAssessmentsTotal">—</strong><span>Impact assessments</span><small>All assessments and approval decisions.</small></article>
+</div>
+<div class="columns">
+<section class="panel"><div class="panel-head"><div><h2>Platform administration</h2><p>Admin control centre</p></div></div><div class="list">
+<a class="row-item" href="users.html"><span class="row-icon"><i class="fa-solid fa-users-gear"></i></span><span><strong>User access directory</strong><span>Manage users, access and assignments</span></span><span class="meta"><b>Open</b></span></a>
+<a class="row-item" href="reports.html"><span class="row-icon"><i class="fa-solid fa-chart-line"></i></span><span><strong>Platform reports</strong><span>Open platform-wide reports</span></span><span class="meta"><b>Open</b></span></a>
+<a class="row-item" href="regulatory-intelligence.html"><span class="row-icon"><i class="fa-solid fa-globe"></i></span><span><strong>Regulatory source oversight</strong><span>Review regulatory changes</span></span><span class="meta"><b id="adminUpdatesTotal">—</b></span></a>
+</div></section>
+<section class="panel"><div class="panel-head"><div><h2>Pending approvals & regulatory updates</h2><p>Items requiring Admin attention and recent regulatory changes</p></div><span class="meta"><b id="adminAuditTotal">—</b><small>Audit events</small></span></div><div class="list" id="adminUpdatesBody"><div class="row-item">Loading regulatory records…</div></div><p id="adminDataStatus" class="notice" aria-live="polite">Live platform metrics load from the connected database.</p></section>
+</div></section>
+</main></div>
+<script type="module" src="js/auth-guard.js"></script>
+<script>
+const adminSidebar = document.getElementById('sidebar');
+const adminMenu = document.getElementById('menu');
+adminMenu?.addEventListener('click', () => adminSidebar?.classList.toggle('open'));
+document.addEventListener('click', event => {
+  if (window.innerWidth <= 760 && adminSidebar?.classList.contains('open') &&
+      !adminSidebar.contains(event.target) && !event.target.closest('#menu')) {
+    adminSidebar.classList.remove('open');
+  }
+});
+const adminCurrentPage = window.location.pathname.split('/').pop();
+document.querySelectorAll('.sidebar .nav-link[href]').forEach(link => {
+  const target = new URL(link.href, window.location.href).pathname.split('/').pop();
+  link.classList.toggle('active', target === adminCurrentPage);
+  link.addEventListener('click', () => adminSidebar?.classList.remove('open'));
+});
+</script>
+<script type="module">
+import { supabase } from "./js/supabaseClient.js";
+const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=String(value)};
+const count=async table=>{const {count,error}=await supabase.from(table).select("id",{count:"exact",head:true});if(error)throw error;return count??0};
+async function load(){
+ const [roles,products,dossiers,assessments,updates,audits]=await Promise.all([
+  supabase.from("user_roles").select("user_id,role"),count("products"),count("ctd_dossiers"),count("impact_assessments"),
+  supabase.from("regulatory_updates").select("id,review_status,publication_date,title").order("publication_date",{ascending:false}).limit(5),count("audit_logs")
+ ]);
+ if(roles.error)throw roles.error;if(updates.error)throw updates.error;
+ set("adminUsersTotal",new Set((roles.data||[]).map(x=>x.user_id)).size);
+ set("adminProductsTotal",products);set("adminDossiersTotal",dossiers);set("adminAssessmentsTotal",assessments);set("adminAuditTotal",audits);
+ set("adminUpdatesTotal",(updates.data||[]).length);
+ const list=document.getElementById("adminUpdatesBody");if(!list)return;list.replaceChildren();
+ if(!updates.data?.length){const empty=document.createElement("div");empty.className="row-item";empty.textContent="No regulatory updates have been recorded yet.";list.append(empty);return}
+ updates.data.forEach(item=>{const row=document.createElement("div");row.className="row-item";const title=document.createElement("strong");title.textContent=item.title||"Untitled update";const meta=document.createElement("span");meta.textContent=(item.review_status||"Unreviewed")+" · "+(item.publication_date||"No date");const wrap=document.createElement("span");wrap.append(title,meta);row.append(wrap);list.append(row)});
+}
+load().catch(error=>{console.error(error);const status=document.getElementById("adminDataStatus");if(status)status.textContent="Unable to load live metrics. Refresh or check access permissions."});
+</script></body></html>

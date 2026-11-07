@@ -2037,29 +2037,11 @@ button{line-height:1.4}
 
 <div class="toast" id="toast"></div>
 
-<script>
-/* ==========================================
-   CTD DOSSIER MANAGEMENT
-   Frontend demo using browser localStorage
-========================================== */
+<script type="module">
 
-const PRODUCT_KEY = "regutrack_products_v1";
-const DOSSIER_KEY = "regutrack_ctd_documents_v1";
-const PAGE_SIZE = 8;
 
-const $ = id => document.getElementById(id);
+import { supabase } from "./js/supabaseClient.js";
 
-let products = [];
-let documents = [];
-let activeProductId = "";
-let activeModule = "1";
-let currentPage = 1;
-let deleteDocumentId = null;
-let detailDocumentId = null;
-let toastTimer = null;
-let activeSectionCode = "";
-
-/* CTD MODULE INFORMATION — ICH M4(R4) organisation. Module 1 is regional; Modules 2–5 are harmonised. */
 const modules = {
 "1":{title:"Module 1 — Regional Administrative Information",description:"Region-specific administrative and prescribing information. Select the target authority and confirm local requirements.",icon:"fa-file-signature",sections:[
 ["1.0","Regional administrative information and submission particulars",0],["1.1","Regional application form and submission cover letter",1],["1.1.1","Application form and applicant declarations",2],["1.1.2","Cover letter and submission overview",2],["1.1.3","Comprehensive table of contents for Modules 1–5",2],["1.2","Administrative and legal information",1],["1.2.1","Applicant, sponsor and contact details",2],["1.2.2","Manufacturer and manufacturing site details",2],["1.2.3","Local agent or authorised representative",2],["1.2.4","Authorisations, letters of access and right of reference",2],["1.2.5","Fee payment documents",2],["1.2.6","Power of attorney and authorisation documents",2],["1.2.7","GMP certificates and licences",2],["1.2.8","Certificate of Pharmaceutical Product / Free Sale Certificate, where applicable",2],["1.2.9","Other regional legal documents and declarations",2],["1.3","Product information and prescribing information",1],["1.3.1","Summary of Product Characteristics / prescribing information",2],["1.3.2","Package leaflet / patient information leaflet",2],["1.3.3","Labelling texts and artwork",2],["1.3.4","Container and carton labelling",2],["1.3.5","Mock-ups, specimens and translations",2],["1.4","Expert information and declarations",1],["1.4.1","Quality expert details and declaration",2],["1.4.2","Nonclinical expert details and declaration",2],["1.4.3","Clinical expert details and declaration",2],["1.5","Application-type-specific regional requirements",1],["1.5.1","New active substance / new drug application requirements",2],["1.5.2","Generic, hybrid or abridged application requirements",2],["1.5.3","Fixed combination application requirements",2],["1.5.4","Biological / biosimilar requirements, where applicable",2],["1.5.5","Orphan, expedited or conditional pathway documents",2],["1.5.6","Paediatric requirements and plans, where applicable",2],["1.5.7","Environmental risk assessment, where regionally required",2],["1.6","Pharmacovigilance and risk management",1],["1.6.1","Pharmacovigilance system summary / system master file reference",2],["1.6.2","Risk Management Plan and regional annexes",2],["1.6.3","Qualified person / local safety contact details",2],["1.7","Clinical trial, bioequivalence and regulatory status",1],["1.7.1","Clinical trial and bioequivalence permissions / approvals",2],["1.7.2","Regulatory history and prior authority correspondence",2],["1.7.3","Marketing authorisations in other countries",2],["1.7.4","Inspection status and compliance information",2],["1.8","Other regional information and correspondence",1],["1.8.1","Responses to pre-submission / scientific advice",2],["1.8.2","Meeting minutes and regulatory correspondence",2],["1.8.3","Other region-specific forms, certificates and commitments",2]
@@ -2078,963 +2060,296 @@ const modules = {
 ]},
 };
 
-/* SAMPLE DOCUMENTS: ILLUSTRATIVE ONLY */
-const sampleDocuments = [
-    {
-        id:"doc-demo-1", productId:"demo-001", module:"1",
-        section:"1.2", sectionName:"Application Forms",
-        title:"Marketing Authorization Application",
-        code:"M1-APP-001", version:"1.0",
-        fileName:"marketing-application.pdf", fileType:"PDF",
-        fileData:"", fileSize:0,
-        uploadedBy:"RA Team", uploadedAt:"2026-11-01",
-        status:"Approved", notes:"Illustrative sample document.",
-        history:[{version:"1.0",date:"2026-11-01",user:"RA Team",action:"Sample record"}]
-    },
-    {
-        id:"doc-demo-2", productId:"demo-001", module:"2",
-        section:"2.3", sectionName:"Quality Overall Summary",
-        title:"Quality Overall Summary",
-        code:"M2-QOS-001", version:"1.0",
-        fileName:"quality-summary.pdf", fileType:"PDF",
-        fileData:"", fileSize:0,
-        uploadedBy:"RA Team", uploadedAt:"2026-11-02",
-        status:"Under Review", notes:"Illustrative sample document.",
-        history:[{version:"1.0",date:"2026-11-02",user:"RA Team",action:"Sample record"}]
-    },
-    {
-        id:"doc-demo-3", productId:"demo-001", module:"3",
-        section:"3.2.S", sectionName:"Drug Substance",
-        title:"Drug Substance Characterisation",
-        code:"M3-DS-001", version:"1.1",
-        fileName:"drug-substance.pdf", fileType:"PDF",
-        fileData:"", fileSize:0,
-        uploadedBy:"RA Team", uploadedAt:"2026-11-03",
-        status:"Approved", notes:"Illustrative sample document.",
-        history:[{version:"1.0",date:"2026-10-30",user:"RA Team",action:"Initial sample"},{version:"1.1",date:"2026-11-03",user:"RA Team",action:"Sample revision"}]
-    },
-    {
-        id:"doc-demo-4", productId:"demo-001", module:"3",
-        section:"3.2.P", sectionName:"Drug Product",
-        title:"Finished Product Specifications",
-        code:"M3-DP-001", version:"1.0",
-        fileName:"product-specifications.pdf", fileType:"PDF",
-        fileData:"", fileSize:0,
-        uploadedBy:"RA Team", uploadedAt:"2026-11-04",
-        status:"Draft", notes:"Illustrative sample document.",
-        history:[{version:"1.0",date:"2026-11-04",user:"RA Team",action:"Sample record"}]
-    },
-    {
-        id:"doc-demo-5", productId:"demo-001", module:"4",
-        section:"4.2.3", sectionName:"Toxicology",
-        title:"Toxicology Study Report",
-        code:"M4-TOX-001", version:"1.0",
-        fileName:"toxicology-report.pdf", fileType:"PDF",
-        fileData:"", fileSize:0,
-        uploadedBy:"RA Team", uploadedAt:"2026-11-04",
-        status:"Under Review", notes:"Illustrative sample document.",
-        history:[{version:"1.0",date:"2026-11-04",user:"RA Team",action:"Sample record"}]
-    },
-    {
-        id:"doc-demo-6", productId:"demo-001", module:"5",
-        section:"5.3.5", sectionName:"Efficacy and Safety Studies",
-        title:"Clinical Efficacy Study Report",
-        code:"M5-CLN-001", version:"1.0",
-        fileName:"clinical-efficacy.pdf", fileType:"PDF",
-        fileData:"", fileSize:0,
-        uploadedBy:"RA Team", uploadedAt:"2026-11-05",
-        status:"Draft", notes:"Illustrative sample document.",
-        history:[{version:"1.0",date:"2026-11-05",user:"RA Team",action:"Sample record"}]
-    }
-];
-
-/* TOAST */
-function showToast(message) {
-    $("toast").textContent = message;
-    $("toast").classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => $("toast").classList.remove("show"), 3200);
-}
-
-/* SAFE TEXT */
-function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, ch => ({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#39;"
-    })[ch]);
-}
-
-/* STORAGE */
-function loadProducts() {
-    try {
-        const saved = localStorage.getItem(PRODUCT_KEY);
-        if (saved === null) {
-            products = [];
-            return;
-        }
-        const parsed = JSON.parse(saved);
-        products = Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-        console.error(error);
-        products = [];
-    }
-}
-
-function loadDocuments() {
-    try {
-        const saved = localStorage.getItem(DOSSIER_KEY);
-
-        if (saved !== null) {
-            const parsed = JSON.parse(saved);
-            documents = Array.isArray(parsed) ? parsed : [];
-        } else {
-            documents = [...sampleDocuments];
-            saveDocuments();
-        }
-    } catch (error) {
-        console.error(error);
-        documents = [...sampleDocuments];
-        showToast("Could not read saved dossier records. Demo records loaded.");
-    }
-}
-
-function saveDocuments() {
-    try {
-        localStorage.setItem(DOSSIER_KEY, JSON.stringify(documents));
-        return true;
-    } catch (error) {
-        console.error(error);
-        showToast("Unable to save. Browser storage may be full.");
-        return false;
-    }
-}
-
-/* PRODUCT SELECTOR */
-function productName(product) {
-    return product.name || product.productName || product.code || "Unnamed product";
-}
-
-function productCode(product) {
-    return product.code || product.productCode || "No product code";
-}
-
-function populateProductSelectors() {
-    const selectors = [$("productSelector"), $("uploadProduct")];
-
-    selectors.forEach(select => {
-        select.innerHTML = "";
-
-        if (!products.length) {
-            select.add(new Option("No products found — add a product first", ""));
-            select.disabled = true;
-            return;
-        }
-
-        select.disabled = false;
-        products.forEach(product => {
-            select.add(new Option(
-                `${productName(product)} · ${productCode(product)}`,
-                product.id
-            ));
-        });
-    });
-
-    const preferred = products.find(p => p.id === activeProductId) || products[0];
-
-    if (preferred) {
-        activeProductId = preferred.id;
-        $("productSelector").value = activeProductId;
-        $("uploadProduct").value = activeProductId;
-        $("selectedProductStatus").textContent = preferred.status || "Product selected";
-    } else {
-        activeProductId = "";
-        $("selectedProductStatus").textContent = "No products";
-    }
-}
-
-/* SELECTED PRODUCT DOCUMENTS */
-function currentProductDocuments() {
-    return documents.filter(doc => doc.productId === activeProductId);
-}
-
-function currentModuleDocuments() {
-    return currentProductDocuments().filter(doc => doc.module === activeModule);
-}
-
-function getModuleCoverage(module) {
-    const moduleDocs = currentProductDocuments().filter(doc => doc.module === module);
-    if (!moduleDocs.length) return 0;
-
-    const approved = moduleDocs.filter(doc => doc.status === "Approved").length;
-    return Math.round((approved / moduleDocs.length) * 100);
-}
-
-/* SUMMARY COUNTS */
-function updateStats() {
-    const docs = currentProductDocuments();
-
-    $("documentTotal").textContent = docs.length;
-    $("documentApproved").textContent = docs.filter(d => d.status === "Approved").length;
-    $("documentReview").textContent = docs.filter(d => d.status === "Under Review").length;
-    $("documentDraft").textContent = docs.filter(d =>
-        d.status === "Draft" || d.status === "Rejected"
-    ).length;
-
-    for (let i = 1; i <= 5; i++) {
-        const percentage = getModuleCoverage(String(i));
-        $("modulePercent" + i).textContent = percentage + "%";
-        $("moduleBar" + i).style.width = percentage + "%";
-    }
-}
-
-/* MODULE CONTENT */
-function selectSection(code) {
-    activeSectionCode = code;
-    const info = modules[activeModule].sections.find(item => item[0] === code);
-    if (!info) return;
-    $("selectedSectionCode").textContent = "SECTION " + code;
-    $("selectedSectionTitle").textContent = info[1];
-    $("selectedSectionHelp").textContent = "Manage files, preparation notes and review status for " + code + " — " + info[1] + ".";
-    $("sectionGuidanceText").textContent = getSectionGuidance(code, info[1]);
-    renderSectionWorkspace();
-    document.querySelectorAll(".ctd-tree-row").forEach(row => row.classList.toggle("active", !!row.querySelector("[data-section]") && row.querySelector("[data-section]").dataset.section === code));
-}
-function getSectionGuidance(code, name) {
-    return "Prepare and quality-check the document(s) applicable to " + code + " — " + name + ". Mark Yes only when present and verified, No when required but missing or deficient, and N/A only with a documented justification. Applicability depends on product, application type and target authority; this checklist is a preparation aid, not an official completeness determination.";
-}
-
-function checklistStorageKey() { return "regutrack_ctd_checklist_v2_" + activeProductId; }
-function loadChecklistState() {
-    try { return JSON.parse(localStorage.getItem(checklistStorageKey()) || "{}"); }
-    catch (_) { return {}; }
-}
-function checklistItemStatus(code) {
-    const state = loadChecklistState();
-    return state[activeModule + ":" + code] || "Pending";
-}
-function setChecklistItemStatus(code, status) {
-    const state = loadChecklistState(), key = activeModule + ":" + code;
-    if (status === "Pending") delete state[key]; else state[key] = status;
-    try { localStorage.setItem(checklistStorageKey(), JSON.stringify(state)); }
-    catch (_) { showToast("Could not save checklist status in this browser."); return; }
-    renderSectionWorkspace(); updateModuleProgress(); updateStats();
-}
-function renderSectionWorkspace() {
-    const list = $("ctdSectionList");
-    const sectionDocs = currentProductDocuments().filter(doc => String(doc.module) === activeModule && doc.section === activeSectionCode);
-    const sections = modules[activeModule].sections, state = loadChecklistState();
-    const options = status => ["Pending","Yes","No","N/A"].map(value => '<option value="' + value + '"' + (status===value?' selected':'') + '>' + value + '</option>').join("");
-    list.innerHTML = sections.map(([code,name,level]) => {
-        const selected = code === activeSectionCode;
-        return '<div class="ctd-tree-row level-' + (level||0) + (selected?' active':'') + '"><button type="button" class="ctd-tree-select" data-section="' + escapeHTML(code) + '" aria-current="' + (selected?'true':'false') + '"><span class="ctd-tree-code">' + escapeHTML(code) + '</span><span class="ctd-tree-name">' + escapeHTML(name) + '</span></button><select class="ctd-tree-status" data-check-code="' + escapeHTML(code) + '" aria-label="Checklist status for ' + escapeHTML(code) + '">' + options(checklistItemStatus(code)) + '</select></div>';
-    }).join("");
-    const done = sections.filter(([code]) => ["Yes","N/A"].includes(state[activeModule + ":" + code])).length;
-    const missing = sections.filter(([code]) => state[activeModule + ":" + code] === "No").length;
-    $("sectionCount").textContent = sections.length + " entries · " + done + " complete · " + missing + " marked No";
-    $("sectionDocumentCount").textContent = sectionDocs.length;
-    $("sectionApprovedCount").textContent = sectionDocs.filter(doc => doc.status === "Approved").length;
-    const status = checklistItemStatus(activeSectionCode);
-    $("sectionPreparationStatus").textContent = status === "Pending" ? (sectionDocs.length ? "Documents uploaded" : "Pending") : status;
-    $("sectionPreparationStatus").classList.toggle("complete", status === "Yes" || status === "N/A");
-    $("sectionDocumentList").innerHTML = sectionDocs.length ? sectionDocs.map(doc => '<div class="section-file-row"><div class="file-icon ' + fileIcon(doc.fileType) + '"><i class="fa-solid ' + fileIconClass(doc.fileType) + '"></i></div><div class="section-file-info"><strong>' + escapeHTML(doc.title) + '</strong><span>' + escapeHTML(doc.fileName||"No file attached") + ' · v' + escapeHTML(doc.version||"1.0") + ' · ' + escapeHTML(doc.status) + '</span></div><div class="section-file-actions"><button class="action-btn" data-section-action="view" data-id="' + escapeHTML(doc.id) + '" title="View details"><i class="fa-regular fa-eye"></i></button><button class="action-btn" data-section-action="preview" data-id="' + escapeHTML(doc.id) + '" title="Preview PDF"><i class="fa-solid fa-file-pdf"></i></button></div></div>').join("") : '<div class="section-empty"><i class="fa-regular fa-folder-open"></i><strong>No documents in this subsection yet</strong><p>Upload the relevant file to start preparing this section.</p></div>';
-}
-function previewDocument(id) {
-    const doc = documents.find(item=>item.id===id);
-    if (!doc || !doc.fileData || !doc.fileData.startsWith("data:application/pdf")) {
-        showToast("PDF preview is available for uploaded PDF files only.");
-        return;
-    }
-    $("detailTitle").textContent = "PDF Preview — " + doc.title;
-    $("documentDetails").hidden = true;
-    $("pdfPreviewContainer").hidden = false;
-    $("pdfPreviewContainer").innerHTML = '<iframe class="pdf-preview" title="PDF preview" src="'+doc.fileData+'"></iframe>';
-    $("downloadDocument").disabled = false;
-    $("downloadDocument").style.opacity = "1";
-    openModal("detailModal");
-}
-function selectModule(module) {
-    activeModule = String(module);
-    currentPage = 1;
-
-    document.querySelectorAll(".module-tab").forEach(tab => {
-        tab.classList.toggle("active", tab.dataset.module === activeModule);
-    });
-
-    const info = modules[activeModule];
-    $("selectedModuleTitle").textContent = info.title;
-    $("selectedModuleDescription").textContent = info.description;
-    $("moduleIcon").className = "fa-solid " + info.icon;
-
-    updateModuleProgress();
-    if (!modules[activeModule].sections.some(item => item[0] === activeSectionCode)) activeSectionCode = modules[activeModule].sections[0][0];
-    selectSection(activeSectionCode);
-    renderDocuments();
-}
-
-function updateModuleProgress() {
-    const percentage = getModuleCoverage(activeModule);
-    $("selectedModulePercent").textContent = percentage + "%";
-    $("selectedModuleBar").style.width = percentage + "%";
-}
-
-/* DOCUMENT FILTER */
-function getFilteredDocuments() {
-    const query = $("documentSearch").value.toLowerCase().trim();
-    const status = $("documentStatusFilter").value;
-    const type = $("documentTypeFilter").value;
-
-    return currentModuleDocuments().filter(doc => {
-        const searchText = [
-            doc.title, doc.code, doc.fileName, doc.sectionName, doc.section
-        ].join(" ").toLowerCase();
-
-        return searchText.includes(query)
-            && (!status || doc.status === status)
-            && (!type || doc.fileType === type);
-    });
-}
-
-/* FILE TYPE */
-function fileIcon(type) {
-    if (type === "PDF") return "pdf";
-    if (type === "DOC") return "doc";
-    if (type === "XLS") return "xls";
-    return "other";
-}
-
-function fileIconClass(type) {
-    if (type === "PDF") return "fa-file-pdf";
-    if (type === "DOC") return "fa-file-word";
-    if (type === "XLS") return "fa-file-excel";
-    return "fa-file-lines";
-}
-
-function documentStatusClass(status) {
-    return {
-        "Draft":"status-draft",
-        "Under Review":"status-review",
-        "Approved":"status-approved",
-        "Rejected":"status-rejected"
-    }[status] || "status-draft";
-}
-
-/* DATE DISPLAY */
-function formatDate(value) {
-    if (!value) return "—";
-    const date = new Date(value + "T00:00:00");
-    if (Number.isNaN(date.getTime())) return value;
-
-    return date.toLocaleDateString("en-IN", {
-        day:"2-digit", month:"short", year:"numeric"
-    });
-}
-
-/* RENDER TABLE */
-function renderDocuments() {
-    const filtered = getFilteredDocuments();
-    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-
-    currentPage = Math.min(currentPage, totalPages);
-
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const visible = filtered.slice(start, start + PAGE_SIZE);
-
-    $("documentTableBody").innerHTML = "";
-
-    visible.forEach(doc => {
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>
-                <div class="document-cell">
-                    <div class="file-icon ${fileIcon(doc.fileType)}">
-                        <i class="fa-solid ${fileIconClass(doc.fileType)}"></i>
-                    </div>
-                    <div>
-                        <span class="document-name">${escapeHTML(doc.title)}</span>
-                        <span class="document-meta">${escapeHTML(doc.fileName || "No file attached")}</span>
-                    </div>
-                </div>
-            </td>
-            <td>
-                <strong style="color:var(--ink);font-size:11px;">${escapeHTML(doc.section)}</strong>
-                <span class="document-meta">${escapeHTML(doc.sectionName)}</span>
-            </td>
-            <td><strong style="font-size:11px;">${escapeHTML(doc.version || "1.0")}</strong></td>
-            <td>${escapeHTML(doc.uploadedBy || "—")}</td>
-            <td>${formatDate(doc.uploadedAt)}</td>
-            <td><span class="status ${documentStatusClass(doc.status)}">${escapeHTML(doc.status)}</span></td>
-            <td>
-                <div class="action-group">
-                    <button class="action-btn" data-action="view" data-id="${escapeHTML(doc.id)}" title="View">
-                        <i class="fa-regular fa-eye"></i>
-                    </button>
-                    <button class="action-btn" data-action="status" data-id="${escapeHTML(doc.id)}" title="Change review status">
-                        <i class="fa-solid fa-clipboard-check"></i>
-                    </button>
-                    <button class="action-btn delete" data-action="delete" data-id="${escapeHTML(doc.id)}" title="Remove">
-                        <i class="fa-regular fa-trash-can"></i>
-                    </button>
-                </div>
-            </td>
-        `;
-
-        $("documentTableBody").appendChild(row);
-    });
-
-    $("emptyDocuments").hidden = filtered.length !== 0;
-    $("documentCountLabel").textContent = filtered.length + " documents";
-
-    $("documentShowingText").textContent = filtered.length
-        ? `Showing ${start + 1}–${Math.min(start + PAGE_SIZE, filtered.length)} of ${filtered.length} documents`
-        : "Showing 0 documents";
-
-    renderPagination(totalPages);
-    renderSectionWorkspace();
-    updateStats();
-    updateModuleProgress();
-}
-
-function renderPagination(totalPages) {
-    const container = $("documentPagination");
-    container.innerHTML = "";
-
-    const addPageButton = (label, page, active = false, disabled = false) => {
-        const button = document.createElement("button");
-        button.className = "page-btn" + (active ? " active" : "");
-        button.textContent = label;
-        button.disabled = disabled;
-        button.addEventListener("click", () => {
-            currentPage = page;
-            renderDocuments();
-        });
-        container.appendChild(button);
-    };
-
-    addPageButton("‹", Math.max(1, currentPage - 1), false, currentPage === 1);
-
-    for (let page = 1; page <= totalPages; page++) {
-        addPageButton(String(page), page, page === currentPage);
-    }
-
-    addPageButton("›", Math.min(totalPages, currentPage + 1), false, currentPage === totalPages);
-}
-
-/* SECTION DROPDOWN */
-function populateSections(module) {
-    const select = $("uploadSection");
-    select.innerHTML = '<option value="">Select section</option>';
-
-    modules[String(module)].sections.forEach(([code, name]) => {
-        select.add(new Option(`${code} — ${name}`, code));
-    });
-}
-
-/* FILE PICKER */
+const PAGE_SIZE = 8;
+const BUCKET = "ctd-documents";
+const $ = id => document.getElementById(id);
+let products = [];
+let dossiers = [];
+let documents = [];
+let sectionsByModule = {};
+let checklistState = {};
+let currentUser = null;
+let currentRole = "user";
+let activeProductId = "";
+let activeDossierId = "";
+let activeModule = "1";
+let activeSectionCode = "";
+let currentPage = 1;
 let selectedFile = null;
-
-function setSelectedFile(file) {
-    if (!file) return;
-
-    const allowed = /\.(pdf|doc|docx|xls|xlsx|txt)$/i;
-    if (!allowed.test(file.name)) {
-        showToast("Unsupported file type. Select PDF, DOC, DOCX, XLS, XLSX or TXT.");
-        return;
-    }
-
-    if (file.size > 10 * 1024 * 1024) {
-        showToast("File is larger than 10 MB. Please select a smaller file.");
-        return;
-    }
-
-    selectedFile = file;
-    $("fileDropTitle").textContent = file.name;
+let deleteDocumentId = null;
+let detailDocumentId = null;
+let toastTimer = null;
+const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+function showToast(message){$("toast").textContent=message;$("toast").classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.remove("show"),3500);}
+function formatDate(value){if(!value)return "—";const d=new Date(value);return Number.isNaN(d.getTime())?String(value):d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});}
+function productName(p){return p.product_name||"Unnamed product";}
+function productCode(p){return p.product_code||"No product code";}
+function moduleIdFor(module){return Number(module);}
+function moduleLabel(module){return modules[String(module)]?.title||("Module "+module);}
+function statusLabel(status){return ({draft:"Draft",in_review:"Under Review",approved:"Approved",obsolete:"Obsolete",rejected:"Rejected"})[status]||status||"Draft";}
+function dbStatus(status){return ({Draft:"draft","Under Review":"in_review",Approved:"approved",Rejected:"rejected",Obsolete:"obsolete"})[status]||"draft";}
+function documentStatusClass(status){return ({draft:"status-draft",in_review:"status-review",approved:"status-approved",obsolete:"status-draft",rejected:"status-rejected"})[status]||"status-draft";}
+function fileIcon(type){const m=String(type||"").toLowerCase();return m.includes("pdf")?"pdf":(m.includes("word")||m.includes("doc"))?"doc":(m.includes("excel")||m.includes("sheet")||m.includes("xls"))?"xls":"other";}
+function fileIconClass(type){const i=fileIcon(type);return i==="pdf"?"fa-file-pdf":i==="doc"?"fa-file-word":i==="xls"?"fa-file-excel":"fa-file-lines";}
+function activeProduct(){return products.find(p=>p.id===activeProductId)||null;}
+function activeDossier(){return dossiers.find(d=>d.id===activeDossierId)||null;}
+function currentProductDocuments(){return documents.filter(d=>d.dossier_id===activeDossierId);}
+function currentModuleDocuments(){return currentProductDocuments().filter(d=>sectionsByModule[activeModule]?.some(s=>s.id===d.section_id));}
+function sectionByCode(code,module=activeModule){return (sectionsByModule[module]||[]).find(s=>s.section_code===code)||null;}
+function checklistKey(sectionId){return sectionId;}
+async function requireSession(){
+ const {data,error}=await supabase.auth.getUser();
+ if(error||!data.user)throw new Error("Your session has expired. Sign in again.");
+ currentUser=data.user;
+ const {data:roleRows,error:roleError}=await supabase.from("user_roles").select("role").eq("user_id",currentUser.id);
+ if(roleError)throw roleError;
+ currentRole=(roleRows||[]).some(r=>r.role==="admin")?"admin":"user";
+ return currentUser;
 }
-
-/* DATA URL CONVERSION */
-function readFileAsDataURL(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error("Could not read the selected file."));
-        reader.readAsDataURL(file);
-    });
+async function loadProducts(){
+ const {data,error}=await supabase.from("products").select("id,product_code,product_name,product_owner,created_by,target_market,regulatory_authority,registration_status").order("product_name");
+ if(error)throw error;
+ products=data||[];
+ const selector=$("productSelector"),upload=$("uploadProduct");
+ [selector,upload].forEach(el=>{el.innerHTML="";if(!products.length){el.add(new Option("No accessible products — add a product first",""));el.disabled=true;}else{el.disabled=false;products.forEach(p=>el.add(new Option(productName(p)+" · "+productCode(p),p.id)));}});
+ if(!products.length){activeProductId="";activeDossierId="";$("selectedProductStatus").textContent="No products";$("uploadDocument").disabled=true;$("emptyUploadButton").disabled=true;return;}
+ activeProductId=products.some(p=>p.id===activeProductId)?activeProductId:products[0].id;
+ selector.value=activeProductId;upload.value=activeProductId;
+ const p=activeProduct();$("selectedProductStatus").textContent=p.registration_status||"Product selected";
+ $("uploadDocument").disabled=false;$("emptyUploadButton").disabled=false;
 }
-
-/* OPEN UPLOAD */
-function openUploadModal() {
-    if (!products.length) {
-        showToast("Add a product in Product Management before uploading a dossier document.");
-        return;
-    }
-
-    $("uploadForm").reset();
-    selectedFile = null;
-
-    $("uploadProduct").value = activeProductId;
-    $("uploadModule").value = activeModule;
-    $("uploadedBy").value = "Workspace Admin";
-    $("documentVersion").value = "1.0";
-    $("fileDropTitle").textContent = "Drag and drop your file here";
-
-    populateSections(activeModule);
-    if (activeSectionCode) $("uploadSection").value = activeSectionCode;
-    openModal("uploadModal");
+async function loadSections(){
+ const {data,error}=await supabase.from("ctd_sections").select("id,module_id,section_code,section_title,guidance_text,sort_order").eq("is_active",true).order("sort_order");
+ if(error)throw error;
+ sectionsByModule={};
+ for(const row of data||[]){const key=String(row.module_id);(sectionsByModule[key] ||= []).push(row);}
+ for(let i=1;i<=5;i++){if(!sectionsByModule[String(i)])sectionsByModule[String(i)]=[];}
 }
-
-/* UPLOAD FORM */
-$("uploadForm").addEventListener("submit", async event => {
-    event.preventDefault();
-
-    if (!selectedFile) {
-        showToast("Please select a document file.");
-        return;
-    }
-
-    const productId = $("uploadProduct").value;
-    const product = products.find(p => p.id === productId);
-
-    if (!product) {
-        showToast("Select a valid product first.");
-        return;
-    }
-
-    const module = $("uploadModule").value;
-    const sectionCode = $("uploadSection").value;
-
-    if (!sectionCode) {
-        showToast("Please select a CTD section.");
-        return;
-    }
-
-    const sectionInfo = modules[module].sections.find(item => item[0] === sectionCode);
-
-    try {
-        const fileData = await readFileAsDataURL(selectedFile);
-
-        const document = {
-            id:"doc-" + Date.now() + "-" + Math.random().toString(36).slice(2,7),
-            productId,
-            module,
-            section:sectionCode,
-            sectionName:sectionInfo ? sectionInfo[1] : sectionCode,
-            title:$("documentTitle").value.trim(),
-            code:$("documentCode").value.trim(),
-            version:$("documentVersion").value.trim() || "1.0",
-            fileName:selectedFile.name,
-            fileType:(selectedFile.name.split(".").pop() || "Other").toUpperCase(),
-            fileData,
-            fileSize:selectedFile.size,
-            uploadedBy:$("uploadedBy").value.trim() || "Workspace User",
-            uploadedAt:new Date().toISOString().slice(0,10),
-            status:$("initialStatus").value,
-            notes:$("documentNotes").value.trim(),
-            history:[{
-                version:$("documentVersion").value.trim() || "1.0",
-                date:new Date().toISOString().slice(0,10),
-                user:$("uploadedBy").value.trim() || "Workspace User",
-                action:"Uploaded"
-            }]
-        };
-
-        if (!document.title) {
-            showToast("Please enter a document title.");
-            return;
-        }
-
-        documents.unshift(document);
-
-        if (!saveDocuments()) {
-            documents.shift();
-            return;
-        }
-
-        activeProductId = productId;
-        $("productSelector").value = productId;
-        closeModal("uploadModal");
-        selectedFile = null;
-
-        renderDocuments();
-        showToast("Document uploaded and added to the dossier.");
-    } catch (error) {
-        console.error(error);
-        showToast(error.message || "Document upload failed.");
-    }
-});
-
-/* DOCUMENT VIEW */
-function openDocumentDetail(id) {
-    const doc = documents.find(d => d.id === id);
-    if (!doc) return;
-
-    detailDocumentId = id;
-    $("detailTitle").textContent = doc.title;
-
-    const product = products.find(p => p.id === doc.productId);
-
-    const fields = [
-        ["Product", product ? productName(product) : "Unknown product"],
-        ["CTD Module", "Module " + doc.module],
-        ["CTD Section", doc.section + " — " + doc.sectionName],
-        ["Document Code", doc.code || "Not specified"],
-        ["Version", doc.version],
-        ["File", doc.fileName],
-        ["File Size", doc.fileSize ? (doc.fileSize / 1024 / 1024).toFixed(2) + " MB" : "Sample record"],
-        ["Uploaded By", doc.uploadedBy],
-        ["Upload Date", formatDate(doc.uploadedAt)],
-        ["Review Status", doc.status],
-        ["Notes", doc.notes || "No notes"]
-    ];
-
-    $("pdfPreviewContainer").hidden = true;
-    $("pdfPreviewContainer").innerHTML = "";
-    $("documentDetails").hidden = false;
-    $("documentDetails").innerHTML = `
-        <div class="detail-box">
-            <span>Review Status</span>
-            <strong><span class="status ${documentStatusClass(doc.status)}">${escapeHTML(doc.status)}</span></strong>
-        </div>
-        <div class="form-grid">
-            ${fields.slice(0, 10).map(([label,value]) => `
-                <div class="detail-box">
-                    <span>${escapeHTML(label)}</span>
-                    <strong>${escapeHTML(value || "Not provided")}</strong>
-                </div>
-            `).join("")}
-            <div class="detail-box form-group full">
-                <span>Notes</span>
-                <strong>${escapeHTML(doc.notes || "No notes")}</strong>
-            </div>
-        </div>
-        <div class="form-section-title">Version History</div>
-        <div>
-            ${(doc.history || []).map(version => `
-                <div class="detail-box">
-                    <strong>Version ${escapeHTML(version.version)}</strong>
-                    <span>${escapeHTML(version.action)} · ${escapeHTML(version.user)} · ${formatDate(version.date)}</span>
-                </div>
-            `).join("")}
-        </div>
-    `;
-
-    const hasFile = Boolean(doc.fileData && doc.fileData.startsWith("data:"));
-    $("downloadDocument").disabled = !hasFile;
-    $("downloadDocument").style.opacity = hasFile ? "1" : ".45";
-
-    openModal("detailModal");
+async function ensureDossier(){
+ if(!activeProductId){activeDossierId="";dossiers=[];documents=[];return;}
+ const {data,error}=await supabase.from("ctd_dossiers").select("*").eq("product_id",activeProductId).order("created_at",{ascending:false});
+ if(error)throw error;
+ dossiers=data||[];
+ let dossier=dossiers[0];
+ if(!dossier){
+  const p=activeProduct();
+  const {data:created,error:createError}=await supabase.from("ctd_dossiers").insert({
+   product_id:activeProductId,dossier_title:productName(p)+" — CTD Dossier",
+   dossier_type:"initial",target_market:p.target_market||null,
+   regulatory_authority:p.regulatory_authority||null,owner_id:currentRole==="admin"?currentUser.id:(p.product_owner||currentUser.id),created_by:currentUser.id
+  }).select("*").single();
+  if(createError)throw createError;
+  dossier=created;dossiers=[created];
+ }
+ activeDossierId=dossier.id;
 }
-
-/* REVIEW STATUS CHANGE */
-function changeDocumentStatus(id) {
-    const doc = documents.find(d => d.id === id);
-    if (!doc) return;
-
-    const nextStatus = prompt(
-        `Current status: ${doc.status}\n\nChoose a status:\n1. Draft\n2. Under Review\n3. Approved\n4. Rejected\n\nEnter 1, 2, 3 or 4:`
-    );
-
-    if (nextStatus === null) return;
-
-    const choices = {
-        "1":"Draft",
-        "2":"Under Review",
-        "3":"Approved",
-        "4":"Rejected"
-    };
-
-    if (!choices[nextStatus]) {
-        showToast("Invalid selection.");
-        return;
-    }
-
-    const status = choices[nextStatus];
-
-    if (status === "Approved") {
-        const reviewer = prompt("Enter the authorized reviewer name:");
-        if (!reviewer || !reviewer.trim()) {
-            showToast("Approval requires a reviewer name.");
-            return;
-        }
-        doc.reviewedBy = reviewer.trim();
-    }
-
-    doc.status = status;
-    doc.history = doc.history || [];
-    doc.history.push({
-        version:doc.version,
-        date:new Date().toISOString().slice(0,10),
-        user:doc.reviewedBy || "Workspace Admin",
-        action:"Status changed to " + status
-    });
-
-    if (!saveDocuments()) return;
-
-    renderDocuments();
-    showToast("Document status updated.");
+async function loadDocuments(){
+ if(!activeDossierId){documents=[];return;}
+ const {data,error}=await supabase.from("dossier_documents").select("*,ctd_sections(section_code,section_title,module_id)").eq("dossier_id",activeDossierId).order("created_at",{ascending:false});
+ if(error)throw error;
+ documents=(data||[]).map(d=>({...d,module:String(d.ctd_sections?.module_id||"1"),section:d.ctd_sections?.section_code||"",section_name:d.ctd_sections?.section_title||"",file_name:d.storage_path?.split("/").pop()||"File in secure storage",file_type:d.mime_type||"",uploaded_at:d.created_at,uploaded_by:d.uploaded_by===currentUser.id?"You":"Workspace member"}));
 }
-
-/* DELETE DOCUMENT */
-function confirmDocumentDelete(id) {
-    const doc = documents.find(d => d.id === id);
-    if (!doc) return;
-
-    deleteDocumentId = id;
-    $("deleteMessage").textContent =
-        `Remove "${doc.title}" from this browser's dossier records?`;
-
-    openModal("deleteModal");
+async function loadChecklist(){
+ checklistState={};
+ const {data,error}=await supabase.from("ctd_dossiers").select("id,checklist_state").eq("id",activeDossierId).maybeSingle();
+ if(error)throw error;
+ // Checklist preparation state is stored in the dossier notes JSON envelope to avoid a parallel browser-only store.
+ checklistState=data?.checklist_state&&typeof data.checklist_state==="object"?data.checklist_state:{};
 }
-
-$("confirmDelete").addEventListener("click", () => {
-    if (!deleteDocumentId) return;
-
-    const index = documents.findIndex(d => d.id === deleteDocumentId);
-    if (index < 0) return;
-
-    const removed = documents.splice(index, 1)[0];
-
-    if (!saveDocuments()) {
-        documents.splice(index, 0, removed);
-        return;
-    }
-
-    deleteDocumentId = null;
-    closeModal("deleteModal");
-    renderDocuments();
-    showToast("Document removed from the demo dossier.");
-});
-
-$("ctdSectionList").addEventListener("change", event => { const select = event.target.closest("[data-check-code]"); if (select) setChecklistItemStatus(select.dataset.checkCode, select.value); });
-$("ctdSectionList").addEventListener("click", event => {
-    const button = event.target.closest("[data-section]");
-    if (button) { currentPage = 1; selectSection(button.dataset.section); renderDocuments(); }
-});
-$("sectionDocumentList").addEventListener("click", event => {
-    const button = event.target.closest("[data-section-action]");
-    if (!button) return;
-    if (button.dataset.sectionAction === "view") openDocumentDetail(button.dataset.id);
-    if (button.dataset.sectionAction === "preview") previewDocument(button.dataset.id);
-});
-$("uploadSectionDocument").addEventListener("click", () => {
-    openUploadModal();
-    if (activeSectionCode) $("uploadSection").value = activeSectionCode;
-});
-/* TABLE ACTIONS */
-$("documentTableBody").addEventListener("click", event => {
-    const button = event.target.closest("button[data-action]");
-    if (!button) return;
-
-    const { action, id } = button.dataset;
-
-    if (action === "view") openDocumentDetail(id);
-    if (action === "status") changeDocumentStatus(id);
-    if (action === "delete") confirmDocumentDelete(id);
-});
-
-/* DOWNLOAD SELECTED DOCUMENT */
-$("downloadDocument").addEventListener("click", () => {
-    const doc = documents.find(d => d.id === detailDocumentId);
-    if (!doc || !doc.fileData) {
-        showToast("No actual file is available for this sample record.");
-        return;
-    }
-
-    const link = document.createElement("a");
-    link.href = doc.fileData;
-    link.download = doc.fileName || "document";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-});
-
-/* EXPORT DOCUMENT REGISTER */
-$("exportDocuments").addEventListener("click", () => {
-    const docs = currentProductDocuments();
-
-    if (!docs.length) {
-        showToast("No dossier documents available to export.");
-        return;
-    }
-
-    const columns = [
-        ["Product ID","productId"],
-        ["Document Title","title"],
-        ["Document Code","code"],
-        ["Module","module"],
-        ["Section","section"],
-        ["Version","version"],
-        ["File Name","fileName"],
-        ["Uploaded By","uploadedBy"],
-        ["Upload Date","uploadedAt"],
-        ["Review Status","status"]
-    ];
-
-    const quote = value => `"${String(value ?? "").replace(/"/g,'""')}"`;
-
-    const csv = [
-        columns.map(c => quote(c[0])).join(","),
-        ...docs.map(doc => columns.map(c => quote(doc[c[1]])).join(","))
-    ].join("\r\n");
-
-    const blob = new Blob(["\uFEFF" + csv], { type:"text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "regutrack-ctd-document-register.csv";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-
-    showToast("CTD document register exported.");
-});
-
-/* FILTER LISTENERS */
-["documentSearch","documentStatusFilter","documentTypeFilter"].forEach(id => {
-    $(id).addEventListener(id === "documentSearch" ? "input" : "change", () => {
-        currentPage = 1;
-        renderDocuments();
-    });
-});
-
-$("clearDocumentFilters").addEventListener("click", () => {
-    $("documentSearch").value = "";
-    $("documentStatusFilter").value = "";
-    $("documentTypeFilter").value = "";
-    currentPage = 1;
-    renderDocuments();
-});
-
-$("globalSearch").addEventListener("input", event => {
-    $("documentSearch").value = event.target.value;
-    currentPage = 1;
-    renderDocuments();
-});
-
-/* PRODUCT CHANGE */
-$("productSelector").addEventListener("change", event => {
-    activeProductId = event.target.value;
-    currentPage = 1;
-    $("uploadProduct").value = activeProductId;
-
-    const product = products.find(p => p.id === activeProductId);
-    $("selectedProductStatus").textContent = product ? (product.status || "Selected") : "No product";
-
-    renderDocuments();
-});
-
-/* MODULE TABS */
-$("moduleTabs").addEventListener("click", event => {
-    const tab = event.target.closest(".module-tab");
-    if (!tab) return;
-    selectModule(tab.dataset.module);
-});
-
-/* UPLOAD CONTROLS */
-$("uploadDocument").addEventListener("click", openUploadModal);
-$("emptyUploadButton").addEventListener("click", openUploadModal);
-
-$("uploadModule").addEventListener("change", event => {
-    populateSections(event.target.value);
-});
-
-$("documentFile").addEventListener("change", event => {
-    setSelectedFile(event.target.files[0]);
-});
-
-/* DRAG AND DROP */
-const dropArea = $("fileDrop");
-
-["dragenter","dragover"].forEach(name => {
-    dropArea.addEventListener(name, event => {
-        event.preventDefault();
-        dropArea.classList.add("dragover");
-    });
-});
-
-["dragleave","drop"].forEach(name => {
-    dropArea.addEventListener(name, event => {
-        event.preventDefault();
-        dropArea.classList.remove("dragover");
-    });
-});
-
-dropArea.addEventListener("drop", event => {
-    setSelectedFile(event.dataTransfer.files[0]);
-});
-
-/* MODAL CLOSE */
-function openModal(id) { $(id).classList.add("show"); }
-function closeModal(id) { $(id).classList.remove("show"); if(id==="detailModal"){ $("pdfPreviewContainer").hidden=true; $("pdfPreviewContainer").innerHTML=""; $("documentDetails").hidden=false; } }
-
-$("closeUploadModal").addEventListener("click", () => closeModal("uploadModal"));
-$("cancelUpload").addEventListener("click", () => closeModal("uploadModal"));
-$("closeDetailModal").addEventListener("click", () => closeModal("detailModal"));
-$("closeDetailButton").addEventListener("click", () => closeModal("detailModal"));
-$("cancelDelete").addEventListener("click", () => closeModal("deleteModal"));
-
-document.querySelectorAll(".modal-backdrop").forEach(backdrop => {
-    backdrop.addEventListener("click", event => {
-        if (event.target === backdrop) closeModal(backdrop.id);
-    });
-});
-
-document.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
-        document.querySelectorAll(".modal-backdrop.show").forEach(modal => {
-            closeModal(modal.id);
-        });
-    }
-});
-
-/* SIDEBAR AND PROFILE */
-$("menuToggle").addEventListener("click", () => $("sidebar").classList.toggle("open"));
-
-document.addEventListener("click", event => {
-    if (
-        window.innerWidth <= 900 &&
-        $("sidebar").classList.contains("open") &&
-        !$("sidebar").contains(event.target) &&
-        !event.target.closest("#menuToggle")
-    ) {
-        $("sidebar").classList.remove("open");
-    }
-});
-
-$("profileButton").addEventListener("click", event => {
-    event.stopPropagation();
-    $("profileDropdown").classList.toggle("show");
-});
-
-document.addEventListener("click", event => {
-    if (!$("profileButton").contains(event.target)) {
-        $("profileDropdown").classList.remove("show");
-    }
-});
-
-$("notificationButton").addEventListener("click", () => {
-    const count = currentProductDocuments().filter(d => d.status === "Under Review").length;
-    showToast(`${count} document(s) are currently under review in this product dossier.`);
-});
-
-/* INITIALIZE */
-function initialize() {
-    loadProducts();
-    loadDocuments();
-    populateProductSelectors();
-    populateSections(activeModule);
-
-    if (activeProductId) {
-        $("uploadProduct").value = activeProductId;
-    }
-
-    selectModule("1");
+async function saveChecklist(){
+ const dossier=activeDossier();if(!dossier)return;
+ const {error}=await supabase.from("ctd_dossiers").update({checklist_state:checklistState,updated_by:currentUser.id}).eq("id",activeDossierId);
+ if(error)throw error;
+ dossier.checklist_state=checklistState;
 }
-
+function checklistItemStatus(code){const s=sectionByCode(code);return s?(checklistState[checklistKey(s.id)]||"Pending"):"Pending";}
+async function setChecklistItemStatus(code,status){
+ const s=sectionByCode(code);if(!s)return;
+ if(status==="Pending")delete checklistState[checklistKey(s.id)];else checklistState[checklistKey(s.id)]=status;
+ try{await saveChecklist();renderSectionWorkspace();updateModuleProgress();updateStats();}
+ catch(e){showToast("Checklist update failed: "+e.message);}
+}
+function populateProductSelectors(){
+ const upload=$("uploadProduct");if(activeProductId)upload.value=activeProductId;
+}
+function populateSections(module){
+ const select=$("uploadSection");select.innerHTML='<option value="">Select section</option>';
+ (sectionsByModule[String(module)]||[]).forEach(s=>select.add(new Option(s.section_code+" — "+s.section_title,s.id)));
+}
+function getModuleCoverage(module){
+ const rows=sectionsByModule[String(module)]||[];
+ if(!rows.length)return 0;
+ const complete=rows.filter(s=>["Yes","N/A"].includes(checklistState[s.id])).length;
+ return Math.round(complete/rows.length*100);
+}
+function updateStats(){
+ const docs=currentProductDocuments();
+ $("documentTotal").textContent=docs.length;
+ $("documentApproved").textContent=docs.filter(d=>d.document_status==="approved").length;
+ $("documentReview").textContent=docs.filter(d=>d.document_status==="in_review").length;
+ $("documentDraft").textContent=docs.filter(d=>["draft","rejected","obsolete"].includes(d.document_status)).length;
+ for(let i=1;i<=5;i++){const p=getModuleCoverage(String(i));$("modulePercent"+i).textContent=p+"%";$("moduleBar"+i).style.width=p+"%";}
+}
+function selectSection(code){
+ activeSectionCode=code;const info=sectionByCode(code);if(!info)return;
+ $("selectedSectionCode").textContent="SECTION "+code;
+ $("selectedSectionTitle").textContent=info.section_title;
+ $("selectedSectionHelp").textContent="Manage files, preparation notes and review status for "+code+" — "+info.section_title+".";
+ $("sectionGuidanceText").textContent=info.guidance_text||"Prepare and verify applicable CTD evidence for this section.";
+ renderSectionWorkspace();
+}
+function renderSectionWorkspace(){
+ const list=$("ctdSectionList"),sections=sectionsByModule[activeModule]||[];
+ const sectionDocs=currentProductDocuments().filter(d=>String(d.ctd_sections?.module_id||d.module)===activeModule&&d.section_id===sectionByCode(activeSectionCode)?.id);
+ const options=status=>["Pending","Yes","No","N/A"].map(v=>'<option value="'+v+'"'+(v===status?" selected":"")+'>'+v+'</option>').join("");
+ list.innerHTML=sections.map(s=>{const selected=s.section_code===activeSectionCode;const level=(modules[activeModule].sections.find(x=>x[0]===s.section_code)||[])[2]||0;return '<div class="ctd-tree-row level-'+level+(selected?" active":"")+'"><button type="button" class="ctd-tree-select" data-section="'+escapeHTML(s.section_code)+'" aria-current="'+(selected?"true":"false")+'"><span class="ctd-tree-code">'+escapeHTML(s.section_code)+'</span><span class="ctd-tree-name">'+escapeHTML(s.section_title)+'</span></button><select class="ctd-tree-status" data-check-code="'+escapeHTML(s.section_code)+'" aria-label="Checklist status for '+escapeHTML(s.section_code)+'" '+(currentRole==="admin"?"":"")+'>'+options(checklistItemStatus(s.section_code))+'</select></div>';}).join("");
+ const done=sections.filter(s=>["Yes","N/A"].includes(checklistState[s.id])).length,missing=sections.filter(s=>checklistState[s.id]==="No").length;
+ $("sectionCount").textContent=sections.length+" entries · "+done+" complete · "+missing+" marked No";
+ $("sectionDocumentCount").textContent=sectionDocs.length;
+ $("sectionApprovedCount").textContent=sectionDocs.filter(d=>d.document_status==="approved").length;
+ const st=checklistItemStatus(activeSectionCode);$("sectionPreparationStatus").textContent=st==="Pending"?(sectionDocs.length?"Documents uploaded":"Pending"):st;
+ $("sectionPreparationStatus").classList.toggle("complete",st==="Yes"||st==="N/A");
+ $("sectionDocumentList").innerHTML=sectionDocs.length?sectionDocs.map(d=>'<div class="section-file-row"><div class="file-icon '+fileIcon(d.mime_type)+'"><i class="fa-solid '+fileIconClass(d.mime_type)+'"></i></div><div class="section-file-info"><strong>'+escapeHTML(d.document_title)+'</strong><span>'+escapeHTML(d.file_name)+' · v'+escapeHTML(d.current_version)+' · '+escapeHTML(statusLabel(d.document_status))+'</span></div><div class="section-file-actions"><button class="action-btn" data-section-action="view" data-id="'+escapeHTML(d.id)+'" title="View details"><i class="fa-regular fa-eye"></i></button><button class="action-btn" data-section-action="preview" data-id="'+escapeHTML(d.id)+'" title="Download / preview"><i class="fa-solid fa-file-arrow-down"></i></button></div></div>').join(""):'<div class="section-empty"><i class="fa-regular fa-folder-open"></i><strong>No documents in this subsection yet</strong><p>Upload the relevant file to start preparing this section.</p></div>';
+}
+function getFilteredDocuments(){
+ const q=$("documentSearch").value.toLowerCase().trim(),status=$("documentStatusFilter").value,type=$("documentTypeFilter").value;
+ return currentModuleDocuments().filter(d=>[d.document_title,d.document_code,d.file_name,d.section_name,d.section].join(" ").toLowerCase().includes(q)&&(!status||statusLabel(d.document_status)===status)&&(!type||String(d.mime_type||"").toUpperCase().includes(type)));
+}
+function renderDocuments(){
+ const filtered=getFilteredDocuments(),pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));currentPage=Math.min(currentPage,pages);
+ const start=(currentPage-1)*PAGE_SIZE,visible=filtered.slice(start,start+PAGE_SIZE);
+ $("documentTableBody").innerHTML="";
+ visible.forEach(d=>{
+  const row=document.createElement("tr");
+  const canReview=currentRole==="admin",canDelete=currentRole==="admin"||d.uploaded_by===currentUser.id;
+  row.innerHTML='<td><div class="document-cell"><div class="file-icon '+fileIcon(d.mime_type)+'"><i class="fa-solid '+fileIconClass(d.mime_type)+'"></i></div><div><span class="document-name">'+escapeHTML(d.document_title)+'</span><span class="document-meta">'+escapeHTML(d.file_name)+'</span></div></div></td><td><strong style="color:var(--ink);font-size:11px;">'+escapeHTML(d.section||"—")+'</strong><span class="document-meta">'+escapeHTML(d.section_name)+'</span></td><td><strong style="font-size:11px;">'+escapeHTML(d.current_version)+'</strong></td><td>'+escapeHTML(d.uploaded_by===currentUser.id?"You":"Workspace member")+'</td><td>'+formatDate(d.created_at)+'</td><td><span class="status '+documentStatusClass(d.document_status)+'">'+escapeHTML(statusLabel(d.document_status))+'</span></td><td><div class="action-group"><button class="action-btn" data-action="view" data-id="'+escapeHTML(d.id)+'" title="View"><i class="fa-regular fa-eye"></i></button>'+(canReview?'<button class="action-btn" data-action="status" data-id="'+escapeHTML(d.id)+'" title="Admin review"><i class="fa-solid fa-clipboard-check"></i></button>':'')+(canDelete?'<button class="action-btn delete" data-action="delete" data-id="'+escapeHTML(d.id)+'" title="Remove"><i class="fa-regular fa-trash-can"></i></button>':'')+'</div></td>';
+  $("documentTableBody").appendChild(row);
+ });
+ $("emptyDocuments").hidden=filtered.length!==0;
+ $("documentCountLabel").textContent=filtered.length+" documents";
+ $("documentShowingText").textContent=filtered.length?"Showing "+(start+1)+"–"+Math.min(start+PAGE_SIZE,filtered.length)+" of "+filtered.length+" documents":"Showing 0 documents";
+ renderPagination(pages);renderSectionWorkspace();updateStats();updateModuleProgress();
+}
+function renderPagination(totalPages){
+ const c=$("documentPagination");c.innerHTML="";
+ const add=(label,page,disabled=false)=>{const b=document.createElement("button");b.className="page-btn";b.textContent=label;b.disabled=disabled;b.addEventListener("click",()=>{currentPage=page;renderDocuments();});c.appendChild(b);};
+ add("‹",Math.max(1,currentPage-1),currentPage===1);
+ for(let p=1;p<=totalPages;p++){const b=document.createElement("button");b.className="page-btn"+(p===currentPage?" active":"");b.textContent=p;b.addEventListener("click",()=>{currentPage=p;renderDocuments();});c.appendChild(b);}
+ add("›",Math.min(totalPages,currentPage+1),currentPage===totalPages);
+}
+function selectModule(module){
+ activeModule=String(module);currentPage=1;
+ document.querySelectorAll(".module-tab").forEach(t=>t.classList.toggle("active",t.dataset.module===activeModule));
+ const info=modules[activeModule];$("selectedModuleTitle").textContent=info.title;$("selectedModuleDescription").textContent=info.description;$("moduleIcon").className="fa-solid "+info.icon;
+ if(!sectionsByModule[activeModule]?.some(s=>s.section_code===activeSectionCode))activeSectionCode=sectionsByModule[activeModule]?.[0]?.section_code||"";
+ updateModuleProgress();selectSection(activeSectionCode);renderDocuments();populateSections(activeModule);
+}
+function updateModuleProgress(){const p=getModuleCoverage(activeModule);$("selectedModulePercent").textContent=p+"%";$("selectedModuleBar").style.width=p+"%";}
+function openModal(id){$(id).classList.add("show");}
+function closeModal(id){$(id).classList.remove("show");if(id==="detailModal"){$("pdfPreviewContainer").hidden=true;$("pdfPreviewContainer").innerHTML="";$("documentDetails").hidden=false;}}
+function openUploadModal(){
+ if(!products.length){showToast("Add a product in Product Management before uploading a dossier document.");return;}
+ $("uploadForm").reset();selectedFile=null;$("uploadProduct").value=activeProductId;$("uploadModule").value=activeModule;
+ $("fileDropTitle").textContent="Drag and drop your file here";populateSections(activeModule);if(activeSectionCode)$("uploadSection").value=sectionByCode(activeSectionCode)?.id||"";openModal("uploadModal");
+}
+function setSelectedFile(file){if(!file)return;const ext=/\.(pdf|doc|docx|xls|xlsx|txt|png|jpg|jpeg)$/i;if(!ext.test(file.name)){showToast("Unsupported file type. Select PDF, DOC, DOCX, XLS, XLSX, TXT, PNG or JPG.");return;}if(file.size>50*1024*1024){showToast("File exceeds the 50 MB Storage limit.");return;}selectedFile=file;$("fileDropTitle").textContent=file.name;}
+async function saveDocument(form){
+ const pId=$("uploadProduct").value,p=products.find(x=>x.id===pId),module=$("uploadModule").value,sectionId=$("uploadSection").value;
+ if(!p||!sectionId)throw new Error("Choose a product and CTD section.");
+ const title=$("documentTitle").value.trim();if(!title)throw new Error("Enter a document title.");
+ if(!selectedFile)throw new Error("Choose a document file.");
+ const ext=(selectedFile.name.split(".").pop()||"").toLowerCase();
+ const storagePath=currentUser.id+"/"+pId+"/"+crypto.randomUUID()+"-"+selectedFile.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+ const {error:uploadError}=await supabase.storage.from(BUCKET).upload(storagePath,selectedFile,{contentType:selectedFile.type||"application/octet-stream",upsert:false});
+ if(uploadError)throw uploadError;
+ let dossier=dossiers.find(x=>x.product_id===pId);
+ if(!dossier){
+  const {data,error}=await supabase.from("ctd_dossiers").insert({product_id:pId,dossier_title:productName(p)+" — CTD Dossier",dossier_type:"initial",target_market:p.target_market||null,regulatory_authority:p.regulatory_authority||null,owner_id:(currentRole==="admin"?currentUser.id:(p.product_owner||currentUser.id)),created_by:currentUser.id}).select("*").single();
+  if(error){await supabase.storage.from(BUCKET).remove([storagePath]);throw error;}dossier=data;dossiers.push(data);
+ }
+ const mime=selectedFile.type||({pdf:"application/pdf",doc:"application/msword",docx:"application/vnd.openxmlformats-officedocument.wordprocessingml.document",xls:"application/vnd.ms-excel",xlsx:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",txt:"text/plain",png:"image/png",jpg:"image/jpeg",jpeg:"image/jpeg"})[ext]||null;
+ const payload={dossier_id:dossier.id,section_id:sectionId,document_code:$("documentCode").value.trim()||null,document_title:title,document_type:ext||null,current_version:1,document_status:dbStatus($("initialStatus").value),storage_bucket:BUCKET,storage_path:storagePath,mime_type:mime,file_size_bytes:selectedFile.size,notes:$("documentNotes").value.trim()||null,uploaded_by:currentUser.id};
+ const {data:doc,error:docError}=await supabase.from("dossier_documents").insert(payload).select("*,ctd_sections(section_code,section_title,module_id)").single();
+ if(docError){await supabase.storage.from(BUCKET).remove([storagePath]);throw docError;}
+ const {error:versionError}=await supabase.from("document_versions").insert({document_id:doc.id,version_number:1,storage_bucket:BUCKET,storage_path:storagePath,mime_type:mime,file_size_bytes:selectedFile.size,change_summary:"Initial upload",uploaded_by:currentUser.id});
+ if(versionError){await supabase.from("dossier_documents").delete().eq("id",doc.id);await supabase.storage.from(BUCKET).remove([storagePath]);throw versionError;}
+ activeDossierId=dossier.id;activeProductId=pId;documents.unshift({...doc,ctd_sections:doc.ctd_sections});
+}
+async function openDocumentDetail(id){
+ const d=documents.find(x=>x.id===id);if(!d)return;detailDocumentId=id;$("detailTitle").textContent=d.document_title;
+ const {data:versions,error}=await supabase.from("document_versions").select("*").eq("document_id",id).order("version_number",{ascending:false});if(error)throw error;
+ $("pdfPreviewContainer").hidden=true;$("pdfPreviewContainer").innerHTML="";$("documentDetails").hidden=false;
+ const fields=[["CTD Section",d.section+" — "+d.section_name],["Document Code",d.document_code||"Not specified"],["Current Version",d.current_version],["File",d.file_name],["File Size",d.file_size_bytes?((d.file_size_bytes/1048576).toFixed(2)+" MB"):"—"],["Uploaded By",d.uploaded_by===currentUser.id?"You":"Workspace member"],["Uploaded",formatDate(d.created_at)],["Review Status",statusLabel(d.document_status)],["Notes",d.notes||"No notes"]];
+ $("documentDetails").innerHTML='<div class="form-grid">'+fields.map(([label,value])=>'<div class="detail-box"><span>'+escapeHTML(label)+'</span><strong>'+escapeHTML(value)+'</strong></div>').join("")+'</div><div class="form-section-title">Version History</div>'+((versions||[]).map(v=>'<div class="detail-box"><strong>Version '+escapeHTML(v.version_number)+'</strong><span>'+escapeHTML(v.change_summary||"Uploaded")+' · '+formatDate(v.created_at)+'</span></div>').join("")||'<p>No version history found.</p>');
+ const {data:latest,error:latestError}=await supabase.from("document_versions").select("storage_bucket,storage_path").eq("document_id",id).order("version_number",{ascending:false}).limit(1).maybeSingle();if(latestError)throw latestError;
+ $("downloadDocument").disabled=!latest;$("downloadDocument").dataset.path=latest?.storage_path||"";$("downloadDocument").dataset.bucket=latest?.storage_bucket||BUCKET;$("downloadDocument").style.opacity=latest?"1":".45";
+ openModal("detailModal");
+}
+async function downloadDocument(id){
+ const d=documents.find(x=>x.id===id);if(!d)throw new Error("Document not found.");
+ const {data,error}=await supabase.storage.from(BUCKET).createSignedUrl(d.storage_path,120);if(error)throw error;
+ const a=document.createElement("a");a.href=data.signedUrl;a.target="_blank";a.rel="noopener";a.click();
+}
+async function reviewDocument(id){
+ if(currentRole!=="admin"){showToast("Only Admin can review and approve CTD documents.");return;}
+ const d=documents.find(x=>x.id===id);if(!d)return;
+ const action=prompt("Choose review decision:\n1. Approve\n2. Reject\n3. Return to Draft\n\nEnter 1, 2 or 3:");
+ if(action===null)return;const status=({"1":"approved","2":"rejected","3":"draft"})[action];if(!status){showToast("Invalid selection.");return;}
+ const reviewNote=prompt("Add an Admin review note (required):");if(!reviewNote||!reviewNote.trim()){showToast("A review note is required.");return;}
+ const {error}=await supabase.from("dossier_documents").update({document_status:status,reviewed_by:currentUser.id,reviewed_at:new Date().toISOString(),notes:[d.notes, "Admin review: "+reviewNote.trim()].filter(Boolean).join("\\n")}).eq("id",id);
+ if(error)throw error;await loadDocuments();renderDocuments();showToast("Document review status updated.");
+}
+async function confirmDocumentDelete(id){
+ const d=documents.find(x=>x.id===id);if(!d)return;
+ if(currentRole!=="admin"&&d.uploaded_by!==currentUser.id){showToast("You can only remove documents that you uploaded.");return;}
+ deleteDocumentId=id;$("deleteMessage").textContent="Remove “"+d.document_title+"” and its stored file from this dossier?";openModal("deleteModal");
+}
+async function removeDocument(){
+ const d=documents.find(x=>x.id===deleteDocumentId);if(!d)return;
+ const {error}=await supabase.from("dossier_documents").delete().eq("id",d.id);if(error)throw error;
+ const {error:storageError}=await supabase.storage.from(BUCKET).remove([d.storage_path]);if(storageError)console.warn("Storage cleanup failed:",storageError);
+ deleteDocumentId=null;closeModal("deleteModal");await loadDocuments();renderDocuments();showToast("Document removed.");
+}
+function renderPagination(totalPages){
+ const c=$("documentPagination");c.innerHTML="";const add=(label,page,disabled=false)=>{const b=document.createElement("button");b.className="page-btn";b.textContent=label;b.disabled=disabled;b.addEventListener("click",()=>{currentPage=page;renderDocuments();});c.appendChild(b);};
+ add("‹",Math.max(1,currentPage-1),currentPage===1);for(let p=1;p<=totalPages;p++){const b=document.createElement("button");b.className="page-btn"+(p===currentPage?" active":"");b.textContent=p;b.addEventListener("click",()=>{currentPage=p;renderDocuments();});c.appendChild(b);}add("›",Math.min(totalPages,currentPage+1),currentPage===totalPages);
+}
+function bindEvents(){
+ $("ctdSectionList").addEventListener("change",async e=>{const s=e.target.closest("[data-check-code]");if(s)await setChecklistItemStatus(s.dataset.checkCode,s.value);});
+ $("ctdSectionList").addEventListener("click",e=>{const b=e.target.closest("[data-section]");if(b){currentPage=1;selectSection(b.dataset.section);renderDocuments();}});
+ $("sectionDocumentList").addEventListener("click",async e=>{const b=e.target.closest("[data-section-action]");if(!b)return;try{if(b.dataset.sectionAction==="view")await openDocumentDetail(b.dataset.id);if(b.dataset.sectionAction==="preview")await downloadDocument(b.dataset.id);}catch(err){console.error(err);showToast(err.message||"Document action failed.");}});
+ $("uploadSectionDocument").addEventListener("click",openUploadModal);
+ $("documentTableBody").addEventListener("click",async e=>{const b=e.target.closest("button[data-action]");if(!b)return;try{if(b.dataset.action==="view")await openDocumentDetail(b.dataset.id);if(b.dataset.action==="status")await reviewDocument(b.dataset.id);if(b.dataset.action==="delete")await confirmDocumentDelete(b.dataset.id);}catch(err){console.error(err);showToast(err.message||"Action failed.");}});
+ $("confirmDelete").addEventListener("click",async()=>{try{await removeDocument();}catch(err){console.error(err);showToast(err.message||"Delete failed.");}});
+ $("downloadDocument").addEventListener("click",async()=>{try{await downloadDocument(detailDocumentId);}catch(err){console.error(err);showToast(err.message||"Download failed.");}});
+ $("exportDocuments").addEventListener("click",()=>{const rows=currentProductDocuments();if(!rows.length){showToast("No dossier documents to export.");return;}const cols=[["Document Title","document_title"],["Document Code","document_code"],["Section","section"],["Version","current_version"],["Status","document_status"],["File Size (bytes)","file_size_bytes"]];const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';const csv=[cols.map(c=>q(c[0])).join(","),...rows.map(r=>cols.map(c=>q(c[1]==="section"?r.section:r[c[1]])).join(","))].join("\r\n");const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="regutrack-ctd-document-register.csv";a.click();URL.revokeObjectURL(url);});
+ ["documentSearch","documentStatusFilter","documentTypeFilter"].forEach(id=>$(id).addEventListener(id==="documentSearch"?"input":"change",()=>{currentPage=1;renderDocuments();}));
+ $("clearDocumentFilters").addEventListener("click",()=>{$("documentSearch").value="";$("documentStatusFilter").value="";$("documentTypeFilter").value="";currentPage=1;renderDocuments();});
+ $("globalSearch").addEventListener("input",e=>{$("documentSearch").value=e.target.value;currentPage=1;renderDocuments();});
+ $("productSelector").addEventListener("change",async e=>{activeProductId=e.target.value;currentPage=1;try{await ensureDossier();await loadDocuments();await loadChecklist();selectModule("1");renderDocuments();}catch(err){console.error(err);showToast(err.message||"Unable to load product dossier.");}});
+ $("moduleTabs").addEventListener("click",e=>{const t=e.target.closest(".module-tab");if(t)selectModule(t.dataset.module);});
+ $("uploadDocument").addEventListener("click",openUploadModal);$("emptyUploadButton").addEventListener("click",openUploadModal);
+ $("uploadModule").addEventListener("change",e=>populateSections(e.target.value));
+ $("documentFile").addEventListener("change",e=>setSelectedFile(e.target.files[0]));
+ const drop=$("fileDrop");["dragenter","dragover"].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.add("dragover");}));["dragleave","drop"].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.remove("dragover");}));drop.addEventListener("drop",e=>setSelectedFile(e.dataTransfer.files[0]));
+ $("closeUploadModal").addEventListener("click",()=>closeModal("uploadModal"));$("cancelUpload").addEventListener("click",()=>closeModal("uploadModal"));$("closeDetailModal").addEventListener("click",()=>closeModal("detailModal"));$("closeDetailButton").addEventListener("click",()=>closeModal("detailModal"));$("cancelDelete").addEventListener("click",()=>closeModal("deleteModal"));
+ document.querySelectorAll(".modal-backdrop").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)closeModal(m.id);}));
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal-backdrop.show").forEach(m=>closeModal(m.id));});
+ $("profileButton").addEventListener("click",e=>{e.stopPropagation();$("profileDropdown").classList.toggle("show");});document.addEventListener("click",e=>{if(!$("profileButton").contains(e.target))$("profileDropdown").classList.remove("show");});
+ $("notificationButton").addEventListener("click",()=>showToast(currentProductDocuments().filter(d=>d.document_status==="in_review").length+" document(s) are currently under review."));
+}
+async function initialize(){
+ try{
+  await requireSession();await loadProducts();await loadSections();bindEvents();
+  if(activeProductId){await ensureDossier();await loadDocuments();await loadChecklist();}
+  populateProductSelectors();populateSections(activeModule);
+  if(activeModule)selectModule("1");renderDocuments();
+  $("uploadForm").addEventListener("submit",async e=>{e.preventDefault();const button=$("uploadForm").querySelector('button[type="submit"]');button.disabled=true;try{await saveDocument();closeModal("uploadModal");selectedFile=null;await loadDocuments();renderDocuments();showToast("Document uploaded securely to the CTD dossier.");}catch(err){console.error(err);showToast(err.message||"Upload failed.");}finally{button.disabled=false;}});
+ }catch(error){console.error("CTD initialization failed:",error);showToast("CTD workspace could not load: "+error.message);$("documentTableBody").innerHTML='<tr><td colspan="7">Unable to load CTD data. Check your connection and access permissions, then refresh.</td></tr>';}
+}
 initialize();
+
+
 </script>
 <script type="module" src="js/auth-guard.js"></script>
 </body>

@@ -163,9 +163,35 @@ function viewDetails(id){const x=assessments.find(a=>a.id===id);if(!x)return;det
 function openReview(id){selectedId=id;$('reviewModal').classList.add('show');$('reviewDate').value=new Date().toISOString().slice(0,10)}
 function saveDecision(){const value=$('decision').value,reviewer=$('reviewerName').value.trim(),rationale=$('decisionRationale').value.trim();if(!value||!reviewer||!rationale){showToast('Complete the decision, reviewer and rationale fields.');return}const x=assessments.find(a=>a.id===selectedId);if(!x)return;x.decision={value,reviewer,date:$('reviewDate').value||new Date().toISOString().slice(0,10),rationale,action:$('nextAction').value.trim()};x.status=value.startsWith('Applicable — action')?'Reviewed — action required':value.startsWith('Not applicable')?'Reviewed — no action identified':'Under assessment';x.updatedAt=new Date().toISOString();write();render();$('reviewModal').classList.remove('show');$('detailModal').classList.remove('show');$('reviewModal').querySelectorAll('input,textarea').forEach(el=>el.value='');$('decision').value='';showToast('RA decision recorded in this browser.')}
 function exportCSV(){const rows=[['ID','Title','Authority','Category','Publication date','Effective date','Potential impact','Status','Products','CTD sections','Summary','Suggested action','Source','Reviewer decision'],...filtered().map(x=>[x.id,x.title,x.authority,x.type,x.publicationDate,x.effectiveDate,x.impact,x.status,x.products.join('; '),x.sections.join('; '),x.summary,x.action,x.reference,x.decision?.value||''])];const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='regutrack-impact-assessments.csv';a.click();URL.revokeObjectURL(url)}
-$('assessmentForm').addEventListener('submit',saveAssessment);$('resetFormBtn').addEventListener('click',()=>setTimeout(()=>{$('impactLevel').value='Medium'},0));$('tableSearch').addEventListener('input',render);$('levelFilter').addEventListener('change',render);$('statusFilter').addEventListener('change',render);$('exportBtn').addEventListener('click',exportCSV);$('newAssessmentBtn').addEventListener('click',()=>$('builderPanel').scrollIntoView({behavior:'smooth',block:'start'}));$('saveDecisionBtn').addEventListener('click',saveDecision);$('reviewBtn').addEventListener('click',()=>{$('detailModal').classList.remove('show');openReview(detailId)});$('menuToggle').addEventListener('click',()=>$('sidebar').classList.toggle('open'));$('notificationButton').addEventListener('click',()=>showToast(assessments.filter(x=>x.status==='Pending RA review').length+' assessments awaiting RA decision.'));
+$('assessmentForm').addEventListener('submit',saveAssessment);$('resetFormBtn').addEventListener('click',()=>setTimeout(()=>{$('impactLevel').value='Medium'},0));$('tableSearch').addEventListener('input',render);$('levelFilter').addEventListener('change',render);$('statusFilter').addEventListener('change',render);$('exportBtn').addEventListener('click',exportCSV);$('newAssessmentBtn').addEventListener('click',()=>$('builderPanel').scrollIntoView({behavior:'smooth',block:'start'}));$('saveDecisionBtn').addEventListener('click',saveDecision);$('reviewBtn').addEventListener('click',()=>{$('detailModal').classList.remove('show');openReview(detailId)});$('notificationButton').addEventListener('click',()=>showToast(assessments.filter(x=>x.status==='Pending RA review').length+' assessments awaiting RA decision.'));
 $('profileButton').addEventListener('click',e=>{if(e.target.closest('button'))return;$('profileDropdown').classList.toggle('show')});document.addEventListener('click',e=>{if(!e.target.closest('#profileButton'))$('profileDropdown').classList.remove('show');const b=e.target.closest('[data-action]');if(b){const id=b.dataset.id;if(b.dataset.action==='view')viewDetails(id);if(b.dataset.action==='review')openReview(id)}if(e.target.closest('[data-close]'))e.target.closest('.modal-backdrop').classList.remove('show')});document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')}));
 render();setHandoff();
+
+<script>
+(() => {
+  const sidebar = document.getElementById("sidebar");
+  const menuButton = document.getElementById("menuToggle");
+  if (!sidebar || !menuButton) return;
+  menuButton.setAttribute("aria-expanded", "false");
+  menuButton.addEventListener("click", () => {
+    const isOpen = sidebar.classList.toggle("open");
+    menuButton.setAttribute("aria-expanded", String(isOpen));
+  });
+  document.addEventListener("click", event => {
+    if (window.innerWidth <= 900 && sidebar.classList.contains("open") &&
+        !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
+      sidebar.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+    }
+  });
+  sidebar.querySelectorAll(".nav-link[href]").forEach(link => {
+    link.addEventListener("click", () => {
+      sidebar.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+    });
+  });
+})();
+</script>
 </script>
 <script type="module" src="js/auth-guard.js"></script>
 </body>

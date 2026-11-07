@@ -256,9 +256,10 @@ $('exportBtn').addEventListener('click',exportCSV);$('addUpdateBtn').addEventLis
 $('notificationButton').addEventListener('click',()=>showToast('You have '+updates.filter(x=>x.status==='Pending review').length+' updates awaiting RA review.'));
 $('profileButton').addEventListener('click',e=>{if(e.target.closest('button'))return;$('profileDropdown').classList.toggle('show')});
 document.addEventListener('click',e=>{if(!e.target.closest('#profileButton'))$('profileDropdown').classList.remove('show')});
-$('menuToggle').addEventListener('click',()=>$('sidebar').classList.toggle('open'));
+
 $('detailModal').addEventListener('click',e=>{if(e.target===$('detailModal'))$('detailModal').classList.remove('show')});
 loadData();
+
 </script>
 <script type="module" src="js/auth-guard.js"></script>
 </body>
