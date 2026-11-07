@@ -57,8 +57,10 @@ if (sessionError || !sessionData.session) {
     });
 
     // Replace prototype sign-out handlers with real Supabase sign-out.
+    let hasExistingSignOut = false;
     document.querySelectorAll("button, a").forEach(el => {
       if (/^(sign out|log out|logout)$/i.test(el.textContent.trim())) {
+        hasExistingSignOut = true;
         el.removeAttribute("onclick");
         el.addEventListener("click", event => {
           event.preventDefault();
@@ -67,10 +69,10 @@ if (sessionError || !sessionData.session) {
       }
     });
 
-    // Ensure every protected page has an available sign-out control.
+    // Add a visible sign-out control only if the page has no existing one.
     const topbar = document.querySelector(".topbar");
     const actionArea = topbar?.querySelector(".top-right") || topbar;
-    if (actionArea && !actionArea.querySelector("[data-regutrack-signout]")) {
+    if (!hasExistingSignOut && actionArea && !actionArea.querySelector("[data-regutrack-signout]")) {
       const button = document.createElement("button");
       button.type = "button";
       button.textContent = "Sign out";
