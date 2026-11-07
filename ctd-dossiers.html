@@ -2134,7 +2134,7 @@ async function ensureDossier(){
   const {data:created,error:createError}=await supabase.from("ctd_dossiers").insert({
    product_id:activeProductId,dossier_title:productName(p)+" — CTD Dossier",
    dossier_type:"initial",target_market:p.target_market||null,
-   regulatory_authority:p.regulatory_authority||null,owner_id:currentUser.id,created_by:currentUser.id
+   regulatory_authority:p.regulatory_authority||null,owner_id:(currentRole==="admin"?(p.product_owner||p.created_by):currentUser.id),created_by:currentUser.id
   }).select("*").single();
   if(createError)throw createError;
   dossier=created;dossiers=[created];
@@ -2149,18 +2149,16 @@ async function loadDocuments(){
 }
 async function loadChecklist(){
  checklistState={};
- const {data,error}=await supabase.from("ctd_dossiers").select("id,notes").eq("id",activeDossierId).maybeSingle();
+ const {data,error}=await supabase.from("ctd_dossiers").select("id,checklist_state").eq("id",activeDossierId).maybeSingle();
  if(error)throw error;
  // Checklist preparation state is stored in the dossier notes JSON envelope to avoid a parallel browser-only store.
- try{const raw=data?.notes?JSON.parse(data.notes):{};checklistState=raw.ctd_checklist||{};}catch(_){checklistState={};}
+ checklistState=data?.checklist_state&&typeof data.checklist_state==="object"?data.checklist_state:{};
 }
 async function saveChecklist(){
  const dossier=activeDossier();if(!dossier)return;
- let notes={};try{notes=dossier.notes?JSON.parse(dossier.notes):{};}catch(_){notes={legacy_notes:dossier.notes};}
- notes.ctd_checklist=checklistState;
- const {error}=await supabase.from("ctd_dossiers").update({notes:JSON.stringify(notes),updated_by:currentUser.id}).eq("id",activeDossierId);
+ const {error}=await supabase.from("ctd_dossiers").update({checklist_state:checklistState,updated_by:currentUser.id}).eq("id",activeDossierId);
  if(error)throw error;
- dossier.notes=JSON.stringify(notes);
+ dossier.checklist_state=checklistState;
 }
 function checklistItemStatus(code){const s=sectionByCode(code);return s?(checklistState[checklistKey(s.id)]||"Pending"):"Pending";}
 async function setChecklistItemStatus(code,status){
@@ -2295,7 +2293,8 @@ async function reviewDocument(id){
  const d=documents.find(x=>x.id===id);if(!d)return;
  const action=prompt("Choose review decision:\n1. Approve\n2. Reject\n3. Return to Draft\n\nEnter 1, 2 or 3:");
  if(action===null)return;const status=({"1":"approved","2":"rejected","3":"draft"})[action];if(!status){showToast("Invalid selection.");return;}
- const {error}=await supabase.from("dossier_documents").update({document_status:status,reviewed_by:currentUser.id,reviewed_at:new Date().toISOString()}).eq("id",id);
+ const reviewNote=prompt("Add an Admin review note (required):");if(!reviewNote||!reviewNote.trim()){showToast("A review note is required.");return;}
+ const {error}=await supabase.from("dossier_documents").update({document_status:status,reviewed_by:currentUser.id,reviewed_at:new Date().toISOString(),notes:[d.notes, "Admin review: "+reviewNote.trim()].filter(Boolean).join("\\n")}).eq("id",id);
  if(error)throw error;await loadDocuments();renderDocuments();showToast("Document review status updated.");
 }
 async function confirmDocumentDelete(id){
