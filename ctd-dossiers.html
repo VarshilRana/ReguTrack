@@ -1486,6 +1486,30 @@ button{line-height:1.4}
  .ctd-section-list .ctd-check-status{display:block!important;position:static!important;float:none!important;width:100%!important;max-width:100%!important;min-width:0!important;height:42px!important;margin:0!important;box-sizing:border-box!important;font-size:14px!important;line-height:1.3!important}
 }
 
+
+
+/* CTD TREE NAVIGATOR — replace cramped fixed-width sidebar with a full-width hierarchical checklist */
+.section-workspace{display:none!important}
+.ctd-tree-workspace{display:block!important;width:100%!important;min-width:0!important;margin:0 0 22px!important}
+.ctd-tree-panel{width:100%;min-width:0;box-sizing:border-box;background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:0 3px 14px rgba(30,70,45,.035)}
+.ctd-tree-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:16px;margin-bottom:12px;border-bottom:1px solid var(--border)}
+.ctd-tree-heading h3{font:800 19px Manrope,sans-serif;color:var(--ink)}
+.ctd-tree-heading p{font-size:13px;color:var(--muted);margin-top:5px}
+.ctd-tree-legend{display:flex;gap:10px 18px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.ctd-tree-legend b{color:var(--ink)}
+.ctd-section-tree{display:flex;flex-direction:column;gap:5px;width:100%;min-width:0;max-height:560px;overflow:auto;padding:2px 4px 2px 0;box-sizing:border-box}
+.ctd-tree-row{display:grid;grid-template-columns:minmax(0,1fr) 150px;align-items:center;gap:14px;width:100%;min-width:0;padding:8px 10px;border:1px solid transparent;border-radius:9px;box-sizing:border-box}
+.ctd-tree-row:hover{background:#f7fbf8}
+.ctd-tree-row.active{background:#eaf6f0;border-color:#cfe8d8}
+.ctd-tree-row.level-1{padding-left:30px}.ctd-tree-row.level-2{padding-left:52px}.ctd-tree-row.level-3{padding-left:74px}.ctd-tree-row.level-4{padding-left:96px}
+.ctd-tree-select{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:start;gap:12px;width:100%;min-width:0;padding:7px 8px;border:0;border-radius:7px;background:transparent;text-align:left;color:var(--ink);cursor:pointer;box-sizing:border-box}
+.ctd-tree-code{display:block;min-width:92px;color:var(--primary-dark);font-size:13px;font-weight:800;line-height:1.55;white-space:nowrap}
+.ctd-tree-name{display:block;min-width:0;font-size:14px;font-weight:650;line-height:1.55;white-space:normal;overflow-wrap:break-word;word-break:normal}
+.ctd-tree-status{display:block;width:100%;min-width:0;height:40px;padding:0 10px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:13px;color:var(--ink);box-sizing:border-box}
+.ctd-tree-row.active .ctd-tree-status{border-color:#b9ddc8}
+@media(max-width:760px){.ctd-tree-panel{padding:14px}.ctd-tree-heading{display:block}.ctd-tree-legend{margin-top:12px;gap:8px 13px}.ctd-section-tree{max-height:62vh}.ctd-tree-row{grid-template-columns:minmax(0,1fr) 112px;gap:8px;padding:8px 4px}.ctd-tree-row.level-1,.ctd-tree-row.level-2,.ctd-tree-row.level-3,.ctd-tree-row.level-4{padding-left:10px}.ctd-tree-select{grid-template-columns:68px minmax(0,1fr);gap:7px;padding:6px 3px}.ctd-tree-code{min-width:0;font-size:12px}.ctd-tree-name{font-size:13px;line-height:1.45}.ctd-tree-status{height:38px;font-size:12px;padding:0 6px}}
+@media(max-width:390px){.ctd-tree-row{grid-template-columns:minmax(0,1fr) 98px;gap:6px}.ctd-tree-select{grid-template-columns:60px minmax(0,1fr);gap:6px}.ctd-tree-name{font-size:12px}.ctd-tree-code{font-size:11px}.ctd-tree-status{font-size:11px}}
+
 </style>
 </head>
 
@@ -1766,15 +1790,23 @@ button{line-height:1.4}
             </div>
         </section>
 
-        <!-- CTD SECTION WORKSPACE -->
-        <section class="section-workspace">
-            <aside class="section-sidebar">
-                <div class="section-sidebar-head">
-                    <div><h3>CTD Sections</h3><p id="sectionCount">Select a subsection</p></div>
-                    <i class="fa-solid fa-list-check"></i>
+        <!-- CTD SECTION WORKSPACE — full-width tree navigation -->
+        <section class="ctd-tree-workspace">
+            <div class="ctd-tree-panel">
+                <div class="ctd-tree-heading">
+                    <div>
+                        <h3>CTD Section Navigator</h3>
+                        <p id="sectionCount">Select a subsection</p>
+                    </div>
+                    <div class="ctd-tree-legend">
+                        <span><b>Yes</b> Verified</span>
+                        <span><b>No</b> Missing / deficient</span>
+                        <span><b>N/A</b> Justified non-applicability</span>
+                        <span><b>Pending</b> Not assessed</span>
+                    </div>
                 </div>
-                <div class="ctd-checklist-legend"><span><strong>Yes</strong> Verified</span><span><strong>No</strong> Missing / deficient</span><span><strong>N/A</strong> Justified non-applicability</span><span><strong>Pending</strong> Not assessed</span></div><div id="ctdSectionList" class="ctd-section-list"></div>
-            </aside>
+                <div id="ctdSectionList" class="ctd-section-tree"></div>
+            </div>
             <div class="section-workspace-main">
                 <div class="section-workspace-head">
                     <div><span class="section-kicker" id="selectedSectionCode">SECTION 1.0</span><h3 id="selectedSectionTitle">Cover Letter</h3><p id="selectedSectionHelp">Manage the documents required for this CTD subsection.</p></div>
@@ -2275,7 +2307,7 @@ function selectSection(code) {
     $("selectedSectionHelp").textContent = "Manage files, preparation notes and review status for " + code + " — " + info[1] + ".";
     $("sectionGuidanceText").textContent = getSectionGuidance(code, info[1]);
     renderSectionWorkspace();
-    document.querySelectorAll(".ctd-section-item").forEach(button => button.classList.toggle("active", button.dataset.section === code));
+    document.querySelectorAll(".ctd-tree-row").forEach(row => row.classList.toggle("active", !!row.querySelector("[data-section]") && row.querySelector("[data-section]").dataset.section === code));
 }
 function getSectionGuidance(code, name) {
     return "Prepare and quality-check the document(s) applicable to " + code + " — " + name + ". Mark Yes only when present and verified, No when required but missing or deficient, and N/A only with a documented justification. Applicability depends on product, application type and target authority; this checklist is a preparation aid, not an official completeness determination.";
@@ -2303,8 +2335,8 @@ function renderSectionWorkspace() {
     const sections = modules[activeModule].sections, state = loadChecklistState();
     const options = status => ["Pending","Yes","No","N/A"].map(value => '<option value="' + value + '"' + (status===value?' selected':'') + '>' + value + '</option>').join("");
     list.innerHTML = sections.map(([code,name,level]) => {
-        const count = currentProductDocuments().filter(doc => String(doc.module) === activeModule && doc.section === code).length;
-        return '<div class="ctd-checklist-row level-' + (level||0) + '"><button type="button" class="ctd-section-item ' + (code===activeSectionCode?'active':'') + '" data-section="' + escapeHTML(code) + '"><span class="ctd-section-code">' + escapeHTML(code) + '</span><span class="ctd-section-name">' + escapeHTML(name) + '</span><span class="ctd-section-count">' + count + ' files</span></button><select class="ctd-check-status" data-check-code="' + escapeHTML(code) + '" aria-label="Checklist status for ' + escapeHTML(code) + '">' + options(checklistItemStatus(code)) + '</select></div>';
+        const selected = code === activeSectionCode;
+        return '<div class="ctd-tree-row level-' + (level||0) + (selected?' active':'') + '"><button type="button" class="ctd-tree-select" data-section="' + escapeHTML(code) + '" aria-current="' + (selected?'true':'false') + '"><span class="ctd-tree-code">' + escapeHTML(code) + '</span><span class="ctd-tree-name">' + escapeHTML(name) + '</span></button><select class="ctd-tree-status" data-check-code="' + escapeHTML(code) + '" aria-label="Checklist status for ' + escapeHTML(code) + '">' + options(checklistItemStatus(code)) + '</select></div>';
     }).join("");
     const done = sections.filter(([code]) => ["Yes","N/A"].includes(state[activeModule + ":" + code])).length;
     const missing = sections.filter(([code]) => state[activeModule + ":" + code] === "No").length;
