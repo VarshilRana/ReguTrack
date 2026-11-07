@@ -15,22 +15,47 @@ function roleCaption(roles) {
   if (roles.includes("reviewer")) return "Reviewer";
   return "ReguTrack member";
 }
-function renderRoleNavigation(roles) {
+function applySharedShellStyles() {
+  if (document.getElementById("regutrack-shell-style")) return;
+  const style = document.createElement("style");
+  style.id = "regutrack-shell-style";
+  style.textContent = `
+    :root{--regutrack-sidebar-width:255px}
+    .sidebar.regutrack-sidebar{width:var(--regutrack-sidebar-width)!important;height:100dvh!important;position:fixed!important;inset:0 auto 0 0!important;z-index:1000!important;display:flex!important;flex-direction:column!important;background:#fff!important;border-right:1px solid #e8eee9!important;box-sizing:border-box!important;transition:transform .25s ease!important}
+    .sidebar.regutrack-sidebar .sidebar-scroll{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain}
+    .sidebar.regutrack-sidebar .sidebar-bottom{flex:0 0 auto!important}
+    .main{margin-left:var(--regutrack-sidebar-width)!important;min-width:0!important;min-height:100vh!important}
+    .topbar{position:sticky;top:0;z-index:900!important}
+    .regutrack-menu-toggle{display:none!important}
+    @media(max-width:900px){.sidebar.regutrack-sidebar{transform:translateX(-105%)!important;box-shadow:none!important}.sidebar.regutrack-sidebar.open{transform:translateX(0)!important;box-shadow:16px 0 40px rgba(16,45,30,.18)!important}.main{margin-left:0!important;width:100%!important}.regutrack-menu-toggle{display:grid!important;place-items:center;width:40px;height:40px;flex:0 0 40px;border:1px solid #e8eee9;border-radius:10px;background:#fff;color:#16845b;cursor:pointer}}
+  `;
+  document.head.appendChild(style);
+}
+function normalizePageShell(roles) {
   const isAdmin = roles.includes("admin");
   const sidebar = document.querySelector(".sidebar");
-  if (!sidebar) return;
+  const topbar = document.querySelector(".topbar");
+  if (!sidebar || !topbar) return;
 
-  // Normalize legacy page-specific sidebar markup into one shared structure.
-  const brandSubtitle = sidebar.querySelector(".brand-subtitle, .brand small");
-  if (brandSubtitle) {
-    brandSubtitle.className = "brand-subtitle";
-    brandSubtitle.textContent = isAdmin ? "ADMINISTRATION" : "REGULATORY INTELLIGENCE";
+  const brand = sidebar.querySelector(".brand");
+  if (brand) {
+    const mark = brand.querySelector(".brand-mark, .brand-icon");
+    if (mark) mark.className = "brand-mark";
+    let subtitle = brand.querySelector(".brand-subtitle, small");
+    if (!subtitle) {
+      subtitle = document.createElement("div");
+      brand.querySelector(".brand-name")?.parentElement.appendChild(subtitle);
+    }
+    if (subtitle) {
+      subtitle.className = "brand-subtitle";
+      subtitle.textContent = isAdmin ? "ADMINISTRATION" : "REGULATORY INTELLIGENCE";
+    }
   }
+  sidebar.classList.add("regutrack-sidebar");
 
   let nav = sidebar.querySelector(".sidebar-scroll, .nav");
   if (!nav) {
     nav = document.createElement("div");
-    nav.className = "sidebar-scroll";
     sidebar.insertBefore(nav, sidebar.querySelector(".sidebar-bottom"));
   }
   nav.className = "sidebar-scroll";
@@ -38,129 +63,54 @@ function renderRoleNavigation(roles) {
 
   const groups = isAdmin
     ? [
-        { label: "ADMIN WORKSPACE", links: [
-          ["admin-dashboard.html", "Admin Overview", "fa-solid fa-gauge-high"],
-          ["users.html", "User Management", "fa-solid fa-users-gear"]
-        ]},
-        { label: "PLATFORM OVERSIGHT", links: [
-          ["products.html", "Product Records", "fa-solid fa-capsules"],
-          ["gap-analysis.html", "Gap Analysis", "fa-solid fa-wand-magic-sparkles"],
-          ["ctd-dossiers.html", "CTD Dossiers", "fa-solid fa-folder-tree"],
-          ["regulatory-calendar.html", "Regulatory Calendar", "fa-regular fa-calendar"],
-          ["regulatory-intelligence.html", "Regulatory Intelligence", "fa-solid fa-globe"],
-          ["impact-assessment.html", "Impact Assessments", "fa-solid fa-bullseye"],
-          ["reports.html", "Platform Reports", "fa-solid fa-chart-column"]
-        ]},
-        { label: "ACCOUNT", links: [["settings.html", "My Settings", "fa-solid fa-gear"]] }
+        {label:"ADMIN WORKSPACE",links:[["admin-dashboard.html","Admin Overview","fa-solid fa-gauge-high"],["users.html","User Management","fa-solid fa-users-gear"]]},
+        {label:"PLATFORM OVERSIGHT",links:[["products.html","Product Records","fa-solid fa-capsules"],["gap-analysis.html","Gap Analysis","fa-solid fa-wand-magic-sparkles"],["ctd-dossiers.html","CTD Dossiers","fa-solid fa-folder-tree"],["regulatory-calendar.html","Regulatory Calendar","fa-regular fa-calendar"],["regulatory-intelligence.html","Regulatory Intelligence","fa-solid fa-globe"],["impact-assessment.html","Impact Assessments","fa-solid fa-bullseye"],["reports.html","Platform Reports","fa-solid fa-chart-column"]]},
+        {label:"ACCOUNT",links:[["settings.html","My Settings","fa-solid fa-gear"]]}
       ]
     : [
-        { label: "WORKSPACE", links: [
-          ["dashboard.html", "Dashboard", "fa-solid fa-chart-pie"],
-          ["products.html", "Product Management", "fa-solid fa-capsules"],
-          ["ctd-dossiers.html", "CTD Dossier Management", "fa-solid fa-folder-tree"],
-          ["gap-analysis.html", "AI Gap Analysis", "fa-solid fa-wand-magic-sparkles"],
-          ["regulatory-intelligence.html", "Regulatory Intelligence", "fa-solid fa-globe"],
-          ["impact-assessment.html", "Impact Assessment", "fa-solid fa-bullseye"],
-          ["regulatory-calendar.html", "Regulatory Calendar", "fa-regular fa-calendar"]
-        ]},
-        { label: "WORKSPACE TOOLS", links: [
-          ["reports.html", "Reports & Analytics", "fa-solid fa-chart-column"],
-          ["settings.html", "Settings", "fa-solid fa-gear"]
-        ]}
+        {label:"WORKSPACE",links:[["dashboard.html","Dashboard","fa-solid fa-chart-pie"],["products.html","Product Management","fa-solid fa-capsules"],["ctd-dossiers.html","CTD Dossier Management","fa-solid fa-folder-tree"],["gap-analysis.html","AI Gap Analysis","fa-solid fa-wand-magic-sparkles"],["regulatory-intelligence.html","Regulatory Intelligence","fa-solid fa-globe"],["impact-assessment.html","Impact Assessment","fa-solid fa-bullseye"],["regulatory-calendar.html","Regulatory Calendar","fa-regular fa-calendar"]]},
+        {label:"WORKSPACE TOOLS",links:[["reports.html","Reports & Analytics","fa-solid fa-chart-column"],["settings.html","Settings","fa-solid fa-gear"]]}
       ];
 
-  groups.forEach(group => {
-    const label = document.createElement("div");
-    label.className = "nav-label";
-    label.textContent = group.label;
-    nav.appendChild(label);
-    group.links.forEach(([href, title, iconClass]) => {
-      const link = document.createElement("a");
-      link.className = "nav-link";
-      link.href = href;
-      link.dataset.regutrackNav = "true";
-      if (href === fileName) {
-        link.classList.add("active");
-        link.setAttribute("aria-current", "page");
-      }
-      const icon = document.createElement("i");
-      icon.className = iconClass;
-      icon.setAttribute("aria-hidden", "true");
-      link.append(icon, document.createTextNode(title));
-      link.addEventListener("click", () => sidebar.classList.remove("open"));
-      nav.appendChild(link);
-    });
-  });
-
-  // Shared, deterministic page shell. Each page keeps its own content and module logic.
-  const shellStyle = document.getElementById("regutrack-shell-style") || document.createElement("style");
-  shellStyle.id = "regutrack-shell-style";
-  shellStyle.textContent = `
-    :root { --regutrack-sidebar-width: 255px; }
-    .sidebar { width:var(--regutrack-sidebar-width)!important; height:100dvh!important; position:fixed!important; inset:0 auto 0 0!important; z-index:1000!important; display:flex!important; flex-direction:column!important; background:#fff!important; border-right:1px solid #e8eee9!important; box-sizing:border-box!important; transition:transform .25s ease!important; }
-    .sidebar .sidebar-scroll { flex:1 1 auto!important; min-height:0!important; overflow-y:auto!important; overscroll-behavior:contain; }
-    .sidebar .sidebar-bottom { flex:0 0 auto!important; }
-    .main { margin-left:var(--regutrack-sidebar-width)!important; min-width:0!important; min-height:100vh; }
-    .main > .content, .main > section.content { width:100%; min-width:0; }
-    .topbar { position:sticky; top:0; z-index:900!important; }
-    .regutrack-menu-toggle { display:none!important; }
-    @media(max-width:900px) {
-      .sidebar { transform:translateX(-105%)!important; box-shadow:none!important; }
-      .sidebar.open { transform:translateX(0)!important; box-shadow:16px 0 40px rgba(16,45,30,.18)!important; }
-      .main { margin-left:0!important; width:100%!important; }
-      .regutrack-menu-toggle { display:grid!important; place-items:center; flex:0 0 40px; width:40px; height:40px; border:1px solid #e8eee9; border-radius:10px; background:#fff; color:#16845b; cursor:pointer; }
+  for (const group of groups) {
+    const title=document.createElement("div"); title.className="nav-label"; title.textContent=group.label; nav.appendChild(title);
+    for (const [href,label,iconClass] of group.links) {
+      const link=document.createElement("a"); link.className="nav-link"; link.href=href;
+      if (href===fileName) {link.classList.add("active");link.setAttribute("aria-current","page");}
+      const icon=document.createElement("i"); icon.className=iconClass; icon.setAttribute("aria-hidden","true");
+      link.append(icon,document.createTextNode(label)); nav.appendChild(link);
     }
-  `;
-  if (!shellStyle.isConnected) document.head.appendChild(shellStyle);
-
-  const topbar = document.querySelector(".topbar");
-  const topLeft = topbar?.querySelector(".top-left") || topbar?.firstElementChild;
-  let menuButton = topbar?.querySelector("#menuToggle, #menu, #regutrackMenuToggle");
-  if (topbar && !menuButton && topLeft) {
-    menuButton = document.createElement("button");
-    topLeft.prepend(menuButton);
-  }
-  if (menuButton) {
-    menuButton.id = "regutrackMenuToggle";
-    menuButton.className = "regutrack-menu-toggle";
-    menuButton.type = "button";
-    menuButton.setAttribute("aria-label", "Toggle navigation");
-    menuButton.setAttribute("aria-controls", "sidebar");
-    menuButton.setAttribute("aria-expanded", "false");
-    menuButton.innerHTML = '<i class="fa-solid fa-bars" aria-hidden="true"></i>';
   }
 
-  // Capture-phase delegation prevents legacy page handlers from toggling the sidebar twice.
-  if (!document.documentElement.dataset.regutrackSidebarController) {
-    document.documentElement.dataset.regutrackSidebarController = "true";
-    document.addEventListener("click", event => {
-      const button = event.target.closest("#regutrackMenuToggle");
-      if (button) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        const opened = !sidebar.classList.contains("open");
-        sidebar.classList.toggle("open", opened);
-        button.setAttribute("aria-expanded", String(opened));
-        return;
-      }
-      if (event.target.closest(".sidebar a[href]")) {
-        sidebar.classList.remove("open");
-        document.getElementById("regutrackMenuToggle")?.setAttribute("aria-expanded", "false");
-        return;
-      }
-      if (!sidebar.contains(event.target)) {
-        sidebar.classList.remove("open");
-        document.getElementById("regutrackMenuToggle")?.setAttribute("aria-expanded", "false");
-      }
-    }, true);
-    document.addEventListener("keydown", event => {
-      if (event.key === "Escape") {
-        sidebar.classList.remove("open");
-        document.getElementById("regutrackMenuToggle")?.setAttribute("aria-expanded", "false");
-      }
-    });
-  }
+  const topLeft=topbar.querySelector(".top-left")||topbar.firstElementChild||topbar;
+  let menu=topbar.querySelector("#regutrackMenuToggle, #menuToggle, #menu");
+  if (!menu) { menu=document.createElement("button"); topLeft.prepend(menu); }
+  menu.id="regutrackMenuToggle"; menu.type="button"; menu.className="regutrack-menu-toggle";
+  menu.setAttribute("aria-label","Toggle navigation"); menu.setAttribute("aria-controls","sidebar"); menu.setAttribute("aria-expanded","false");
+  menu.innerHTML='<i class="fa-solid fa-bars" aria-hidden="true"></i>';
 }
+function installSidebarController() {
+  if (document.documentElement.dataset.regutrackSidebarController) return;
+  document.documentElement.dataset.regutrackSidebarController="true";
+  document.addEventListener("click",event=>{
+    const sidebar=document.querySelector(".sidebar");
+    if (!sidebar) return;
+    const menu=event.target.closest("#regutrackMenuToggle");
+    if (menu) {
+      event.preventDefault(); event.stopImmediatePropagation();
+      const open=!sidebar.classList.contains("open");
+      sidebar.classList.toggle("open",open); menu.setAttribute("aria-expanded",String(open)); return;
+    }
+    if (event.target.closest(".sidebar a[href]")||!sidebar.contains(event.target)) {
+      sidebar.classList.remove("open");
+      document.getElementById("regutrackMenuToggle")?.setAttribute("aria-expanded","false");
+    }
+  },true);
+  document.addEventListener("keydown",event=>{
+    if(event.key==="Escape"){document.querySelector(".sidebar")?.classList.remove("open");document.getElementById("regutrackMenuToggle")?.setAttribute("aria-expanded","false");}
+  });
+}
+
 function getLandingPage(roles) {
   if (roles.includes("admin")) return "admin-dashboard.html";
   if (roles.includes("regulatory_affairs") || roles.includes("reviewer")) return "dashboard.html";
@@ -213,7 +163,9 @@ if (sessionError || !sessionData.session) {
     } else {
       document.documentElement.dataset.authenticated = "true";
       document.documentElement.dataset.userRole = isAdmin ? "admin" : "user";
-      renderRoleNavigation(roles);
+      applySharedShellStyles();
+      normalizePageShell(roles);
+      installSidebarController();
       if (!isAdmin) {
         document.querySelectorAll('a[href="users.html"], a[data-admin-only], [data-admin-only]').forEach(element => element.remove());
       }
