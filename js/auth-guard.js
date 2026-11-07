@@ -15,6 +15,77 @@ function roleCaption(roles) {
   if (roles.includes("reviewer")) return "Reviewer";
   return "ReguTrack member";
 }
+function renderRoleNavigation(roles) {
+  const isAdmin = roles.includes("admin");
+  const sidebar = document.querySelector(".sidebar");
+  if (!sidebar) return;
+
+  const brandSubtitle = sidebar.querySelector(".brand-subtitle");
+  if (brandSubtitle) brandSubtitle.textContent = isAdmin ? "ADMINISTRATION" : "REGULATORY INTELLIGENCE";
+
+  const nav = sidebar.querySelector(".sidebar-scroll");
+  if (!nav) return;
+
+  const groups = isAdmin
+    ? [
+        { label: "ADMIN WORKSPACE", links: [
+          ["admin-dashboard.html", "Admin Overview", "fa-solid fa-gauge-high"],
+          ["users.html", "User Management", "fa-solid fa-users-gear"]
+        ]},
+        { label: "PLATFORM OVERSIGHT", links: [
+          ["products.html", "Product Records", "fa-solid fa-capsules"],
+          ["gap-analysis.html", "Gap Analysis", "fa-solid fa-wand-magic-sparkles"],
+          ["ctd-dossiers.html", "CTD Dossiers", "fa-solid fa-folder-tree"],
+          ["regulatory-calendar.html", "Regulatory Calendar", "fa-regular fa-calendar"],
+          ["regulatory-intelligence.html", "Regulatory Intelligence", "fa-solid fa-globe"],
+          ["impact-assessment.html", "Impact Assessments", "fa-solid fa-bullseye"],
+          ["reports.html", "Platform Reports", "fa-solid fa-chart-column"]
+        ]},
+        { label: "ACCOUNT", links: [
+          ["settings.html", "My Settings", "fa-solid fa-gear"]
+        ]}
+      ]
+    : [
+        { label: "WORKSPACE", links: [
+          ["dashboard.html", "Dashboard", "fa-solid fa-chart-pie"],
+          ["products.html", "Product Management", "fa-solid fa-capsules"],
+          ["ctd-dossiers.html", "CTD Dossier Management", "fa-solid fa-folder-tree"],
+          ["gap-analysis.html", "AI Gap Analysis", "fa-solid fa-wand-magic-sparkles"],
+          ["regulatory-intelligence.html", "Regulatory Intelligence", "fa-solid fa-globe"],
+          ["impact-assessment.html", "Impact Assessment", "fa-solid fa-bullseye"],
+          ["regulatory-calendar.html", "Regulatory Calendar", "fa-regular fa-calendar"]
+        ]},
+        { label: "WORKSPACE TOOLS", links: [
+          ["reports.html", "Reports & Analytics", "fa-solid fa-chart-column"],
+          ["settings.html", "Settings", "fa-solid fa-gear"]
+        ]}
+      ];
+
+  nav.replaceChildren();
+  groups.forEach(group => {
+    const label = document.createElement("div");
+    label.className = "nav-label";
+    label.textContent = group.label;
+    nav.appendChild(label);
+
+    group.links.forEach(([href, title, iconClass]) => {
+      const link = document.createElement("a");
+      link.className = "nav-link";
+      link.href = href;
+      link.dataset.regutrackNav = "true";
+      if (href === fileName) {
+        link.classList.add("active");
+        link.setAttribute("aria-current", "page");
+      }
+      const icon = document.createElement("i");
+      icon.className = iconClass;
+      icon.setAttribute("aria-hidden", "true");
+      link.append(icon, document.createTextNode(title));
+      link.addEventListener("click", () => sidebar.classList.remove("open"));
+      nav.appendChild(link);
+    });
+  });
+}
 function getLandingPage(roles) {
   if (roles.includes("admin")) return "admin-dashboard.html";
   if (roles.includes("regulatory_affairs") || roles.includes("reviewer")) return "dashboard.html";
@@ -67,9 +138,9 @@ if (sessionError || !sessionData.session) {
     } else {
       document.documentElement.dataset.authenticated = "true";
       document.documentElement.dataset.userRole = isAdmin ? "admin" : "user";
+      renderRoleNavigation(roles);
       if (!isAdmin) {
-        document.querySelectorAll('.sidebar a[href="users.html"], .nav a[href="users.html"], a[data-admin-only]').forEach(link => link.remove());
-        document.querySelectorAll("[data-admin-only]").forEach(element => element.remove());
+        document.querySelectorAll('a[href="users.html"], a[data-admin-only], [data-admin-only]').forEach(element => element.remove());
       }
       document.body.dataset.userId = user.id;
       document.body.dataset.userRoles = roles.join(",");
