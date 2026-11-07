@@ -20,11 +20,21 @@ function renderRoleNavigation(roles) {
   const sidebar = document.querySelector(".sidebar");
   if (!sidebar) return;
 
+  // Normalize legacy page-specific sidebar markup into one shared structure.
   const brandSubtitle = sidebar.querySelector(".brand-subtitle, .brand small");
-  if (brandSubtitle) brandSubtitle.textContent = isAdmin ? "ADMINISTRATION" : "REGULATORY INTELLIGENCE";
+  if (brandSubtitle) {
+    brandSubtitle.className = "brand-subtitle";
+    brandSubtitle.textContent = isAdmin ? "ADMINISTRATION" : "REGULATORY INTELLIGENCE";
+  }
 
-  const nav = sidebar.querySelector(".sidebar-scroll, .nav");
-  if (!nav) return;
+  let nav = sidebar.querySelector(".sidebar-scroll, .nav");
+  if (!nav) {
+    nav = document.createElement("div");
+    nav.className = "sidebar-scroll";
+    sidebar.insertBefore(nav, sidebar.querySelector(".sidebar-bottom"));
+  }
+  nav.className = "sidebar-scroll";
+  nav.replaceChildren();
 
   const groups = isAdmin
     ? [
@@ -41,9 +51,7 @@ function renderRoleNavigation(roles) {
           ["impact-assessment.html", "Impact Assessments", "fa-solid fa-bullseye"],
           ["reports.html", "Platform Reports", "fa-solid fa-chart-column"]
         ]},
-        { label: "ACCOUNT", links: [
-          ["settings.html", "My Settings", "fa-solid fa-gear"]
-        ]}
+        { label: "ACCOUNT", links: [["settings.html", "My Settings", "fa-solid fa-gear"]] }
       ]
     : [
         { label: "WORKSPACE", links: [
@@ -61,13 +69,11 @@ function renderRoleNavigation(roles) {
         ]}
       ];
 
-  nav.replaceChildren();
   groups.forEach(group => {
     const label = document.createElement("div");
     label.className = "nav-label";
     label.textContent = group.label;
     nav.appendChild(label);
-
     group.links.forEach(([href, title, iconClass]) => {
       const link = document.createElement("a");
       link.className = "nav-link";
@@ -85,6 +91,54 @@ function renderRoleNavigation(roles) {
       nav.appendChild(link);
     });
   });
+
+  // Every page gets the same fixed sidebar and a single, accessible menu button.
+  const topbar = document.querySelector(".topbar");
+  const topLeft = topbar?.querySelector(".top-left") || topbar?.firstElementChild;
+  let menuButton = topbar?.querySelector("#menuToggle, #menu");
+  if (topbar && !menuButton) {
+    menuButton = document.createElement("button");
+    menuButton.type = "button";
+    topLeft?.prepend(menuButton);
+  }
+  if (menuButton) {
+    menuButton.id = "regutrackMenuToggle";
+    menuButton.classList.add("mobile-menu");
+    menuButton.setAttribute("type", "button");
+    menuButton.setAttribute("aria-label", "Toggle navigation");
+    menuButton.setAttribute("aria-controls", "sidebar");
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.innerHTML = '<i class="fa-solid fa-bars" aria-hidden="true"></i>';
+    menuButton.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const opened = sidebar.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", String(opened));
+    });
+  }
+
+  // Remove legacy per-page toggle listeners' visual side effects by relying on
+  // this one overlay/outside-click controller. Capture phase closes old handlers safely.
+  if (!document.documentElement.dataset.regutrackSidebarController) {
+    document.documentElement.dataset.regutrackSidebarController = "true";
+    document.addEventListener("click", event => {
+      if (!sidebar.contains(event.target) && !event.target.closest("#regutrackMenuToggle")) {
+        sidebar.classList.remove("open");
+        document.getElementById("regutrackMenuToggle")?.setAttribute("aria-expanded", "false");
+      }
+      const navLink = event.target.closest(".sidebar a[href]");
+      if (navLink) {
+        sidebar.classList.remove("open");
+        document.getElementById("regutrackMenuToggle")?.setAttribute("aria-expanded", "false");
+      }
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        sidebar.classList.remove("open");
+        document.getElementById("regutrackMenuToggle")?.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
 }
 function getLandingPage(roles) {
   if (roles.includes("admin")) return "admin-dashboard.html";
