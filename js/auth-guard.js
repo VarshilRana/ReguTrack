@@ -3,8 +3,11 @@ import { supabase } from "./supabaseClient.js";
 const fileName = window.location.pathname.split("/").pop() || "dashboard.html";
 const adminOnlyPages = new Set(["admin-dashboard.html", "users.html"]);
 
+function navigateTo(page) {
+  window.location.replace(new URL(page, window.location.href).href);
+}
 function goToLogin() {
-  window.location.replace("auth.html?mode=login&redirect=" + encodeURIComponent(fileName));
+  navigateTo("auth.html?mode=login&redirect=" + encodeURIComponent(fileName));
 }
 function roleCaption(roles) {
   if (roles.includes("admin")) return "Administrator";
@@ -41,7 +44,12 @@ if (sessionError || !sessionData.session) {
       .from("user_roles").select("role").eq("user_id", user.id);
 
     if (roleError) {
-      document.body.innerHTML = '<main style="font-family:DM Sans,sans-serif;padding:48px;max-width:680px;margin:auto"><h1>We could not verify your access</h1><p>Your role could not be checked with the ReguTrack server. Please refresh or contact your administrator.</p><button onclick="location.reload()">Retry</button></main>';
+      console.error("ReguTrack role verification failed:", roleError);
+      const notice = document.createElement("section");
+      notice.setAttribute("role", "alert");
+      notice.style.cssText = "position:fixed;z-index:99999;inset:16px 16px auto;padding:16px 18px;background:#fff4e5;border:1px solid #f0d5a8;border-radius:12px;color:#684b1b;font:14px/1.5 'DM Sans',sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.08)";
+      notice.innerHTML = "<strong>Workspace access could not be verified.</strong><br>Check your connection and refresh this page. If the issue continues, contact your administrator.";
+      document.body.prepend(notice);
       throw roleError;
     }
 
@@ -49,13 +57,13 @@ if (sessionError || !sessionData.session) {
     const isAdmin = roles.includes("admin");
     const landingPage = getLandingPage(roles);
     if (!roles.length) {
-      window.location.replace("access-pending.html");
+      navigateTo("access-pending.html");
     } else if (adminOnlyPages.has(fileName) && !roles.includes("admin")) {
-      window.location.replace("dashboard.html");
+      navigateTo("dashboard.html");
     } else if (fileName === "dashboard.html" && roles.includes("admin")) {
-      window.location.replace("admin-dashboard.html");
+      navigateTo("admin-dashboard.html");
     } else if (fileName === "admin-dashboard.html" && !roles.includes("admin")) {
-      window.location.replace(landingPage);
+      navigateTo(landingPage);
     } else {
       document.documentElement.dataset.authenticated = "true";
       document.documentElement.dataset.userRole = isAdmin ? "admin" : "user";
@@ -73,8 +81,12 @@ if (sessionError || !sessionData.session) {
       document.querySelectorAll(".profile-info strong, .profile strong, [data-user-name]").forEach(el => {
         el.textContent = displayName;
       });
-      document.querySelectorAll(".profile-info span, .profile span, [data-user-role]").forEach(el => {
+      // Update only explicit role labels; do not overwrite unrelated profile/dropdown spans.
+      document.querySelectorAll(".profile-info [data-user-role], [data-user-role]").forEach(el => {
         el.textContent = roleCaption(roles);
+      });
+      document.querySelectorAll(".profile-info span:not([data-user-role])").forEach(el => {
+        if (el.closest(".profile-info")) el.textContent = roleCaption(roles);
       });
       document.querySelectorAll(".avatar, [data-user-avatar]").forEach(el => {
         const initials = displayName.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase();
