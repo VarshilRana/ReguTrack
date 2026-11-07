@@ -2100,7 +2100,11 @@ async function initialize() {
   const {data:{user},error:userError}=await supabase.auth.getUser();
   if(userError || !user){showToast("Your session has expired. Please sign in again.");return;}
   currentUser=user;
-  currentRole=document.body.dataset.currentRole || "reviewer";
+  const {data: roleRows, error: roleError}=await supabase.from("user_roles").select("role").eq("user_id",user.id);
+  if(roleError){console.error("Role lookup failed:",roleError);showToast("Could not verify your workspace permissions. Refresh and try again.");return;}
+  const roles=(roleRows||[]).map(row=>row.role);
+  currentRole=roles.includes("admin") ? "admin" : roles.includes("regulatory_affairs") ? "regulatory_affairs" : roles.includes("reviewer") ? "reviewer" : null;
+  if(!currentRole){showToast("Your account has no active ReguTrack role.");return;}
   if(currentRole==="reviewer"){
     $("addProductButton").hidden=true;
     $("emptyAddButton").hidden=true;
