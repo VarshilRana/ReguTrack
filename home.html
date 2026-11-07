@@ -2955,6 +2955,11 @@ window.addEventListener("message", event => {
 
     if (event.origin !== window.location.origin) return;
 
+    if (event.data?.type === "regutrack-auth-success") {
+        closeAuth();
+        window.location.href = "dashboard.html";
+    }
+
     if (event.data?.type === "regutrack-auth-close") {
         closeAuth();
     }
