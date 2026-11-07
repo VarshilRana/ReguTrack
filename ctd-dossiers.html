@@ -1436,6 +1436,27 @@ input,select,textarea{min-height:40px}
 button{line-height:1.4}
 @media(max-width:768px){body{font-size:15px}body :is(p,li,label,td,th,input,select,textarea,button){font-size:max(13px,1em)}}
 
+
+/* CTD CHECKLIST MOBILE LAYOUT FIX — status selector sits below its section label */
+@media(max-width:560px){
+ .ctd-checklist-row{display:grid;grid-template-columns:minmax(0,1fr);gap:5px;align-items:stretch;padding:5px 0}
+ .ctd-checklist-row .ctd-section-item{display:grid;grid-template-columns:58px minmax(0,1fr);align-items:start;gap:8px;width:100%;min-width:0;box-sizing:border-box;padding:10px!important}
+ .ctd-checklist-row.level-1 .ctd-section-item{padding-left:14px!important}
+ .ctd-checklist-row.level-2 .ctd-section-item{padding-left:20px!important}
+ .ctd-checklist-row.level-3 .ctd-section-item{padding-left:26px!important}
+ .ctd-checklist-row.level-4 .ctd-section-item{padding-left:32px!important}
+ .ctd-checklist-row .ctd-section-code{min-width:0;width:auto;font-size:12px!important;white-space:nowrap;padding-top:1px}
+ .ctd-checklist-row .ctd-section-name{min-width:0;font-size:14px!important;line-height:1.45;overflow-wrap:anywhere;word-break:normal}
+ .ctd-checklist-row .ctd-section-count{display:none}
+ .ctd-checklist-row .ctd-check-status{display:block;grid-column:1;width:100%;max-width:none;min-width:0;height:40px;margin:0;box-sizing:border-box;font-size:13px!important;padding:0 10px}
+}
+@media(min-width:561px){
+ .ctd-checklist-row{grid-template-columns:minmax(0,1fr) 100px;gap:10px}
+ .ctd-checklist-row .ctd-section-item{min-width:0;box-sizing:border-box}
+ .ctd-checklist-row .ctd-section-name{min-width:0;overflow-wrap:anywhere}
+ .ctd-checklist-row .ctd-check-status{min-width:0;max-width:100%;box-sizing:border-box}
+}
+
 </style>
 </head>
 
