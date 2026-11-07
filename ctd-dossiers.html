@@ -2039,6 +2039,7 @@ button{line-height:1.4}
 
 <script type="module">
 
+
 import { supabase } from "./js/supabaseClient.js";
 
 const modules = {
@@ -2263,7 +2264,7 @@ async function saveDocument(form){
  if(uploadError)throw uploadError;
  let dossier=dossiers.find(x=>x.product_id===pId);
  if(!dossier){
-  const {data,error}=await supabase.from("ctd_dossiers").insert({product_id:pId,dossier_title:productName(p)+" — CTD Dossier",dossier_type:"initial",target_market:p.target_market||null,regulatory_authority:p.regulatory_authority||null,owner_id:currentUser.id,created_by:currentUser.id}).select("*").single();
+  const {data,error}=await supabase.from("ctd_dossiers").insert({product_id:pId,dossier_title:productName(p)+" — CTD Dossier",dossier_type:"initial",target_market:p.target_market||null,regulatory_authority:p.regulatory_authority||null,owner_id:(currentRole==="admin"?currentUser.id:(p.product_owner||currentUser.id)),created_by:currentUser.id}).select("*").single();
   if(error){await supabase.storage.from(BUCKET).remove([storagePath]);throw error;}dossier=data;dossiers.push(data);
  }
  const mime=selectedFile.type||({pdf:"application/pdf",doc:"application/msword",docx:"application/vnd.openxmlformats-officedocument.wordprocessingml.document",xls:"application/vnd.ms-excel",xlsx:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",txt:"text/plain",png:"image/png",jpg:"image/jpeg",jpeg:"image/jpeg"})[ext]||null;
@@ -2347,6 +2348,7 @@ async function initialize(){
  }catch(error){console.error("CTD initialization failed:",error);showToast("CTD workspace could not load: "+error.message);$("documentTableBody").innerHTML='<tr><td colspan="7">Unable to load CTD data. Check your connection and access permissions, then refresh.</td></tr>';}
 }
 initialize();
+
 
 </script>
 <script type="module" src="js/auth-guard.js"></script>
