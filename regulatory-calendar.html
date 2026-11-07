@@ -142,7 +142,7 @@ function viewEvent(id){const e=events.find(x=>x.id===id);if(!e)return;viewingId=
 function exportCSV(){const rows=[['Title','Date','Time','Category','Status','Product','Owner','Description'],...events.map(e=>[e.title,e.date,e.time,typeLabel(e.type),e.status,e.product,e.owner,e.description])];const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='regutrack-calendar.csv';a.click();URL.revokeObjectURL(url)}
 function loadSearch(){const q=$('globalSearch').value.trim().toLowerCase();if(!q){renderCalendar();return}const matches=events.filter(e=>(e.title+' '+e.product+' '+e.owner+' '+e.description).toLowerCase().includes(q));$('agendaSubtitle').textContent='Search results';$('agendaCount').textContent=matches.length+' events';$('agendaList').innerHTML=matches.map(e=>'<article class="agenda-item"><div class="agenda-date"><strong>'+parseDate(e.date).getDate()+'</strong><span>'+parseDate(e.date).toLocaleDateString('en-IN',{month:'short'})+'</span></div><div class="agenda-copy"><strong>'+esc(e.title)+'</strong><p>'+fmt(e.date)+' · '+esc(e.product||e.owner||'Calendar event')+'</p></div><button class="action-btn" data-view="'+esc(e.id)+'"><i class="fa-regular fa-eye"></i></button></article>').join('')||'<div class="agenda-empty">No matching events.</div>'}
 $('eventForm').addEventListener('submit',saveEvent);$('addEventBtn').addEventListener('click',()=>openAdd(todayISO()));$('todayBtn').addEventListener('click',()=>{viewDate=new Date();selectedDate=new Date();render()});$('monthToday').addEventListener('click',()=>{viewDate=new Date();selectedDate=new Date();render()});$('prevMonth').addEventListener('click',()=>{viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()-1,1);renderCalendar()});$('nextMonth').addEventListener('click',()=>{viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()+1,1);renderCalendar()});$('monthView').addEventListener('click',()=>showToast('You are viewing the monthly calendar.'));
-$('exportBtn').addEventListener('click',exportCSV);$('globalSearch').addEventListener('input',loadSearch);$('menuToggle').addEventListener('click',()=>$('sidebar').classList.toggle('open'));$('notificationButton').addEventListener('click',()=>showToast($('overdueEvents').textContent+' overdue calendar events.'));
+$('exportBtn').addEventListener('click',exportCSV);$('globalSearch').addEventListener('input',loadSearch);$('notificationButton').addEventListener('click',()=>showToast($('overdueEvents').textContent+' overdue calendar events.'));
 $('profileButton').addEventListener('click',e=>{if(e.target.closest('button'))return;$('profileDropdown').classList.toggle('show')});
 document.addEventListener('click',e=>{if(!e.target.closest('#profileButton'))$('profileDropdown').classList.remove('show');const cell=e.target.closest('[data-date]');if(cell){selectedDate=parseDate(cell.dataset.date);renderAgenda();document.querySelectorAll('.day-cell').forEach(x=>x.classList.toggle('selected',x===cell));if(e.detail===2)openAdd(cell.dataset.date)}const eventButton=e.target.closest('[data-event]');if(eventButton){e.stopPropagation();viewEvent(eventButton.dataset.event)}const v=e.target.closest('[data-view]');if(v)viewEvent(v.dataset.view);const ed=e.target.closest('[data-edit]');if(ed){const ev=events.find(x=>x.id===ed.dataset.edit);if(ev)openAdd(ev.date,ev)}if(e.target.closest('[data-close]'))e.target.closest('.modal-backdrop').classList.remove('show')});
 $('editEventBtn').addEventListener('click',()=>{const e=events.find(x=>x.id===viewingId);if(!e)return;$('viewModal').classList.remove('show');openAdd(e.date,e)});
@@ -155,14 +155,11 @@ events=read(STORAGE_KEY,[]);if(!Array.isArray(events))events=[];if(events.length
   const sidebar = document.getElementById("sidebar");
   const menuButton = document.getElementById("menuToggle");
   if (!sidebar || !menuButton) return;
-
-  // Keep one predictable mobile sidebar state across dashboard modules.
   menuButton.setAttribute("aria-expanded", "false");
   menuButton.addEventListener("click", () => {
     const isOpen = sidebar.classList.toggle("open");
     menuButton.setAttribute("aria-expanded", String(isOpen));
   });
-
   document.addEventListener("click", event => {
     if (window.innerWidth <= 900 && sidebar.classList.contains("open") &&
         !sidebar.contains(event.target) && !menuButton.contains(event.target)) {
@@ -170,7 +167,6 @@ events=read(STORAGE_KEY,[]);if(!Array.isArray(events))events=[];if(events.length
       menuButton.setAttribute("aria-expanded", "false");
     }
   });
-
   sidebar.querySelectorAll(".nav-link[href]").forEach(link => {
     link.addEventListener("click", () => {
       sidebar.classList.remove("open");
