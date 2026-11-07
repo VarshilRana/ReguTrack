@@ -1831,9 +1831,9 @@ function toDatabase(data) {
     submission_date: data.submissionDate || null,
     approval_date: data.approvalDate || null,
     expiry_date: data.expiryDate || null,
-    product_owner: currentRole === "admin" ? ((editingId && products.find(p => p.id === editingId)?.ownerId) || currentUser.id) : currentUser.id,
+    product_owner: editingId ? (products.find(p => p.id === editingId)?.ownerId || currentUser.id) : currentUser.id,
     notes: data.notes || null,
-    created_by: editingId ? undefined : currentUser.id,
+    ...(editingId ? {} : { created_by: currentUser.id }),
     updated_by: currentUser.id
   };
 }
@@ -1906,7 +1906,7 @@ function renderProducts() {
       + '<td>'+escapeHTML(product.manufacturer || "—")+'</td>'
       + '<td><span class="status '+statusClass(product.status)+'">'+escapeHTML(product.status)+'</span></td>'
       + '<td><div class="action-group"><button class="action-btn" data-action="view" data-id="'+escapeHTML(product.id)+'" title="View details" aria-label="View product"><i class="fa-regular fa-eye"></i></button>'
-      + (currentRole === "user" ? "" : '<button class="action-btn" data-action="edit" data-id="'+escapeHTML(product.id)+'" title="Edit product" aria-label="Edit product"><i class="fa-solid fa-pen"></i></button><button class="action-btn delete" data-action="delete" data-id="'+escapeHTML(product.id)+'" title="Delete product" aria-label="Delete product"><i class="fa-regular fa-trash-can"></i></button>') + '</div></td>';
+      + ((currentRole === "user" && product.ownerId !== currentUser?.id) ? "" : '<button class="action-btn" data-action="edit" data-id="'+escapeHTML(product.id)+'" title="Edit product" aria-label="Edit product"><i class="fa-solid fa-pen"></i></button>') + (currentRole === "admin" ? '<button class="action-btn delete" data-action="delete" data-id="'+escapeHTML(product.id)+'" title="Delete product" aria-label="Delete product"><i class="fa-regular fa-trash-can"></i></button>' : "") + '</div></td>';
     tbody.appendChild(row);
   });
   $("emptyState").hidden = filtered.length !== 0;
@@ -1998,6 +1998,12 @@ $("productForm").addEventListener("submit", async event => {
   const payload = toDatabase(data);
   let result;
   if (editingId) {
+    const editable = products.find(product => product.id === editingId);
+    if (!editable || (currentRole !== "admin" && editable.ownerId !== currentUser.id)) {
+      setLoading(false);
+      showToast("You can only edit products assigned to your account.");
+      return;
+    }
     result = await supabase.from("products").update(payload).eq("id",editingId).select("id").maybeSingle();
   } else {
     result = await supabase.from("products").insert(payload).select("id").single();
@@ -2036,13 +2042,13 @@ function openViewModal(id) {
 }
 function openDeleteModal(id) {
   const product = products.find(p => p.id === id);
-  if (!product) return;
+  if (!product || currentRole !== "admin") return;
   deletingId = id;
   $("deleteMessage").textContent = 'Delete "'+product.name+'" ('+product.code+') permanently from the shared workspace?';
   openModal("deleteModal");
 }
 $("confirmDelete").addEventListener("click", async () => {
-  if (!deletingId) return;
+  if (!deletingId || currentRole !== "admin") return;
   const id = deletingId;
   $("confirmDelete").disabled = true;
   const {error} = await supabase.from("products").delete().eq("id",id);
@@ -2104,13 +2110,11 @@ async function initialize() {
   const {data: roleRows, error: roleError}=await supabase.from("user_roles").select("role").eq("user_id",user.id);
   if(roleError){console.error("Role lookup failed:",roleError);showToast("Could not verify your workspace permissions. Refresh and try again.");return;}
   const roles=(roleRows||[]).map(row=>row.role);
-  currentRole=roles.includes("admin") ? "admin" : roles.includes("regulatory_affairs") ? "regulatory_affairs" : roles.includes("reviewer") ? "reviewer" : null;
+  if(roles.some(role=>!["admin","user"].includes(role))){showToast("Your account has an unsupported workspace role. Contact the administrator.");return;}
+  currentRole=roles.includes("admin") ? "admin" : roles.includes("user") ? "user" : null;
   if(!currentRole){showToast("Your account has no active ReguTrack role.");return;}
-  if(currentRole==="user"){
-    $("addProductButton").hidden=true;
-    $("emptyAddButton").hidden=true;
-    document.querySelectorAll('[data-action="edit"],[data-action="delete"]').forEach(el=>el.remove());
-  }
+  $("addProductButton").hidden=false;
+  $("emptyAddButton").hidden=false;
   $("productOwner").value=currentUser.email || "Current signed-in user";
   $("productOwner").readOnly=true;
   await loadProducts();
