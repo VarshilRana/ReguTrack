@@ -82,7 +82,7 @@ if (sessionError || !sessionData.session) {
         el.textContent = displayName;
       });
       // Update only explicit role labels; do not overwrite unrelated profile/dropdown spans.
-      document.querySelectorAll(".profile-info [data-user-role], [data-user-role]").forEach(el => {
+      document.querySelectorAll(".profile-info [data-user-role], [data-user-role]:not(html):not(body)").forEach(el => {
         el.textContent = roleCaption(roles);
       });
       document.querySelectorAll(".profile-info span:not([data-user-role])").forEach(el => {
